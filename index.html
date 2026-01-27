@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AYCC - 愛とAIで、あなたの変革を支援します。音楽教室運営とIT技術を融合させた新しいサービスを提供。">
+    <meta name="keywords" content="AYCC,AI,コンサルティング,マリンバ,Web制作,札幌">
+    <title>AYCC - AI YASUDA CREATIVE & CONSULTING</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-pink': '#FF69B4',
+                        'primary-blue': '#4A90E2',
+                        'accent-purple': '#9B59B6',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* カスタムグラデーション */
+        .gradient-main {
+            background: linear-gradient(135deg, #FF69B4 0%, #9B59B6 50%, #4A90E2 100%);
+        }
+        
+        .gradient-creative {
+            background: linear-gradient(135deg, #FF69B4 0%, #FFB6D9 100%);
+        }
+        
+        .gradient-consulting {
+            background: linear-gradient(135deg, #4A90E2 0%, #7BB3E8 100%);
+        }
+        
+        /* スムーススクロール */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* ホバーエフェクト */
+        .service-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    
+    <!-- ヘッダー -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <!-- ロゴ -->
+                <div class="flex items-center space-x-3">
+                    <img src="images/logo.png" alt="AYCC Logo" class="h-12">
+                    <span class="text-xl font-bold text-gray-800">AYCC</span>
+                </div>
+                
+                <!-- ナビゲーション(デスクトップ) -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="text-gray-600 hover:text-primary-pink transition">ホーム</a>
+                    <a href="#services" class="text-gray-600 hover:text-primary-pink transition">サービス</a>
+                    <a href="#about" class="text-gray-600 hover:text-primary-pink transition">会社概要</a>
+                    <a href="#contact" class="text-gray-600 hover:text-primary-pink transition">お問い合わせ</a>
+                </div>
+                
+                <!-- ハンバーガーメニュー(モバイル) -->
+                <button class="md:hidden" id="menu-toggle">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- モバイルメニュー -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-2">
+                <a href="#home" class="block py-2 text-gray-600 hover:text-primary-pink transition">ホーム</a>
+                <a href="#services" class="block py-2 text-gray-600 hover:text-primary-pink transition">サービス</a>
+                <a href="#about" class="block py-2 text-gray-600 hover:text-primary-pink transition">会社概要</a>
+                <a href="#contact" class="block py-2 text-gray-600 hover:text-primary-pink transition">お問い合わせ</a>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- ヒーローセクション -->
+    <section id="home" class="py-20 bg-gradient-to-br from-pink-50 to-blue-50">
+        <div class="container mx-auto px-4 text-center">
+            <!-- ロゴ大 -->
+            <img src="images/logo.png" alt="AYCC" class="mx-auto w-80 md:w-96 mb-8">
+            
+            <!-- サブタイトル -->
+            <h2 class="text-2xl md:text-3xl text-gray-700 mb-4">
+                -AI YASUDA CREATIVE & CONSULTING-
+            </h2>
+            
+            <!-- キャッチコピー -->
+            <p class="text-3xl md:text-5xl font-bold text-gray-800 mb-12">
+                愛とAIで、あなたの変革を支援します
+            </p>
+            
+            <!-- CTAボタン -->
+            <a href="#contact" class="inline-block gradient-main text-white px-8 py-4 rounded-full text-lg font-semibold hover:opacity-90 transition">
+                お問い合わせはこちら
+            </a>
+        </div>
+    </section>
+    
+    <!-- 事業内容セクション -->
+    <section id="services" class="py-20">
+        <div class="container mx-auto px-4">
+            <!-- セクションタイトル -->
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">
+                サービス
+            </h2>
+            <p class="text-center text-gray-600 mb-16">
+                Creative × Consulting の融合で、新しい価値を創造します
+            </p>
+            
+            <!-- 3カラムレイアウト -->
+            <div class="grid md:grid-cols-3 gap-8">
+                
+                <!-- Creative -->
+                <div class="service-card bg-white rounded-lg p-8 shadow-md">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 gradient-creative rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <span class="text-3xl">🎵</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-primary-pink mb-2">Creative</h3>
+                        <p class="text-sm text-gray-500">音楽・芸術活動</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-1">🎵 マリンバ演奏活動</h4>
+                            <p class="text-sm text-gray-600">プロマリンバ奏者による演奏活動。コンサート・イベント出演など幅広く対応。</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-1">🏫 マリンバ教室</h4>
+                            <p class="text-sm text-gray-600">初心者から経験者まで、楽しく学べるマリンバ教室を運営。</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-1">🎼 貸しスタジオ</h4>
+                            <p class="text-sm text-gray-600">マリンバ練習用のスタジオレンタルサービスを提供。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 融合領域 -->
+                <div class="service-card bg-white rounded-lg p-8 shadow-md">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 gradient-main rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <span class="text-3xl">🎹</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-accent-purple mb-2">Creative × Consulting</h3>
+                        <p class="text-sm text-gray-500">融合サービス</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-1">🎹 音楽教室向けシステム</h4>
+                            <p class="text-sm text-gray-600 mb-3">音楽教室運営の実務経験とIT技術を融合させた、使いやすい予約管理システムを開発・提供。</p>
+                            
+                            <ul class="text-xs text-gray-600 space-y-1 ml-4">
+                                <li>• 生徒管理</li>
+                                <li>• レッスン予約</li>
+                                <li>• 振替対応</li>
+                                <li>• 保護者連絡</li>
+                                <li>• 月謝管理</li>
+                            </ul>
+                            
+                            <p class="text-sm text-accent-purple font-semibold mt-3">月額0円で維持できる最新システム</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Consulting -->
+                <div class="service-card bg-white rounded-lg p-8 shadow-md">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 gradient-consulting rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <span class="text-3xl">💼</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-primary-blue mb-2">Consulting</h3>
+                        <p class="text-sm text-gray-500">IT・AIコンサルティング</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-1">💼 IT/AIコンサルティング</h4>
+                            <p class="text-sm text-gray-600">企業・自治体のAI活用戦略策定から導入まで、伴走支援。</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-1">🌐 WEB制作</h4>
+                            <p class="text-sm text-gray-600">月額0円で維持できるウェブサイトを制作。最新技術で高速・安全。</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-1">📱 アプリケーション開発</h4>
+                            <p class="text-sm text-gray-600">業務効率化のためのWebアプリケーション開発。</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-1">🖥️ PC出張サポート</h4>
+                            <p class="text-sm text-gray-600">個人向けのパソコン設定・トラブル対応を出張サポート。</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+    
+    <!-- 実績紹介セクション -->
+    <section id="works" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">
+                実績紹介
+            </h2>
+            <p class="text-center text-gray-600 mb-16">
+                様々な企業・団体のプロジェクトをサポート
+            </p>
+            
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                
+                <!-- ウェブサイト制作実績 -->
+                <div class="bg-white rounded-lg p-8 shadow-md">
+                    <h3 class="text-xl font-bold text-primary-blue mb-4">🌐 ウェブサイト制作</h3>
+                    
+                    <div class="space-y-3">
+                        <div class="border-l-4 border-primary-blue pl-4">
+                            <p class="font-semibold text-gray-800">イベント運営会社様</p>
+                            <p class="text-sm text-gray-600">コーポレートサイト構築 (2026年1月)</p>
+                        </div>
+                        
+                        <div class="border-l-4 border-primary-blue pl-4">
+                            <p class="font-semibold text-gray-800">音楽教室様</p>
+                            <p class="text-sm text-gray-600">予約管理システム統合サイト開発 (2026年1月)</p>
+                        </div>
+                        
+                        <div class="border-l-4 border-primary-blue pl-4">
+                            <p class="font-semibold text-gray-800">文化事業様</p>
+                            <p class="text-sm text-gray-600">イベント告知サイト制作 (2025年12月)</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- AIコンサルティング実績 -->
+                <div class="bg-white rounded-lg p-8 shadow-md">
+                    <h3 class="text-xl font-bold text-primary-pink mb-4">💼 AIコンサルティング</h3>
+                    
+                    <div class="space-y-3">
+                        <div class="border-l-4 border-primary-pink pl-4">
+                            <p class="font-semibold text-gray-800">地方自治体様</p>
+                            <p class="text-sm text-gray-600">AI活用戦略策定支援 (2025年)</p>
+                        </div>
+                        
+                        <div class="border-l-4 border-primary-pink pl-4">
+                            <p class="font-semibold text-gray-800">中小企業様</p>
+                            <p class="text-sm text-gray-600">業務効率化AI導入支援 (2025年)</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+    
+    <!-- 会社概要セクション -->
+    <section id="about" class="py-20">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">
+                会社概要
+            </h2>
+            <p class="text-center text-gray-600 mb-16">
+                AYCC - AI YASUDA CREATIVE & CONSULTING
+            </p>
+            
+            <div class="max-w-3xl mx-auto">
+                <div class="bg-white rounded-lg p-8 shadow-md">
+                    
+                    <!-- 会社情報 -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">会社情報</h3>
+                        <table class="w-full text-sm">
+                            <tr class="border-b">
+                                <td class="py-3 text-gray-600 w-32">社名</td>
+                                <td class="py-3 text-gray-800">AYCC<br><span class="text-xs">-AI YASUDA CREATIVE & CONSULTING-</span></td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="py-3 text-gray-600">代表</td>
+                                <td class="py-3 text-gray-800">安田 愛 (やすだ あい)</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="py-3 text-gray-600">所在地</td>
+                                <td class="py-3 text-gray-800">札幌市豊平区</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="py-3 text-gray-600">TEL</td>
+                                <td class="py-3 text-gray-800">011-XXX-XXXX (仮)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 text-gray-600">Email</td>
+                                <td class="py-3 text-gray-800">info@aycc.jp (仮)</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <!-- 代表プロフィール -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">代表プロフィール</h3>
+                        <div class="text-gray-700 space-y-2">
+                            <p class="font-semibold">安田 愛 (やすだ あい)</p>
+                            <ul class="text-sm space-y-1 ml-4">
+                                <li>• マリンバ演奏家</li>
+                                <li>• リズム指導講師</li>
+                                <li>• 音楽教室運営</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- 体制 -->
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">所属コンサルタント・エンジニア</h3>
+                        <div class="text-gray-700 space-y-2">
+                            <ul class="text-sm space-y-1 ml-4">
+                                <li>• AI導入コンサルティング</li>
+                                <li>• システム開発・インフラ構築</li>
+                                <li>• Webアプリケーション開発</li>
+                                <li>• 企業経験20年以上</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- お問い合わせセクション -->
+    <section id="contact" class="py-20 bg-gradient-to-br from-pink-50 to-blue-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">
+                お問い合わせ
+            </h2>
+            <p class="text-center text-gray-600 mb-16">
+                お気軽にご相談ください
+            </p>
+            
+            <div class="max-w-2xl mx-auto bg-white rounded-lg p-8 shadow-md">
+                
+                <!-- Google Formsの埋め込み予定地 -->
+                <div class="text-center text-gray-600">
+                    <p class="mb-4">お問い合わせフォームを準備中です。</p>
+                    <p class="mb-4">当面は下記メールアドレスまでご連絡ください。</p>
+                    <a href="mailto:info@aycc.jp" class="text-primary-blue hover:underline text-lg font-semibold">
+                        info@aycc.jp
+                    </a>
+                </div>
+                
+                <!-- 将来的にGoogle Formsを埋め込む場合 -->
+                <!-- 
+                <iframe src="YOUR_GOOGLE_FORM_URL" width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0">
+                    読み込んでいます…
+                </iframe>
+                -->
+                
+            </div>
+        </div>
+    </section>
+    
+    <!-- フッター -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <p class="mb-2">&copy; 2026 AYCC - AI YASUDA CREATIVE & CONSULTING</p>
+                <p class="text-sm text-gray-400">All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script>
+        // ハンバーガーメニュー
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // モバイルメニューのリンククリック時に閉じる
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+    </script>
+    
+</body>
+</html>
