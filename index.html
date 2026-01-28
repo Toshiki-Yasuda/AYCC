@@ -7,6 +7,23 @@
     <meta name="keywords" content="AYCC,AI,コンサルティング,マリンバ,Web制作,札幌">
     <title>AYCC - AI YASUDA CREATIVE & CONSULTING</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/favicon.png">
+
+    <!-- OGP (Open Graph Protocol) -->
+    <meta property="og:title" content="AYCC - AI YASUDA CREATIVE & CONSULTING">
+    <meta property="og:description" content="愛とAIで、あなたの変革を支援します。音楽教室運営とIT技術を融合させた新しいサービスを提供。">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="images/logo.png">
+    <meta property="og:locale" content="ja_JP">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="AYCC - AI YASUDA CREATIVE & CONSULTING">
+    <meta name="twitter:description" content="愛とAIで、あなたの変革を支援します。音楽教室運営とIT技術を融合させた新しいサービスを提供。">
+    <meta name="twitter:image" content="images/logo.png">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -322,13 +339,37 @@
         .cta-button:hover::before {
             left: 100%;
         }
+
+        /* モバイルメニューアニメーション */
+        #mobile-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: max-height 0.6s ease-out, opacity 0.6s ease-out;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+            margin-top: 0;
+        }
+
+        #mobile-menu.menu-open {
+            max-height: 300px;
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="bg-warm-gray-50">
 
     <!-- ヘッダー -->
     <header class="bg-white/90 backdrop-blur-sm border-b border-warm-gray-200 sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-5">
+        <nav class="container mx-auto pl-2 pr-6 py-5 relative">
             <div class="flex justify-between items-center">
                 <!-- ロゴ -->
                 <div class="flex items-center space-x-4">
@@ -353,12 +394,12 @@
             </div>
 
             <!-- モバイルメニュー -->
-            <div id="mobile-menu" class="hidden md:hidden mt-6 pb-4 space-y-4">
-                <a href="#home" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-sm tracking-wider">ホーム</a>
-                <a href="#services" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-sm tracking-wider">サービス</a>
-                <a href="#works" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-sm tracking-wider">実績</a>
-                <a href="#about" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-sm tracking-wider">会社概要</a>
-                <a href="#contact" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-sm tracking-wider">お問い合わせ</a>
+            <div id="mobile-menu" class="md:hidden py-4 space-y-4">
+                <a href="#home" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">ホーム</a>
+                <a href="#services" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">サービス</a>
+                <a href="#works" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">実績</a>
+                <a href="#about" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">会社概要</a>
+                <a href="#contact" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">お問い合わせ</a>
             </div>
         </nav>
     </header>
@@ -442,7 +483,7 @@
                     <div class="space-y-6 text-sm">
                         <div>
                             <h4 class="font-medium text-warm-gray-700 mb-2">マリンバ演奏活動</h4>
-                            <p class="text-warm-gray-500 leading-relaxed">プロマリンバ奏者による演奏活動。コンサート・イベント出演など幅広く対応いたします。</p>
+                            <p class="text-warm-gray-500 leading-relaxed">マリンバの演奏活動　　コンサート・イベント出演・慰問活動等、幅広く対応いたします。</p>
                         </div>
 
                         <div>
@@ -472,7 +513,7 @@
                     <div class="space-y-6 text-sm">
                         <div>
                             <h4 class="font-medium text-warm-gray-700 mb-2">音楽教室向けシステム</h4>
-                            <p class="text-warm-gray-500 leading-relaxed mb-4">音楽教室運営の実務経験とIT技術を融合させた、使いやすい予約管理システムを開発・提供します。</p>
+                            <p class="text-warm-gray-500 leading-relaxed mb-4">音楽教室運営の実務経験とIT技術を融合させた、使いやすい予約管理システムをお客様のご要望に合わせて個別開発・ご提供します。</p>
 
                             <ul class="text-warm-gray-500 space-y-1 pl-4">
                                 <li>・生徒管理</li>
@@ -481,8 +522,6 @@
                                 <li>・保護者連絡</li>
                                 <li>・月謝管理</li>
                             </ul>
-
-                            <p class="text-navy-600 font-medium mt-4">使いやすさを追求した最新システム</p>
                         </div>
                     </div>
                 </div>
@@ -512,7 +551,7 @@
 
                         <div>
                             <h4 class="font-medium text-warm-gray-700 mb-2">アプリケーション開発</h4>
-                            <p class="text-warm-gray-500 leading-relaxed">業務効率化のためのWebアプリケーション開発を行います。</p>
+                            <p class="text-warm-gray-500 leading-relaxed">業務効率化のためのアプリケーション開発を行います。</p>
                         </div>
 
                         <div>
@@ -559,7 +598,7 @@
                         </div>
 
                         <div class="pl-4 border-l-2 border-navy-200">
-                            <p class="font-medium text-warm-gray-700 text-sm">文化事業様</p>
+                            <p class="font-medium text-warm-gray-700 text-sm">イベント主催者様</p>
                             <p class="text-warm-gray-500 text-xs mt-1">イベント告知サイト制作</p>
                         </div>
                     </div>
@@ -578,13 +617,13 @@
                         </div>
 
                         <div class="pl-4 border-l-2 border-rose-200">
-                            <p class="font-medium text-warm-gray-700 text-sm">音楽教室様</p>
-                            <p class="text-warm-gray-500 text-xs mt-1">教室運営・集客コンサルティング</p>
+                            <p class="font-medium text-warm-gray-700 text-sm">音楽教室の先生</p>
+                            <p class="text-warm-gray-500 text-xs mt-1">PC出張サポート</p>
                         </div>
 
                         <div class="pl-4 border-l-2 border-rose-200">
-                            <p class="font-medium text-warm-gray-700 text-sm">音楽教室の先生</p>
-                            <p class="text-warm-gray-500 text-xs mt-1">PC出張サポート</p>
+                            <p class="font-medium text-warm-gray-700 text-sm">個人のお客様</p>
+                            <p class="text-warm-gray-500 text-xs mt-1">IT/AI スキルアップコンサルティング</p>
                         </div>
                     </div>
                 </div>
@@ -628,15 +667,11 @@
                             </tr>
                             <tr class="border-b border-warm-gray-100">
                                 <td class="py-4 text-warm-gray-500">所在地</td>
-                                <td class="py-4 text-warm-gray-700">札幌市豊平区</td>
-                            </tr>
-                            <tr class="border-b border-warm-gray-100">
-                                <td class="py-4 text-warm-gray-500">TEL</td>
-                                <td class="py-4 text-warm-gray-700">011-XXX-XXXX</td>
+                                <td class="py-4 text-warm-gray-700">札幌市豊平区中の島1条10丁目6-18</td>
                             </tr>
                             <tr>
                                 <td class="py-4 text-warm-gray-500">Email</td>
-                                <td class="py-4 text-warm-gray-700">info@aycc.jp</td>
+                                <td class="py-4 text-warm-gray-700">aycc.office.2026@gmail.com</td>
                             </tr>
                         </table>
                     </div>
@@ -647,7 +682,7 @@
                             代表プロフィール
                         </h3>
                         <div class="text-sm">
-                            <p class="font-medium text-warm-gray-700 mb-4">安田 愛（やすだ あい）</p>
+                            <p class="font-medium text-warm-gray-700 mb-4 text-lg">安田 愛（やすだ あい）</p>
                             <p class="text-warm-gray-500 leading-relaxed mb-4">
                                 6歳よりマリンバを始める。マリンバ北星会第59号師範免状取得。<br>
                                 国内外での演奏活動を精力的に行い、中国・ベトナムでの海外公演や<br class="hidden md:inline">
@@ -673,7 +708,7 @@
 
                     <!-- 体制 -->
                     <div>
-                        <h3 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-3 border-b border-warm-gray-200">
+                        <h3 class="font-medium text-lg text-warm-gray-800 mb-6 pb-3 border-b border-warm-gray-200">
                             所属コンサルタント・エンジニア
                         </h3>
                         <p class="text-sm text-warm-gray-500 mb-3">大手ITソリューション企業20年勤務（現在も在籍）</p>
@@ -711,8 +746,8 @@
 
                 <div class="bg-warm-gray-50 p-10 border-elegant">
                     <p class="text-sm text-warm-gray-500 mb-6">メールでのお問い合わせ</p>
-                    <a href="mailto:info@aycc.jp" class="font-elegant text-xl text-warm-gray-700 hover:text-navy-600 transition-colors">
-                        info@aycc.jp
+                    <a href="mailto:aycc.office.2026@gmail.com" class="font-elegant text-xl text-warm-gray-700 hover:text-navy-600 transition-colors">
+                        aycc.office.2026@gmail.com
                     </a>
                 </div>
             </div>
@@ -747,14 +782,14 @@
         const mobileMenu = document.getElementById('mobile-menu');
 
         menuToggle.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('menu-open');
         });
 
         // モバイルメニューのリンククリック時に閉じる
         const mobileLinks = mobileMenu.querySelectorAll('a');
         mobileLinks.forEach(link => {
             link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('menu-open');
             });
         });
 
