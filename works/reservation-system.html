@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AYCC - 音楽教室向け予約管理システム（開発中）">
+    <title>予約管理システム（開発中） | AYCC</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+    <link rel="apple-touch-icon" href="../images/favicon.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rose': {
+                            50: '#fdf2f4',
+                            100: '#fce7eb',
+                            200: '#f9d0d9',
+                            300: '#f4a9ba',
+                            400: '#ec7a95',
+                            500: '#d4a5a5',
+                            600: '#b8848f',
+                            700: '#9a6b75',
+                            800: '#7d5660',
+                            900: '#5c4048',
+                        },
+                        'navy': {
+                            50: '#f5f7fa',
+                            100: '#eaeef4',
+                            200: '#d0dbe8',
+                            300: '#a7bdd4',
+                            400: '#7899bc',
+                            500: '#5a7ea5',
+                            600: '#47658a',
+                            700: '#3a5270',
+                            800: '#2d3e54',
+                            900: '#1e2a3a',
+                        },
+                        'warm-gray': {
+                            50: '#fafaf9',
+                            100: '#f5f5f4',
+                            200: '#e7e5e4',
+                            300: '#d6d3d1',
+                            400: '#a8a29e',
+                            500: '#78716c',
+                            600: '#57534e',
+                            700: '#44403c',
+                            800: '#292524',
+                            900: '#1c1917',
+                        }
+                    },
+                    fontFamily: {
+                        'serif': ['Noto Serif JP', 'serif'],
+                        'sans': ['Noto Sans JP', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            color: #44403c;
+            letter-spacing: 0.02em;
+        }
+
+        .font-elegant {
+            font-family: 'Noto Serif JP', serif;
+        }
+
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, #d4a5a5, #a7bdd4);
+            margin: 0 auto;
+        }
+
+        .border-elegant {
+            border: 1px solid rgba(168, 162, 158, 0.3);
+        }
+
+        .link-underline {
+            position: relative;
+        }
+
+        .link-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+
+        .link-underline:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-warm-gray-50">
+
+    <!-- ヘッダー -->
+    <header class="bg-white/90 backdrop-blur-sm border-b border-warm-gray-200 sticky top-0 z-50">
+        <nav class="container mx-auto pl-2 pr-6 py-5">
+            <div class="flex justify-between items-center">
+                <!-- ロゴ -->
+                <a href="../index.html" class="flex items-center space-x-4">
+                    <img src="../images/logo.png" alt="AYCC Logo" class="h-10">
+                </a>
+
+                <!-- ナビゲーション -->
+                <div class="hidden md:flex space-x-10">
+                    <a href="../index.html#home" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">ホーム</a>
+                    <a href="../index.html#services" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">サービス</a>
+                    <a href="../index.html#works" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">実績</a>
+                    <a href="../index.html#about" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">会社概要</a>
+                    <a href="../index.html#contact" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">お問い合わせ</a>
+                </div>
+
+                <!-- 戻るボタン（モバイル） -->
+                <a href="../index.html#works" class="md:hidden text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-sm">
+                    ← 戻る
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="py-16 md:py-24">
+        <div class="container mx-auto px-6">
+
+            <!-- パンくずリスト -->
+            <nav class="mb-8 text-sm text-warm-gray-500">
+                <a href="../index.html" class="hover:text-warm-gray-700">ホーム</a>
+                <span class="mx-2">/</span>
+                <a href="../index.html#services" class="hover:text-warm-gray-700">サービス</a>
+                <span class="mx-2">/</span>
+                <span class="text-warm-gray-700">予約管理システム</span>
+            </nav>
+
+            <!-- タイトル -->
+            <div class="text-center mb-16">
+                <h1 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-4">
+                    音楽教室向け予約管理システム
+                </h1>
+                <div class="divider mb-6"></div>
+                <p class="text-sm text-warm-gray-500 tracking-wider">
+                    開発中
+                </p>
+            </div>
+
+            <!-- コンテンツ -->
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white p-8 md:p-12 border-elegant">
+
+                    <!-- システム連携フロー -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200 text-center">
+                            システム構成イメージ
+                        </h2>
+
+                        <!-- 上段: WEBサイト → 予約画面 -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-center mb-8">
+                            <!-- 教室WEBサイト -->
+                            <div class="text-center">
+                                <div class="inline-block bg-rose-50 text-rose-700 text-xs px-3 py-1 rounded-full mb-3">教室サイト</div>
+                                <div class="mx-auto">
+                                    <img src="../images/reservation-website.png" alt="ピアノ教室WEBサイト" class="w-full rounded-lg shadow-md border border-warm-gray-200">
+                                </div>
+                                <p class="text-xs text-warm-gray-500 mt-2">「予約する」ボタンから予約画面へ</p>
+                            </div>
+                            <!-- 矢印（モバイルは下向き、PCは右向き） -->
+                            <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 text-warm-gray-400">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
+                            </div>
+                            <!-- 生徒用予約画面 -->
+                            <div class="text-center">
+                                <div class="inline-block bg-rose-50 text-rose-700 text-xs px-3 py-1 rounded-full mb-3">生徒・保護者</div>
+                                <div class="max-w-[200px] mx-auto">
+                                    <img src="../images/reservation-app-user.png" alt="予約画面" class="w-full rounded-lg shadow-md">
+                                </div>
+                                <p class="text-xs text-warm-gray-500 mt-2">空き枠から希望日時を予約</p>
+                            </div>
+                        </div>
+
+                        <!-- 中央: 連携表示 -->
+                        <div class="flex justify-center my-4">
+                            <div class="flex items-center text-warm-gray-400 text-xs bg-warm-gray-100 px-4 py-2 rounded-full">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                                </svg>
+                                データ連携
+                            </div>
+                        </div>
+
+                        <!-- 下段: 管理画面 ↔ 管理アプリ -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-center">
+                            <!-- 管理者用WEB画面 -->
+                            <div class="text-center">
+                                <div class="inline-block bg-navy-50 text-navy-700 text-xs px-3 py-1 rounded-full mb-3">WEB管理画面</div>
+                                <div class="mx-auto">
+                                    <img src="../images/reservation-admin-web.png" alt="管理者用WEB管理画面" class="w-full rounded-lg shadow-md border border-warm-gray-200">
+                                </div>
+                                <p class="text-xs text-warm-gray-500 mt-2">予約状況の確認・空き枠の一括登録</p>
+                            </div>
+                            <!-- 管理者用アプリ -->
+                            <div class="text-center">
+                                <div class="inline-block bg-navy-50 text-navy-700 text-xs px-3 py-1 rounded-full mb-3">スマホアプリ</div>
+                                <div class="max-w-[200px] mx-auto">
+                                    <img src="../images/reservation-app-admin.png" alt="管理者用アプリ" class="w-full rounded-lg shadow-md">
+                                </div>
+                                <p class="text-xs text-warm-gray-500 mt-2">外出先でも空き枠の設定・確認</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 概要 -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            概要
+                        </h2>
+                        <p class="text-warm-gray-600 leading-relaxed">
+                            音楽教室運営者の視点とIT/AI技術を融合させた、使いやすい予約管理システムです。
+                            教室運営者が日々の業務で感じる課題を解決するために開発を進めています。
+                        </p>
+                    </div>
+
+                    <!-- 主な機能 -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            主な機能
+                        </h2>
+                        <ul class="text-warm-gray-600 space-y-3">
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">空き枠管理</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">カレンダー形式で予約可能な時間枠を簡単に設定・管理</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">生徒管理</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">生徒情報の一元管理とレッスン履歴の記録</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">レッスン予約</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">生徒・保護者がスマートフォンから簡単に予約</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">振替対応</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">キャンセル・振替の管理を効率化</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">保護者連絡</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">お知らせやリマインダーの配信機能</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 技術スタック -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            使用技術
+                        </h2>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Flutter</span>
+                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Firebase</span>
+                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Cloud Firestore</span>
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="text-center pt-6 border-t border-warm-gray-200">
+                        <p class="text-warm-gray-600 mb-6">
+                            技術検証でスマートフォンアプリ連携も開発していますが、<br>規模や目的に合わせてミニマムなご提案も可能ですので、安心してお声がけください。
+                        </p>
+                        <a href="../index.html#contact" class="inline-block border border-warm-gray-400 text-warm-gray-700 px-8 py-3 text-sm tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                            お問い合わせ
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- 戻るリンク -->
+                <div class="mt-10 text-center">
+                    <a href="../index.html#services" class="text-warm-gray-500 hover:text-warm-gray-700 text-sm inline-flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        サービス一覧に戻る
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- フッター -->
+    <footer class="bg-warm-gray-800 text-warm-gray-300 py-12">
+        <div class="container mx-auto px-6">
+            <div class="text-center">
+                <p class="text-sm tracking-wider mb-2">
+                    &copy; 2026 AYCC
+                </p>
+                <p class="text-xs text-warm-gray-500">
+                    AI YASUDA CREATIVE & CONSULTING
+                </p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
