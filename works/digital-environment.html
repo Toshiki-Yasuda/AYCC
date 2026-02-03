@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="クラウドサーバー・モバイル端末・AI活用による、場所を選ばない開発体制。AYCCが構築した「切れない」リモート環境と、複数AIを連携させたオーケストレーション開発について。">
+    <title>場所を選ばない開発体制 | AYCC</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+    <link rel="apple-touch-icon" href="../images/favicon.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rose': {
+                            50: '#fdf2f4',
+                            100: '#fce7eb',
+                            200: '#f9d0d9',
+                            300: '#f4a9ba',
+                            400: '#ec7a95',
+                            500: '#d4a5a5',
+                            600: '#b8848f',
+                            700: '#9a6b75',
+                            800: '#7d5660',
+                            900: '#5c4048',
+                        },
+                        'navy': {
+                            50: '#f5f7fa',
+                            100: '#eaeef4',
+                            200: '#d0dbe8',
+                            300: '#a7bdd4',
+                            400: '#7899bc',
+                            500: '#5a7ea5',
+                            600: '#47658a',
+                            700: '#3a5270',
+                            800: '#2d3e54',
+                            900: '#1e2a3a',
+                        },
+                        'warm-gray': {
+                            50: '#fafaf9',
+                            100: '#f5f5f4',
+                            200: '#e7e5e4',
+                            300: '#d6d3d1',
+                            400: '#a8a29e',
+                            500: '#78716c',
+                            600: '#57534e',
+                            700: '#44403c',
+                            800: '#292524',
+                            900: '#1c1917',
+                        }
+                    },
+                    fontFamily: {
+                        'serif': ['Noto Serif JP', 'serif'],
+                        'sans': ['Noto Sans JP', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            color: #44403c;
+            letter-spacing: 0.02em;
+        }
+
+        .font-elegant {
+            font-family: 'Noto Serif JP', serif;
+        }
+
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, #d4a5a5, #a7bdd4);
+            margin: 0 auto;
+        }
+
+        .border-elegant {
+            border: 1px solid rgba(168, 162, 158, 0.3);
+        }
+
+        .link-underline {
+            position: relative;
+        }
+
+        .link-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+
+        .link-underline:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-warm-gray-50">
+
+    <!-- ヘッダー -->
+    <header class="bg-white/90 backdrop-blur-sm border-b border-warm-gray-200 sticky top-0 z-50">
+        <nav class="container mx-auto pl-2 pr-6 py-5">
+            <div class="flex justify-between items-center">
+                <!-- ロゴ -->
+                <a href="../index.html" class="flex items-center space-x-4">
+                    <img src="../images/logo.png" alt="AYCC Logo" class="h-10">
+                </a>
+
+                <!-- ナビゲーション -->
+                <div class="hidden md:flex space-x-10">
+                    <a href="../index.html#home" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">ホーム</a>
+                    <a href="../index.html#services" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">サービス</a>
+                    <a href="../index.html#works" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">実績</a>
+                    <a href="../index.html#about" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">会社概要</a>
+                    <a href="../index.html#contact" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">お問い合わせ</a>
+                </div>
+
+                <!-- 戻るボタン（モバイル） -->
+                <a href="../index.html#about" class="md:hidden text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-sm">
+                    ← 戻る
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="py-16 md:py-24">
+        <div class="container mx-auto px-6">
+
+            <!-- パンくずリスト -->
+            <nav class="mb-8 text-sm text-warm-gray-500">
+                <a href="../index.html" class="hover:text-warm-gray-700">ホーム</a>
+                <span class="mx-2">/</span>
+                <a href="../index.html#about" class="hover:text-warm-gray-700">会社概要</a>
+                <span class="mx-2">/</span>
+                <span class="text-warm-gray-700">デジタル環境について</span>
+            </nav>
+
+            <!-- タイトル -->
+            <div class="text-center mb-16">
+                <h1 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-2">
+                    場所を選ばない開発体制
+                </h1>
+                <p class="text-sm text-warm-gray-400 tracking-wider mb-4">クラウド・モバイル・AIを組み合わせた「切れない」業務環境</p>
+                <div class="divider"></div>
+            </div>
+
+            <!-- コンテンツ -->
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white p-8 md:p-12 border-elegant">
+
+                    <!-- 背景 -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            この環境を構築した背景
+                        </h2>
+                        <p class="text-warm-gray-600 leading-relaxed mb-4">
+                            AYCCのエンジニアは、システム開発業務と並行して家族の介護を担っています。作業場所は自宅のデスクに限らず、病院の待合室や移動中の電車内など日々変化します。
+                        </p>
+                        <p class="text-warm-gray-600 leading-relaxed mb-4">
+                            病院ではいつ診察に呼ばれるか分かりません。「端末を閉じて即座に移動し、戻ったらすぐ作業を再開する」。この要件を満たすために、<span class="font-medium text-warm-gray-800">場所や中断に左右されない開発環境</span>を設計・構築しました。
+                        </p>
+                        <p class="text-warm-gray-600 leading-relaxed">
+                            結果として、お客様へのレスポンスや納品スケジュールに影響を出さない体制が実現しています。
+                        </p>
+                    </div>
+
+                    <!-- マルチデバイス -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            マルチデバイス構成
+                        </h2>
+                        <p class="text-warm-gray-600 leading-relaxed mb-6">
+                            状況に応じて3台のデバイスを使い分けています。いずれもクラウドサーバーへの「端末」として機能するため、ローカルにデータは保存されません。どのデバイスからでも同一の作業環境にアクセスできます。
+                        </p>
+
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3 mt-0.5">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </span>
+                                <div>
+                                    <span class="font-medium text-warm-gray-700">Windows デスクトップ（自宅）</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">設計作業や負荷の高い処理を行うメイン機。大画面で複数ウィンドウを並べた作業に適しています。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3 mt-0.5">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </span>
+                                <div>
+                                    <span class="font-medium text-warm-gray-700">MacBook Pro（外出先）</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">カフェなど腰を据えて作業できる場面で使用。ターミナル操作やコードレビューに活用しています。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3 mt-0.5">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </span>
+                                <div>
+                                    <span class="font-medium text-warm-gray-700">iPad mini（病院・移動中）</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">文庫本とほぼ同じサイズで、片手で保持できます。待合室や電車内でも周囲に圧迫感を与えず、短時間の作業やコミュニケーションに最適です。</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- インフラ -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            クラウドインフラと通信技術
+                        </h2>
+                        <p class="text-warm-gray-600 leading-relaxed mb-6">
+                            この環境の中核を担うのが、クラウド上の開発サーバーと、中断に強い通信プロトコルの2つです。
+                        </p>
+
+                        <div class="bg-navy-50 p-6 rounded-lg mb-4 border-l-4 border-navy-400">
+                            <p class="font-medium text-navy-700 mb-2">VPS（Virtual Private Server）：さくらインターネット</p>
+                            <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
+                                開発に必要なソースコード、データベース、AI連携ツールはすべてクラウド上のVPS（仮想専用サーバー）に集約しています。手元のデバイスにはデータを置かないため、端末の紛失・故障時にも業務データが失われるリスクがありません。
+                            </p>
+                            <p class="text-warm-gray-500 text-xs leading-relaxed">
+                                VPSとは、1台の物理サーバーを仮想的に分割し、専用サーバーと同等の自由度を持つ環境です。自前のPCがクラウド上に常時起動しているようなイメージです。
+                            </p>
+                        </div>
+
+                        <div class="bg-navy-50 p-6 rounded-lg mb-4 border-l-4 border-navy-400">
+                            <p class="font-medium text-navy-700 mb-2">Mosh（Mobile Shell）：中断に強いリモート接続</p>
+                            <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
+                                一般的なSSH接続は、通信が途切れるとセッションが切断されます。Moshは、UDPベースの独自プロトコルにより、<span class="font-medium text-warm-gray-700">ネットワークの切断・再接続を自動でハンドリング</span>します。
+                            </p>
+                            <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
+                                地下鉄での通信途絶、Wi-Fiからモバイル回線への切り替え、端末のスリープといった場面でも、接続状態を維持します。端末を開けば、前回の作業状態がそのまま表示されます。
+                            </p>
+                            <p class="text-warm-gray-500 text-xs leading-relaxed">
+                                技術的には、SSHが「電話」のように常時接続を前提とするのに対し、Moshは「メッセージアプリ」のように断続的な通信でも成立する仕組みです。
+                            </p>
+                        </div>
+
+                        <div class="bg-navy-50 p-6 rounded-lg border-l-4 border-navy-400">
+                            <p class="font-medium text-navy-700 mb-2">tmux：複数作業の並行管理</p>
+                            <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
+                                VPS上ではtmux（ターミナルマルチプレクサ）を使用し、複数の作業画面を常時維持しています。コーディング・テスト実行・AI連携・ログ監視などを個別のウィンドウで並行管理できます。
+                            </p>
+                            <p class="text-warm-gray-500 text-xs leading-relaxed">
+                                tmuxのセッションはサーバー側で保持されるため、接続元のデバイスが変わっても、すべてのウィンドウ配置と作業状態がそのまま引き継がれます。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- AI活用 -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            複数AIを連携させた開発手法
+                        </h2>
+                        <p class="text-warm-gray-600 leading-relaxed mb-4">
+                            AYCCでは、特性の異なる複数のAIモデルを目的に応じて使い分け、連携させる<span class="font-medium text-warm-gray-800">「AIオーケストレーション」</span>を開発ワークフローに組み込んでいます。
+                        </p>
+                        <p class="text-warm-gray-600 leading-relaxed mb-6">
+                            小さな画面のiPad miniからでも高度な開発が可能なのは、作業の実行をAIが担い、エンジニアは設計判断と品質管理に集中できる体制を構築しているからです。
+                        </p>
+
+                        <div class="grid md:grid-cols-3 gap-4 mb-6">
+                            <div class="bg-warm-gray-50 p-6 rounded-lg text-center border-elegant">
+                                <p class="text-xs font-medium text-navy-600 tracking-wider mb-1">設計・統括</p>
+                                <p class="font-elegant text-lg text-warm-gray-800 mb-2">Claude</p>
+                                <p class="text-sm text-warm-gray-500">Anthropic社のAI。論理的な長文理解と構造化が得意で、アーキテクチャ設計やタスク分解を担当します。</p>
+                            </div>
+                            <div class="bg-warm-gray-50 p-6 rounded-lg text-center border-elegant">
+                                <p class="text-xs font-medium text-navy-600 tracking-wider mb-1">コード生成・実装</p>
+                                <p class="font-elegant text-lg text-warm-gray-800 mb-2">OpenAI</p>
+                                <p class="text-sm text-warm-gray-500">GPTシリーズによる高速なコード生成。定型的な実装やユーティリティの作成を効率的に処理します。</p>
+                            </div>
+                            <div class="bg-warm-gray-50 p-6 rounded-lg text-center border-elegant">
+                                <p class="text-xs font-medium text-navy-600 tracking-wider mb-1">検証・リサーチ</p>
+                                <p class="font-elegant text-lg text-warm-gray-800 mb-2">Gemini</p>
+                                <p class="text-sm text-warm-gray-500">Google社のAI。最新のドキュメントや技術情報へのアクセスに強く、レビューや調査を担います。</p>
+                            </div>
+                        </div>
+
+                        <p class="text-warm-gray-600 leading-relaxed mb-4">
+                            エンジニアがコードを一行ずつ手書きするのではなく、日本語による指示でAIに作業を委託し、その出力を精査・統合するワークフローです。
+                        </p>
+
+                        <div class="bg-warm-gray-50 p-5 rounded-lg border-elegant">
+                            <p class="text-xs font-medium text-warm-gray-700 tracking-wider mb-3">ワークフロー例</p>
+                            <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-0 text-sm text-warm-gray-600">
+                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">Claude で設計</span>
+                                <span class="hidden md:block text-warm-gray-300 px-2">→</span>
+                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">OpenAI でコード生成</span>
+                                <span class="hidden md:block text-warm-gray-300 px-2">→</span>
+                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">Gemini でレビュー</span>
+                                <span class="hidden md:block text-warm-gray-300 px-2">→</span>
+                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">エンジニアが最終判断</span>
+                            </div>
+                        </div>
+
+                        <p class="text-warm-gray-500 text-xs leading-relaxed mt-4">
+                            複数のAIを相互チェックさせることで、単一モデルに依存した場合に起きやすい誤りやバイアスを軽減しています。最終的な品質判断は必ず人間が行います。
+                        </p>
+
+                        <div class="mt-6 bg-warm-gray-50 p-6 rounded-lg border-elegant">
+                            <p class="font-medium text-warm-gray-700 mb-3">独自の開発管理フレームワーク</p>
+                            <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
+                                このAI連携は、場当たり的に行っているわけではありません。AYCCでは、AI駆動の開発プロセスを体系化した独自フレームワーク<span class="font-medium text-warm-gray-700">「ADS（Agent Director System）」</span>を構築・運用しています。
+                            </p>
+                            <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-0 text-sm text-warm-gray-600 mb-4">
+                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">方針判断</span>
+                                <span class="hidden md:block text-warm-gray-300 px-2">→</span>
+                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">タスク分解</span>
+                                <span class="hidden md:block text-warm-gray-300 px-2">→</span>
+                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">AI実行・実装</span>
+                                <span class="hidden md:block text-warm-gray-300 px-2">→</span>
+                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">品質検証</span>
+                            </div>
+                            <p class="text-warm-gray-500 text-xs leading-relaxed">
+                                全体方針の決定からタスクの分解、AIへの作業指示、コードレビュー、Git管理までを4つの層で構造化しています。これにより、「誰がいつ何を判断し、どのAIがどの作業を担当するか」が明確になり、個人開発でありながら組織的な品質管理が可能になっています。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- お客様にとっての意味 -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            お客様にとっての意味
+                        </h2>
+                        <p class="text-warm-gray-600 leading-relaxed mb-6">
+                            この体制により、以下のようなサービス品質を維持しています。
+                        </p>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3 mt-0.5">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </span>
+                                <div>
+                                    <span class="font-medium text-warm-gray-700">迅速なレスポンス</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">場所を問わず業務環境にアクセスできるため、お問い合わせや緊急対応にも柔軟にお応えできます。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3 mt-0.5">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </span>
+                                <div>
+                                    <span class="font-medium text-warm-gray-700">安定した納品スケジュール</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">作業の中断・再開が即座に行えるため、細切れの時間も有効に活用し、スケジュール遅延のリスクを低減しています。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3 mt-0.5">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </span>
+                                <div>
+                                    <span class="font-medium text-warm-gray-700">AI活用による開発効率</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">複数AIの連携により、個人事業主でありながらチーム開発に近い生産性と品質チェック体制を実現しています。</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 個人向けコンサルティング -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            あなた専用の IT/AI スキルアップ支援
+                        </h2>
+                        <p class="text-warm-gray-600 leading-relaxed mb-4">
+                            この記事でご紹介したクラウド環境やAI活用は、専門家だけのものではありません。AYCCでは、個人のお客様に向けた<span class="font-medium text-warm-gray-800">フルカスタマイズのIT/AIコンサルティング</span>も行っています。
+                        </p>
+                        <p class="text-warm-gray-600 leading-relaxed mb-6">
+                            既製のカリキュラムに沿って進めるのではなく、まずあなたの今のスキルや知識、そして「どんな状態になりたいか」をしっかりお聞きするところから始めます。目標に合わせたロードマップを一緒に作り、実現まで伴走します。
+                        </p>
+
+                        <div class="bg-rose-50 p-6 rounded-lg border border-rose-200">
+                            <p class="text-sm font-medium text-warm-gray-700 mb-4">こんな方に</p>
+                            <ul class="space-y-2 text-sm text-warm-gray-600">
+                                <li class="flex items-start">
+                                    <span class="text-rose-400 mr-2 mt-0.5">-</span>
+                                    AIを仕事に活かしたいが、何から始めればいいか分からない
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-rose-400 mr-2 mt-0.5">-</span>
+                                    業務を効率化したいが、自分に合った方法が見つからない
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-rose-400 mr-2 mt-0.5">-</span>
+                                    パソコンやITツールをもっと使いこなせるようになりたい
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-rose-400 mr-2 mt-0.5">-</span>
+                                    周りに気軽に聞ける人がいない
+                                </li>
+                            </ul>
+                        </div>
+
+                        <p class="text-warm-gray-500 text-sm leading-relaxed mt-4">
+                            「こんなこと聞いていいのかな」という内容でも大丈夫です。ご予算やペースもご相談に応じますので、まずはお気軽にお問い合わせください。
+                        </p>
+                    </div>
+
+                    <!-- メッセージ -->
+                    <div class="text-center pt-6 border-t border-warm-gray-200">
+                        <p class="text-warm-gray-700 leading-relaxed mb-2">
+                            家族を大切にしながら、プロとしての責任を全うする。
+                        </p>
+                        <p class="text-warm-gray-700 leading-relaxed mb-2">
+                            その両立のために磨き上げた環境が、
+                        </p>
+                        <p class="font-medium text-warm-gray-800 leading-relaxed mb-8">
+                            お客様への迅速で安定したサービス提供を支えています。
+                        </p>
+                        <a href="../index.html#contact" class="inline-block border border-warm-gray-400 text-warm-gray-700 px-8 py-3 text-sm tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                            お問い合わせ
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- 戻るリンク -->
+                <div class="mt-10 text-center">
+                    <a href="../index.html#about" class="text-warm-gray-500 hover:text-warm-gray-700 text-sm inline-flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        会社概要に戻る
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- フッター -->
+    <footer class="bg-warm-gray-800 text-warm-gray-300 py-12">
+        <div class="container mx-auto px-6">
+            <div class="text-center">
+                <p class="text-sm tracking-wider mb-2">
+                    &copy; 2026 AYCC
+                </p>
+                <p class="text-xs text-warm-gray-500">
+                    AI YASUDA CREATIVE & CONSULTING
+                </p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
