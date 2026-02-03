@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AYCC - 音楽教室向け予約管理システム（開発中）">
-    <title>予約管理システム（開発中） | AYCC</title>
+    <meta name="description" content="AYCC - 音楽教室管理システム">
+    <title>音楽教室管理システム | AYCC</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="../images/favicon.png">
@@ -114,6 +114,34 @@
         .link-underline:hover::after {
             width: 100%;
         }
+
+        /* Lightbox */
+        .lightbox-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 100;
+            cursor: zoom-out;
+            justify-content: center;
+            align-items: center;
+        }
+        .lightbox-overlay.active {
+            display: flex;
+        }
+        .lightbox-overlay img {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .screenshot-thumb {
+            cursor: zoom-in;
+            transition: box-shadow 0.2s ease;
+        }
+        .screenshot-thumb:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
     </style>
 </head>
 <body class="bg-warm-gray-50">
@@ -154,83 +182,86 @@
                 <span class="mx-2">/</span>
                 <a href="../index.html#services" class="hover:text-warm-gray-700">サービス</a>
                 <span class="mx-2">/</span>
-                <span class="text-warm-gray-700">予約管理システム</span>
+                <span class="text-warm-gray-700">音楽教室管理システム</span>
             </nav>
 
             <!-- タイトル -->
             <div class="text-center mb-16">
-                <h1 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-4">
-                    音楽教室向け予約管理システム
+                <h1 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-2">
+                    音楽教室管理システム
                 </h1>
-                <div class="divider mb-6"></div>
-                <p class="text-sm text-warm-gray-500 tracking-wider">
-                    開発中
-                </p>
+                <p class="text-sm text-warm-gray-400 tracking-wider mb-4">Piano School Reservation System</p>
+                <div class="divider"></div>
             </div>
 
             <!-- コンテンツ -->
             <div class="max-w-4xl mx-auto">
                 <div class="bg-white p-8 md:p-12 border-elegant">
 
-                    <!-- システム連携フロー -->
+                    <!-- システム画面紹介 -->
                     <div class="mb-10">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200 text-center">
-                            システム構成イメージ
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-2 pb-2 border-b border-warm-gray-200 text-center">
+                            システム画面
                         </h2>
+                        <p class="text-xs text-warm-gray-400 text-center mb-6">クリックで拡大表示</p>
 
-                        <!-- 上段: WEBサイト → 予約画面 -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-center mb-8">
-                            <!-- 教室WEBサイト -->
-                            <div class="text-center">
-                                <div class="inline-block bg-rose-50 text-rose-700 text-xs px-3 py-1 rounded-full mb-3">教室サイト</div>
-                                <div class="mx-auto">
-                                    <img src="../images/reservation-website.png" alt="ピアノ教室WEBサイト" class="w-full rounded-lg shadow-md border border-warm-gray-200">
-                                </div>
-                                <p class="text-xs text-warm-gray-500 mt-2">「予約する」ボタンから予約画面へ</p>
+                        <!-- PC画面 2列グリッド -->
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <!-- 教室サイト -->
+                            <div>
+                                <div class="inline-block bg-rose-50 text-rose-700 text-xs px-2 py-0.5 rounded-full mb-2">教室ホームページ</div>
+                                <img src="../images/system-toppage.png" alt="ピアノ教室ホームページ" class="w-full rounded-lg shadow-sm border border-warm-gray-200 screenshot-thumb" onclick="openLightbox(this)">
                             </div>
-                            <!-- 矢印（モバイルは下向き、PCは右向き） -->
-                            <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 text-warm-gray-400">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                                </svg>
+
+                            <!-- 管理画面: ダッシュボード -->
+                            <div>
+                                <div class="inline-block bg-navy-50 text-navy-700 text-xs px-2 py-0.5 rounded-full mb-2">管理画面 - ダッシュボード</div>
+                                <img src="../images/system-admin-home.png" alt="管理画面ダッシュボード" class="w-full rounded-lg shadow-sm border border-warm-gray-200 screenshot-thumb" onclick="openLightbox(this)">
                             </div>
+
+                            <!-- 管理画面: 生徒管理 -->
+                            <div>
+                                <div class="inline-block bg-navy-50 text-navy-700 text-xs px-2 py-0.5 rounded-full mb-2">管理画面 - 生徒管理</div>
+                                <img src="../images/system-admin-students.png" alt="生徒管理画面" class="w-full rounded-lg shadow-sm border border-warm-gray-200 screenshot-thumb" onclick="openLightbox(this)">
+                            </div>
+
                             <!-- 生徒用予約画面 -->
-                            <div class="text-center">
-                                <div class="inline-block bg-rose-50 text-rose-700 text-xs px-3 py-1 rounded-full mb-3">生徒・保護者</div>
-                                <div class="max-w-[200px] mx-auto">
-                                    <img src="../images/reservation-app-user.png" alt="予約画面" class="w-full rounded-lg shadow-md">
-                                </div>
-                                <p class="text-xs text-warm-gray-500 mt-2">空き枠から希望日時を予約</p>
+                            <div>
+                                <div class="inline-block bg-rose-50 text-rose-700 text-xs px-2 py-0.5 rounded-full mb-2">生徒用 - 予約画面</div>
+                                <img src="../images/system-student-booking.png" alt="生徒用予約画面" class="w-full rounded-lg shadow-sm border border-warm-gray-200 screenshot-thumb" onclick="openLightbox(this)">
                             </div>
                         </div>
 
-                        <!-- 中央: 連携表示 -->
-                        <div class="flex justify-center my-4">
+                        <!-- スマートフォン表示 -->
+                        <div class="mb-6">
+                            <p class="text-xs font-medium text-warm-gray-500 mb-3 tracking-wider">スマートフォン対応</p>
+                            <div class="grid grid-cols-4 gap-3">
+                                <div class="text-center">
+                                    <img src="../images/system-mobile-home.png" alt="スマホ ホーム画面" class="w-full rounded-lg shadow-sm border border-warm-gray-200 screenshot-thumb" onclick="openLightbox(this)">
+                                    <p class="text-xs text-warm-gray-400 mt-1">ホーム</p>
+                                </div>
+                                <div class="text-center">
+                                    <img src="../images/system-mobile-admin.png" alt="スマホ 管理画面" class="w-full rounded-lg shadow-sm border border-warm-gray-200 screenshot-thumb" onclick="openLightbox(this)">
+                                    <p class="text-xs text-warm-gray-400 mt-1">管理画面</p>
+                                </div>
+                                <div class="text-center">
+                                    <img src="../images/system-mobile-students.png" alt="スマホ 生徒管理" class="w-full rounded-lg shadow-sm border border-warm-gray-200 screenshot-thumb" onclick="openLightbox(this)">
+                                    <p class="text-xs text-warm-gray-400 mt-1">生徒管理</p>
+                                </div>
+                                <div class="text-center">
+                                    <img src="../images/system-mobile-booking.png" alt="スマホ 生徒側予約画面" class="w-full rounded-lg shadow-sm border border-warm-gray-200 screenshot-thumb" onclick="openLightbox(this)">
+                                    <p class="text-xs text-warm-gray-400 mt-1">生徒側予約</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- フロー表示 -->
+                        <div class="flex justify-center">
                             <div class="flex items-center text-warm-gray-400 text-xs bg-warm-gray-100 px-4 py-2 rounded-full">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
                                 </svg>
-                                データ連携
-                            </div>
-                        </div>
-
-                        <!-- 下段: 管理画面 ↔ 管理アプリ -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-center">
-                            <!-- 管理者用WEB画面 -->
-                            <div class="text-center">
-                                <div class="inline-block bg-navy-50 text-navy-700 text-xs px-3 py-1 rounded-full mb-3">WEB管理画面</div>
-                                <div class="mx-auto">
-                                    <img src="../images/reservation-admin-web.png" alt="管理者用WEB管理画面" class="w-full rounded-lg shadow-md border border-warm-gray-200">
-                                </div>
-                                <p class="text-xs text-warm-gray-500 mt-2">予約状況の確認・空き枠の一括登録</p>
-                            </div>
-                            <!-- 管理者用アプリ -->
-                            <div class="text-center">
-                                <div class="inline-block bg-navy-50 text-navy-700 text-xs px-3 py-1 rounded-full mb-3">スマホアプリ</div>
-                                <div class="max-w-[200px] mx-auto">
-                                    <img src="../images/reservation-app-admin.png" alt="管理者用アプリ" class="w-full rounded-lg shadow-md">
-                                </div>
-                                <p class="text-xs text-warm-gray-500 mt-2">外出先でも空き枠の設定・確認</p>
+                                管理者が招待リンクを発行 → 生徒が予約画面にアクセス
                             </div>
                         </div>
                     </div>
@@ -240,9 +271,13 @@
                         <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
                             概要
                         </h2>
+                        <p class="text-warm-gray-600 leading-relaxed mb-4">
+                            音楽教室の運営に必要な「予約管理」「生徒管理」「メール通知」を一元化した、招待制のレッスン管理システムです。
+                            Google Apps Script上で動作し、サーバー費用ゼロで運用できます。
+                        </p>
                         <p class="text-warm-gray-600 leading-relaxed">
-                            音楽教室運営者の視点とIT/AI技術を融合させた、使いやすい予約管理システムです。
-                            教室運営者が日々の業務で感じる課題を解決するために開発を進めています。
+                            管理者はブラウザからすべての操作が完結。生徒には専用の招待リンクを発行し、
+                            カレンダーから空き日時を選んで予約できるシンプルなUXを提供します。
                         </p>
                     </div>
 
@@ -251,40 +286,102 @@
                         <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
                             主な機能
                         </h2>
-                        <ul class="text-warm-gray-600 space-y-3">
+
+                        <!-- 管理者向け機能 -->
+                        <h3 class="text-sm font-medium text-navy-600 mb-3 tracking-wider">管理者向け</h3>
+                        <ul class="text-warm-gray-600 space-y-3 mb-8">
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">ダッシュボード</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">確認待ち・今日の予約・総予約数・空き枠数の4指標をリアルタイム表示。月間カレンダーで予約状況を一覧確認し、日付クリックで詳細を表示。承認待ちの予約はワンクリックで確認・キャンセル。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">生徒管理・招待制</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">生徒の登録・編集・ステータス管理（有効/停止）。UUID v4ベースの一意な招待トークンを自動発行し、メール1通で生徒に予約画面を共有。不正アクセスを防ぐセキュアな仕組み。</p>
+                                </div>
+                            </li>
                             <li class="flex items-start">
                                 <span class="text-navy-500 mr-3">●</span>
                                 <div>
                                     <span class="font-medium">空き枠管理</span>
-                                    <p class="text-sm text-warm-gray-500 mt-1">カレンダー形式で予約可能な時間枠を簡単に設定・管理</p>
+                                    <p class="text-sm text-warm-gray-500 mt-1">個別追加に加え、期間×曜日×時間帯の一括登録・一括削除に対応。「毎週火曜14:00〜18:00」のような繰り返しスケジュールもまとめて作成でき、月単位のスケジュール管理を効率化。</p>
                                 </div>
                             </li>
                             <li class="flex items-start">
                                 <span class="text-navy-500 mr-3">●</span>
                                 <div>
-                                    <span class="font-medium">生徒管理</span>
-                                    <p class="text-sm text-warm-gray-500 mt-1">生徒情報の一元管理とレッスン履歴の記録</p>
+                                    <span class="font-medium">代理予約</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">電話や対面で受けた予約を、管理者が生徒に代わって登録。生徒を選択し、空き枠から日時を選ぶだけで予約完了。</p>
                                 </div>
                             </li>
                             <li class="flex items-start">
                                 <span class="text-navy-500 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">教室設定</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">教室名・管理者名・メールアドレス・管理パスワード・自動返信メールのON/OFFを管理画面から設定。パスワードはSHA-256でハッシュ化して安全に保管。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">CSV出力</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">予約データをCSVファイルとしてエクスポート。外部ツールでの分析や帳票作成に活用可能。</p>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <!-- 生徒向け機能 -->
+                        <h3 class="text-sm font-medium text-rose-600 mb-3 tracking-wider">生徒向け</h3>
+                        <ul class="text-warm-gray-600 space-y-3 mb-8">
+                            <li class="flex items-start">
+                                <span class="text-rose-400 mr-3">●</span>
                                 <div>
                                     <span class="font-medium">レッスン予約</span>
-                                    <p class="text-sm text-warm-gray-500 mt-1">生徒・保護者がスマートフォンから簡単に予約</p>
+                                    <p class="text-sm text-warm-gray-500 mt-1">招待リンクからアクセスするだけ。ログイン不要で、カレンダーから空き日時を選んで予約できるシンプルなUX。予約中・過去のレッスンも一覧で確認可能。</p>
                                 </div>
                             </li>
                             <li class="flex items-start">
-                                <span class="text-navy-500 mr-3">●</span>
+                                <span class="text-rose-400 mr-3">●</span>
                                 <div>
-                                    <span class="font-medium">振替対応</span>
-                                    <p class="text-sm text-warm-gray-500 mt-1">キャンセル・振替の管理を効率化</p>
+                                    <span class="font-medium">予約キャンセル</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">予定が合わなくなった場合、予約画面からワンクリックでキャンセル。空き枠は自動で復元されます。</p>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <!-- 自動化・運用機能 -->
+                        <h3 class="text-sm font-medium text-warm-gray-700 mb-3 tracking-wider">自動化・運用</h3>
+                        <ul class="text-warm-gray-600 space-y-3">
+                            <li class="flex items-start">
+                                <span class="text-warm-gray-400 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">自動メール通知</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">予約受付・ステータス変更時に管理者と生徒の双方へ自動でメール送信。さらに毎朝8時に当日の予約リマインダーを自動配信し、予約忘れを防止。</p>
                                 </div>
                             </li>
                             <li class="flex items-start">
-                                <span class="text-navy-500 mr-3">●</span>
+                                <span class="text-warm-gray-400 mr-3">●</span>
                                 <div>
-                                    <span class="font-medium">保護者連絡</span>
-                                    <p class="text-sm text-warm-gray-500 mt-1">お知らせやリマインダーの配信機能</p>
+                                    <span class="font-medium">データ整合性チェック</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">空き枠の予約カウントと実際の予約数を自動監査。不整合を検出した場合は自動修復し、データの信頼性を維持。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-warm-gray-400 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">操作ログ</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">すべての操作を記録し、問題発生時のトレーサビリティを確保。1,000件を超えると自動でローテーションし、ストレージを圧迫しません。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-warm-gray-400 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">セキュリティ</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">パスワードのSHA-256ハッシュ化、セッション管理（6時間スライディング）、XSS対策、レートリミット、排他制御による同時予約の競合防止など、安全性を考慮した設計。</p>
                                 </div>
                             </li>
                         </ul>
@@ -295,17 +392,56 @@
                         <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
                             使用技術
                         </h2>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Flutter</span>
-                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Firebase</span>
-                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Cloud Firestore</span>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Google Apps Script</span>
+                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Google Spreadsheet</span>
+                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">HTML / CSS / JavaScript</span>
+                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">GAS CacheService</span>
+                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">GAS MailApp</span>
+                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">GAS LockService</span>
+                        </div>
+                        <p class="text-sm text-warm-gray-500 leading-relaxed">
+                            Google Apps Scriptの標準機能のみで構成。外部サービスやサーバー不要で、Googleアカウントがあればすぐに運用を開始できます。データはGoogle Spreadsheetに保存され、Googleのインフラ上で安全に管理されます。
+                        </p>
+                    </div>
+
+                    <!-- アーキテクチャ -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            システム構成
+                        </h2>
+                        <div class="bg-warm-gray-50 p-6 rounded-lg text-sm text-warm-gray-600 leading-relaxed">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <p class="font-medium text-warm-gray-700 mb-2">フロントエンド</p>
+                                    <p>GASのHtmlServiceで配信するSPA構成。管理画面は3タブ（ホーム/生徒管理/設定）、生徒画面はトークン認証で表示を切り替え。</p>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-warm-gray-700 mb-2">バックエンド</p>
+                                    <p>GAS Web Appとして公開。URLパラメータでページ振り分け（管理/予約）。google.script.runでサーバーサイド関数を呼び出すクライアント-サーバーモデル。</p>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-warm-gray-700 mb-2">データストア</p>
+                                    <p>Google Spreadsheetの5シート構成（予約/空き枠/生徒/設定/ログ）。LockServiceによる排他制御で同時アクセス時のデータ整合性を保証。</p>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-warm-gray-700 mb-2">自動化</p>
+                                    <p>時間ベースのトリガーで毎朝8時にリマインダー配信。MailAppによるメール自動送信。CacheServiceによる6時間セッション管理。</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- CTA -->
                     <div class="text-center pt-6 border-t border-warm-gray-200">
-                        <p class="text-warm-gray-600 mb-6">
-                            技術検証でスマートフォンアプリ連携も開発していますが、<br>規模や目的に合わせてミニマムなご提案も可能ですので、安心してお声がけください。
+                        <p class="text-warm-gray-600 mb-4">
+                            サーバー費用ゼロ、Googleアカウントだけで運用開始できます。
+                        </p>
+                        <p class="text-sm text-warm-gray-500 mb-4">
+                            必要なのは初期の開発導入費用と月額の保守サポート費のみ。<br>月額数万円の既存サービスと比べて、圧倒的な低コストで運用できます。
+                        </p>
+                        <p class="text-sm text-warm-gray-500 mb-6">
+                            教室の規模や運用に合わせたカスタマイズも承ります。<br>お気軽にお問い合わせください。
                         </p>
                         <a href="../index.html#contact" class="inline-block border border-warm-gray-400 text-warm-gray-700 px-8 py-3 text-sm tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
                             お問い合わせ
@@ -342,5 +478,24 @@
         </div>
     </footer>
 
+    <!-- Lightbox -->
+    <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="">
+    </div>
+
+    <script>
+        function openLightbox(img) {
+            var overlay = document.getElementById('lightbox');
+            document.getElementById('lightbox-img').src = img.src;
+            document.getElementById('lightbox-img').alt = img.alt;
+            overlay.classList.add('active');
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLightbox();
+        });
+    </script>
 </body>
 </html>

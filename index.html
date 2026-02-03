@@ -136,6 +136,26 @@
             margin: 0 auto;
         }
 
+        /* サービスタイトル アニメーション下線 */
+        .title-animated-line {
+            position: relative;
+            display: inline-block;
+            padding-bottom: 4px;
+        }
+        .title-animated-line::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, #d4a5a5, #a7bdd4);
+            transition: width 0.5s ease;
+        }
+        .service-block:hover .title-animated-line::after {
+            width: 100%;
+        }
+
         /* リンクホバー */
         .link-underline {
             position: relative;
@@ -481,18 +501,18 @@
                     </div>
 
                     <div class="space-y-6 text-sm">
-                        <div>
-                            <h4 class="font-medium text-warm-gray-700 mb-2">マリンバ演奏活動</h4>
+                        <div class="service-block">
+                            <h4 class="font-medium text-warm-gray-700 mb-2"><span class="title-animated-line">マリンバ演奏活動</span></h4>
                             <p class="text-warm-gray-500 leading-relaxed">マリンバの演奏活動 コンサート・イベント出演・慰問活動等、幅広く対応いたします。</p>
                         </div>
 
-                        <div>
-                            <h4 class="font-medium text-warm-gray-700 mb-2">マリンバ教室<span class="text-warm-gray-400 text-xs ml-2">（2026年内に開設予定）</span></h4>
+                        <div class="service-block">
+                            <h4 class="font-medium text-warm-gray-700 mb-2"><span class="title-animated-line">マリンバ教室<span class="text-warm-gray-400 text-xs ml-2">（2026年内に開設予定）</span></span></h4>
                             <p class="text-warm-gray-500 leading-relaxed">初心者から経験者まで、楽しく学べるマリンバ教室の準備を進めています。リモート対応も検討中。</p>
                         </div>
 
-                        <div>
-                            <h4 class="font-medium text-warm-gray-700 mb-2">貸しスタジオ<span class="text-warm-gray-400 text-xs ml-2">（2026年内に開設予定）</span></h4>
+                        <div class="service-block">
+                            <h4 class="font-medium text-warm-gray-700 mb-2"><span class="title-animated-line">貸しスタジオ<span class="text-warm-gray-400 text-xs ml-2">（2026年内に開設予定）</span></span></h4>
                             <p class="text-warm-gray-500 leading-relaxed">マリンバ練習用のスタジオレンタルサービスも準備中です。</p>
                         </div>
                     </div>
@@ -511,27 +531,20 @@
                     </div>
 
                     <div class="space-y-6 text-sm">
-                        <div>
-                            <h4 class="font-medium text-warm-gray-700 mb-2">音楽教室向けシステム</h4>
-                            <p class="text-warm-gray-500 leading-relaxed mb-4">音楽教室運営者の視点とIT/AI技術を融合させた、使いやすい予約管理システムをお客様のご要望に合わせて個別開発・ご提供します。</p>
+                        <div class="service-block">
+                            <h4 class="font-medium text-warm-gray-700 mb-2"><span class="title-animated-line">音楽教室管理システム</span></h4>
+                            <p class="text-warm-gray-500 leading-relaxed mb-4">音楽教室運営者の視点と、顧客起点の個別開発力を融合。招待制の予約管理・生徒管理・自動メール通知を一元化し、サーバー費用ゼロで運用できる低コストなシステムをご提供します。</p>
 
-                            <ul class="text-warm-gray-500 space-y-1 pl-4">
-                                <li>・生徒管理</li>
-                                <li>・レッスン予約</li>
-                                <li>・振替対応</li>
-                                <li>・保護者連絡　etc</li>
-                            </ul>
-
-                            <a href="works/reservation-system.html" class="inline-flex items-center text-navy-600 text-xs mt-4 hover:text-navy-800 transition-colors">
-                                開発中アプリを見る
+                            <a href="works/reservation-system.html" class="inline-flex items-center border border-warm-gray-400 text-warm-gray-600 text-xs mt-2 px-4 py-2 tracking-wider shadow-md hover:shadow-lg hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                                システム詳細を見る
                                 <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>
                             </a>
                         </div>
 
-                        <div>
-                            <h4 class="font-medium text-warm-gray-700 mb-2">制作サポート</h4>
+                        <div class="service-block">
+                            <h4 class="font-medium text-warm-gray-700 mb-2"><span class="title-animated-line">制作サポート</span></h4>
                             <p class="text-warm-gray-500 leading-relaxed mb-4">演奏家の視点とIT技術を活かし、コンサート・イベントの製作物をトータルサポートいたします。</p>
 
                             <ul class="text-warm-gray-500 space-y-1 pl-4">
@@ -556,23 +569,23 @@
                     </div>
 
                     <div class="space-y-6 text-sm">
-                        <div>
-                            <h4 class="font-medium text-warm-gray-700 mb-2">IT/AIコンサルティング</h4>
+                        <div class="service-block">
+                            <h4 class="font-medium text-warm-gray-700 mb-2"><span class="title-animated-line">IT/AIコンサルティング</span></h4>
                             <p class="text-warm-gray-500 leading-relaxed">企業・自治体のAI活用戦略策定から導入まで、伴走支援いたします。個人のご相談も対応中。フルカスタマイズでご予算や目標イメージに合わせてサポートします。</p>
                         </div>
 
-                        <div>
-                            <h4 class="font-medium text-warm-gray-700 mb-2">WEB制作</h4>
+                        <div class="service-block">
+                            <h4 class="font-medium text-warm-gray-700 mb-2"><span class="title-animated-line">WEB制作</span></h4>
                             <p class="text-warm-gray-500 leading-relaxed">お客様の目的やご要望に合わせた適切なウェブサイトを構築いたします。バックエンドのデータベース構築と合わせた管理システムも構築可能です。</p>
                         </div>
 
-                        <div>
-                            <h4 class="font-medium text-warm-gray-700 mb-2">アプリケーション開発</h4>
+                        <div class="service-block">
+                            <h4 class="font-medium text-warm-gray-700 mb-2"><span class="title-animated-line">アプリケーション開発</span></h4>
                             <p class="text-warm-gray-500 leading-relaxed">業務効率化のためのアプリケーション開発を行います。ローカルアプリ・WEBアプリ・モバイルデバイス用アプリなど幅広く対応可能です。</p>
                         </div>
 
-                        <div>
-                            <h4 class="font-medium text-warm-gray-700 mb-2">PC出張サポート</h4>
+                        <div class="service-block">
+                            <h4 class="font-medium text-warm-gray-700 mb-2"><span class="title-animated-line">PC出張サポート</span></h4>
                             <p class="text-warm-gray-500 leading-relaxed">個人向けのパソコン設定・トラブル対応を出張サポートします。</p>
                         </div>
                     </div>
@@ -611,7 +624,7 @@
 
                         <div class="pl-4 border-l-2 border-navy-200">
                             <p class="font-medium text-warm-gray-700 text-sm">音楽教室様</p>
-                            <p class="text-warm-gray-500 text-xs mt-1">予約管理システム統合サイト開発</p>
+                            <p class="text-warm-gray-500 text-xs mt-1">ホームページ & 連動する音楽教室管理システム<br>の開発導入サポート</p>
                         </div>
 
                         <a href="https://marimba-yui.pages.dev/" target="_blank" rel="noopener noreferrer" class="block pl-4 border-l-2 border-navy-200 hover:border-navy-400 transition-colors">
@@ -646,7 +659,7 @@
 
                         <div class="pl-4 border-l-2 border-rose-200">
                             <p class="font-medium text-warm-gray-700 text-sm">個人のお客様</p>
-                            <p class="text-warm-gray-500 text-xs mt-1">IT/AI スキルアップコンサルティング</p>
+                            <p class="text-warm-gray-500 text-xs mt-1">個別フルカスタマイズの<br>IT/AIスキルアップコンサルティング</p>
                         </div>
                     </div>
                 </div>
