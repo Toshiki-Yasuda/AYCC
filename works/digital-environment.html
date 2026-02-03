@@ -186,15 +186,40 @@
                         </p>
                     </div>
 
-                    <!-- マルチデバイス -->
+                    <!-- 構成の全体像 -->
                     <div class="mb-10">
                         <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
-                            マルチデバイス構成
+                            「どこでも同じ環境」を実現する仕組み
                         </h2>
+                        <p class="text-warm-gray-600 leading-relaxed mb-4">
+                            この開発体制の基本的な考え方は、<span class="font-medium text-warm-gray-800">手元のデバイスに開発環境を持たない</span>ことです。
+                        </p>
                         <p class="text-warm-gray-600 leading-relaxed mb-6">
-                            状況に応じて3台のデバイスを使い分けています。いずれもクラウドサーバーへの「端末」として機能するため、ローカルにデータは保存されません。どのデバイスからでも同一の作業環境にアクセスできます。
+                            ソースコード、データベース、AIツールなど開発に必要なすべてのリソースはクラウド上のサーバー（VPS）に集約されています。自宅のPC、外出先のMacBook、病院でのiPad mini、いずれもこのサーバーへの「窓口」に過ぎません。そのため、どのデバイスから接続しても、まったく同じ作業環境にアクセスできます。
                         </p>
 
+                        <!-- 構成図 -->
+                        <div class="bg-warm-gray-50 p-6 rounded-lg border-elegant mb-6">
+                            <p class="text-xs font-medium text-warm-gray-700 tracking-wider mb-4 text-center">構成イメージ</p>
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="flex flex-col md:flex-row items-center gap-2 md:gap-4">
+                                    <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-sm text-warm-gray-600 text-center w-44">Windows（自宅）</span>
+                                    <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-sm text-warm-gray-600 text-center w-44">MacBook（外出先）</span>
+                                    <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-sm text-warm-gray-600 text-center w-44">iPad mini（病院）</span>
+                                </div>
+                                <div class="flex flex-col items-center my-1">
+                                    <p class="text-xs text-warm-gray-400 mb-1">すべて同一サーバーに接続</p>
+                                    <svg class="w-5 h-5 text-navy-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                    </svg>
+                                </div>
+                                <span class="bg-navy-50 px-6 py-2.5 rounded border border-navy-200 text-sm font-medium text-navy-700 text-center">VPS（クラウド上の開発環境）</span>
+                            </div>
+                        </div>
+
+                        <p class="text-warm-gray-600 leading-relaxed mb-4">
+                            デバイスごとの役割の違いは、画面サイズと使用場面だけです。
+                        </p>
                         <ul class="space-y-4">
                             <li class="flex items-start">
                                 <span class="text-navy-500 mr-3 mt-0.5">
@@ -204,7 +229,7 @@
                                 </span>
                                 <div>
                                     <span class="font-medium text-warm-gray-700">Windows デスクトップ（自宅）</span>
-                                    <p class="text-sm text-warm-gray-500 mt-1">設計作業や負荷の高い処理を行うメイン機。大画面で複数ウィンドウを並べた作業に適しています。</p>
+                                    <p class="text-sm text-warm-gray-500 mt-1">大画面で複数ウィンドウを並べた設計作業や、負荷の高い処理に適しています。</p>
                                 </div>
                             </li>
                             <li class="flex items-start">
@@ -215,7 +240,7 @@
                                 </span>
                                 <div>
                                     <span class="font-medium text-warm-gray-700">MacBook Pro（外出先）</span>
-                                    <p class="text-sm text-warm-gray-500 mt-1">カフェなど腰を据えて作業できる場面で使用。ターミナル操作やコードレビューに活用しています。</p>
+                                    <p class="text-sm text-warm-gray-500 mt-1">カフェなど腰を据えて作業できる場面で使用。コーディングやコードレビューに活用しています。</p>
                                 </div>
                             </li>
                             <li class="flex items-start">
@@ -226,30 +251,24 @@
                                 </span>
                                 <div>
                                     <span class="font-medium text-warm-gray-700">iPad mini（病院・移動中）</span>
-                                    <p class="text-sm text-warm-gray-500 mt-1">文庫本とほぼ同じサイズで、片手で保持できます。待合室や電車内でも周囲に圧迫感を与えず、短時間の作業やコミュニケーションに最適です。</p>
+                                    <p class="text-sm text-warm-gray-500 mt-1">文庫本とほぼ同じサイズ。待合室や電車内でも周囲に圧迫感を与えず、短時間の作業やお客様とのやり取りに使用しています。</p>
                                 </div>
                             </li>
                         </ul>
+
+                        <p class="text-warm-gray-500 text-xs leading-relaxed mt-4">
+                            ローカルにデータを保存しないため、端末の紛失・故障時にも業務データが失われるリスクがありません。
+                        </p>
                     </div>
 
                     <!-- インフラ -->
                     <div class="mb-10">
                         <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
-                            クラウドインフラと通信技術
+                            中断に強い通信技術
                         </h2>
                         <p class="text-warm-gray-600 leading-relaxed mb-6">
-                            この環境の中核を担うのが、クラウド上の開発サーバーと、中断に強い通信プロトコルの2つです。
+                            クラウド上の環境を活かすには、場所や状況を問わず安定して接続できる仕組みが必要です。AYCCでは、一般的なリモート接続よりも中断に強い技術を組み合わせています。
                         </p>
-
-                        <div class="bg-navy-50 p-6 rounded-lg mb-4 border-l-4 border-navy-400">
-                            <p class="font-medium text-navy-700 mb-2">VPS（Virtual Private Server）：さくらインターネット</p>
-                            <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
-                                開発に必要なソースコード、データベース、AI連携ツールはすべてクラウド上のVPS（仮想専用サーバー）に集約しています。手元のデバイスにはデータを置かないため、端末の紛失・故障時にも業務データが失われるリスクがありません。
-                            </p>
-                            <p class="text-warm-gray-500 text-xs leading-relaxed">
-                                VPSとは、1台の物理サーバーを仮想的に分割し、専用サーバーと同等の自由度を持つ環境です。自前のPCがクラウド上に常時起動しているようなイメージです。
-                            </p>
-                        </div>
 
                         <div class="bg-navy-50 p-6 rounded-lg mb-4 border-l-4 border-navy-400">
                             <p class="font-medium text-navy-700 mb-2">Mosh（Mobile Shell）：中断に強いリモート接続</p>
@@ -311,13 +330,13 @@
 
                         <div class="bg-warm-gray-50 p-5 rounded-lg border-elegant">
                             <p class="text-xs font-medium text-warm-gray-700 tracking-wider mb-3">ワークフロー例</p>
-                            <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-0 text-sm text-warm-gray-600">
+                            <div class="flex flex-col md:flex-row md:items-center gap-0 text-sm text-warm-gray-600">
                                 <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">Claude で設計</span>
-                                <span class="hidden md:block text-warm-gray-300 px-2">→</span>
+                                <span class="text-warm-gray-300 px-2 text-center leading-none py-1 md:py-0 rotate-90 md:rotate-0">→</span>
                                 <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">OpenAI でコード生成</span>
-                                <span class="hidden md:block text-warm-gray-300 px-2">→</span>
+                                <span class="text-warm-gray-300 px-2 text-center leading-none py-1 md:py-0 rotate-90 md:rotate-0">→</span>
                                 <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">Gemini でレビュー</span>
-                                <span class="hidden md:block text-warm-gray-300 px-2">→</span>
+                                <span class="text-warm-gray-300 px-2 text-center leading-none py-1 md:py-0 rotate-90 md:rotate-0">→</span>
                                 <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">エンジニアが最終判断</span>
                             </div>
                         </div>
@@ -331,13 +350,13 @@
                             <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
                                 このAI連携は、場当たり的に行っているわけではありません。AYCCでは、AI駆動の開発プロセスを体系化した独自フレームワーク<span class="font-medium text-warm-gray-700">「ADS（Agent Director System）」</span>を構築・運用しています。
                             </p>
-                            <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-0 text-sm text-warm-gray-600 mb-4">
+                            <div class="flex flex-col md:flex-row md:items-center gap-0 text-sm text-warm-gray-600 mb-4">
                                 <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">方針判断</span>
-                                <span class="hidden md:block text-warm-gray-300 px-2">→</span>
+                                <span class="text-warm-gray-300 px-2 text-center leading-none py-1 md:py-0 rotate-90 md:rotate-0">→</span>
                                 <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">タスク分解</span>
-                                <span class="hidden md:block text-warm-gray-300 px-2">→</span>
+                                <span class="text-warm-gray-300 px-2 text-center leading-none py-1 md:py-0 rotate-90 md:rotate-0">→</span>
                                 <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">AI実行・実装</span>
-                                <span class="hidden md:block text-warm-gray-300 px-2">→</span>
+                                <span class="text-warm-gray-300 px-2 text-center leading-none py-1 md:py-0 rotate-90 md:rotate-0">→</span>
                                 <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">品質検証</span>
                             </div>
                             <p class="text-warm-gray-500 text-xs leading-relaxed">
@@ -391,59 +410,17 @@
                         </ul>
                     </div>
 
-                    <!-- 個人向けコンサルティング -->
-                    <div class="mb-10">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
-                            あなた専用の IT/AI スキルアップ支援
-                        </h2>
-                        <p class="text-warm-gray-600 leading-relaxed mb-4">
-                            この記事でご紹介したクラウド環境やAI活用は、専門家だけのものではありません。AYCCでは、個人のお客様に向けた<span class="font-medium text-warm-gray-800">フルカスタマイズのIT/AIコンサルティング</span>も行っています。
-                        </p>
-                        <p class="text-warm-gray-600 leading-relaxed mb-6">
-                            既製のカリキュラムに沿って進めるのではなく、まずあなたの今のスキルや知識、そして「どんな状態になりたいか」をしっかりお聞きするところから始めます。目標に合わせたロードマップを一緒に作り、実現まで伴走します。
-                        </p>
-
-                        <div class="bg-rose-50 p-6 rounded-lg border border-rose-200">
-                            <p class="text-sm font-medium text-warm-gray-700 mb-4">こんな方に</p>
-                            <ul class="space-y-2 text-sm text-warm-gray-600">
-                                <li class="flex items-start">
-                                    <span class="text-rose-400 mr-2 mt-0.5">-</span>
-                                    AIを仕事に活かしたいが、何から始めればいいか分からない
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-rose-400 mr-2 mt-0.5">-</span>
-                                    業務を効率化したいが、自分に合った方法が見つからない
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-rose-400 mr-2 mt-0.5">-</span>
-                                    パソコンやITツールをもっと使いこなせるようになりたい
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-rose-400 mr-2 mt-0.5">-</span>
-                                    周りに気軽に聞ける人がいない
-                                </li>
-                            </ul>
-                        </div>
-
-                        <p class="text-warm-gray-500 text-sm leading-relaxed mt-4">
-                            「こんなこと聞いていいのかな」という内容でも大丈夫です。ご予算やペースもご相談に応じますので、まずはお気軽にお問い合わせください。
-                        </p>
-                    </div>
-
                     <!-- メッセージ -->
-                    <div class="text-center pt-6 border-t border-warm-gray-200">
+                    <div class="text-center pt-8 mt-10 border-t border-warm-gray-200">
                         <p class="text-warm-gray-700 leading-relaxed mb-2">
                             家族を大切にしながら、プロとしての責任を全うする。
                         </p>
                         <p class="text-warm-gray-700 leading-relaxed mb-2">
                             その両立のために磨き上げた環境が、
                         </p>
-                        <p class="font-medium text-warm-gray-800 leading-relaxed mb-8">
+                        <p class="font-medium text-warm-gray-800 leading-relaxed">
                             お客様への迅速で安定したサービス提供を支えています。
                         </p>
-                        <a href="../index.html#contact" class="inline-block border border-warm-gray-400 text-warm-gray-700 px-8 py-3 text-sm tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
-                            お問い合わせ
-                        </a>
                     </div>
 
                 </div>
@@ -461,6 +438,65 @@
             </div>
         </div>
     </main>
+
+    <!-- 個人向けコンサルティング（フッター直前のフルワイドCTA） -->
+    <section id="personal-consulting" class="bg-navy-800 py-16 md:py-20">
+        <div class="container mx-auto px-6 max-w-3xl">
+            <div class="text-center mb-8">
+                <p class="text-xs font-medium text-navy-300 tracking-widest mb-3">PERSONAL CONSULTING</p>
+                <h2 class="font-elegant text-xl md:text-2xl text-white mb-4">
+                    あなた専用の IT/AI スキルアップ支援
+                </h2>
+                <div class="w-12 h-0.5 bg-gradient-to-r from-rose-400 to-navy-300 mx-auto"></div>
+            </div>
+
+            <p class="text-navy-200 leading-relaxed mb-4 text-center">
+                この記事でご紹介したクラウド環境やAI活用は、専門家だけのものではありません。<br class="hidden md:block">AYCCでは、個人のお客様に向けた<span class="font-medium text-white">フルカスタマイズのIT/AIコンサルティング</span>も行っています。
+            </p>
+            <p class="text-navy-200 leading-relaxed mb-10 text-center">
+                既製のカリキュラムに沿って進めるのではなく、まずあなたの今のスキルや知識、そして「どんな状態になりたいか」をしっかりお聞きするところから始めます。目標に合わせたロードマップを一緒に作り、実現まで伴走します。
+            </p>
+
+            <div class="bg-white/10 backdrop-blur-sm p-6 rounded-lg border border-white/20 max-w-xl mx-auto mb-10">
+                <p class="text-sm font-medium text-rose-300 mb-4 text-center">こんな方におすすめです</p>
+                <ul class="space-y-3 text-sm text-navy-100">
+                    <li class="flex items-start">
+                        <span class="text-rose-400 mr-3 mt-0.5 flex-shrink-0">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        </span>
+                        AIを仕事に活かしたいが、何から始めればいいか分からない
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-rose-400 mr-3 mt-0.5 flex-shrink-0">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        </span>
+                        業務を効率化したいが、自分に合った方法が見つからない
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-rose-400 mr-3 mt-0.5 flex-shrink-0">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        </span>
+                        パソコンやITツールをもっと使いこなせるようになりたい
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-rose-400 mr-3 mt-0.5 flex-shrink-0">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        </span>
+                        周りに気軽に聞ける人がいない
+                    </li>
+                </ul>
+            </div>
+
+            <div class="text-center">
+                <p class="text-navy-300 text-sm leading-relaxed mb-6">
+                    「こんなこと聞いていいのかな」という内容でも大丈夫です。<br class="hidden md:block">ご予算やペースもご相談に応じます。
+                </p>
+                <a href="../index.html#contact" class="inline-block bg-white text-navy-800 font-medium px-10 py-3.5 rounded text-sm tracking-wider hover:bg-rose-50 transition-all duration-300 shadow-lg">
+                    まずは気軽にご相談ください
+                </a>
+            </div>
+        </div>
+    </section>
 
     <!-- フッター -->
     <footer class="bg-warm-gray-800 text-warm-gray-300 py-12">
