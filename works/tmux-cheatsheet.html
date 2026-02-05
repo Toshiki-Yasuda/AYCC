@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="tmuxの最低限の操作をまとめたリファレンスページ。セッション管理・ウィンドウ操作・ペイン分割など、実務で使う基本コマンドを掲載。">
+    <title>tmux チートシート | AYCC</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+    <link rel="apple-touch-icon" href="../images/favicon.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rose': {
+                            50: '#fdf2f4',
+                            100: '#fce7eb',
+                            200: '#f9d0d9',
+                            300: '#f4a9ba',
+                            400: '#ec7a95',
+                            500: '#d4a5a5',
+                            600: '#b8848f',
+                            700: '#9a6b75',
+                            800: '#7d5660',
+                            900: '#5c4048',
+                        },
+                        'navy': {
+                            50: '#f5f7fa',
+                            100: '#eaeef4',
+                            200: '#d0dbe8',
+                            300: '#a7bdd4',
+                            400: '#7899bc',
+                            500: '#5a7ea5',
+                            600: '#47658a',
+                            700: '#3a5270',
+                            800: '#2d3e54',
+                            900: '#1e2a3a',
+                        },
+                        'warm-gray': {
+                            50: '#fafaf9',
+                            100: '#f5f5f4',
+                            200: '#e7e5e4',
+                            300: '#d6d3d1',
+                            400: '#a8a29e',
+                            500: '#78716c',
+                            600: '#57534e',
+                            700: '#44403c',
+                            800: '#292524',
+                            900: '#1c1917',
+                        }
+                    },
+                    fontFamily: {
+                        'serif': ['Noto Serif JP', 'serif'],
+                        'sans': ['Noto Sans JP', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            color: #44403c;
+            letter-spacing: 0.02em;
+        }
+
+        .font-elegant {
+            font-family: 'Noto Serif JP', serif;
+        }
+
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, #d4a5a5, #a7bdd4);
+            margin: 0 auto;
+        }
+
+        .border-elegant {
+            border: 1px solid rgba(168, 162, 158, 0.3);
+        }
+
+        .link-underline {
+            position: relative;
+        }
+
+        .link-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+
+        .link-underline:hover::after {
+            width: 100%;
+        }
+
+        code {
+            background-color: #f5f5f4;
+            border: 1px solid #e7e5e4;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            color: #2d3e54;
+        }
+
+        pre {
+            background-color: #1e2a3a;
+            color: #eaeef4;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        pre code {
+            background-color: transparent;
+            border: none;
+            padding: 0;
+            color: inherit;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #f5f7fa;
+            color: #2d3e54;
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border: 1px solid #d0dbe8;
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e7e5e4;
+        }
+
+        tr:hover {
+            background-color: #fafaf9;
+        }
+    </style>
+</head>
+<body class="bg-warm-gray-50">
+
+    <!-- ヘッダー -->
+    <header class="bg-white/90 backdrop-blur-sm border-b border-warm-gray-200 sticky top-0 z-50">
+        <nav class="container mx-auto pl-2 pr-6 py-5">
+            <div class="flex justify-between items-center">
+                <!-- ロゴ -->
+                <a href="../index.html" class="flex items-center space-x-4">
+                    <img src="../images/logo.png" alt="AYCC Logo" class="h-10">
+                </a>
+
+                <!-- ナビゲーション -->
+                <div class="hidden md:flex space-x-10">
+                    <a href="../index.html#home" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">ホーム</a>
+                    <a href="../index.html#services" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">サービス</a>
+                    <a href="../index.html#works" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">実績</a>
+                    <a href="../index.html#about" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">会社概要</a>
+                    <a href="../index.html#contact" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">お問い合わせ</a>
+                </div>
+
+                <!-- 戻るボタン（モバイル） -->
+                <a href="../index.html" class="md:hidden text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-sm">
+                    ← 戻る
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="py-16 md:py-24">
+        <div class="container mx-auto px-6">
+
+            <!-- タイトル -->
+            <div class="text-center mb-16">
+                <h1 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-2">
+                    tmux チートシート
+                </h1>
+                <p class="text-sm text-warm-gray-400 tracking-wider mb-4">最低限の操作リファレンス</p>
+                <div class="divider"></div>
+            </div>
+
+            <!-- コンテンツ -->
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white p-8 md:p-12 border-elegant">
+
+                    <!-- セッション管理 -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            セッション管理
+                        </h2>
+                        <div class="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40%">操作</th>
+                                        <th style="width: 60%">コマンド</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>新規セッション作成</td>
+                                        <td><code>tmux new -s 作業名</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>セッション一覧</td>
+                                        <td><code>tmux ls</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>セッションに再接続</td>
+                                        <td><code>tmux a -t 作業名</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>セッションを抜ける（維持）</td>
+                                        <td><code>Ctrl+b</code> → <code>d</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- ウィンドウ -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            ウィンドウ（タブのようなもの）
+                        </h2>
+                        <div class="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40%">操作</th>
+                                        <th style="width: 60%">キー</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>新規ウィンドウ</td>
+                                        <td><code>Ctrl+b</code> → <code>c</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>次のウィンドウ</td>
+                                        <td><code>Ctrl+b</code> → <code>n</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>前のウィンドウ</td>
+                                        <td><code>Ctrl+b</code> → <code>p</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>番号で移動</td>
+                                        <td><code>Ctrl+b</code> → <code>0</code>〜<code>9</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>ウィンドウ名変更</td>
+                                        <td><code>Ctrl+b</code> → <code>,</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- ペイン -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            ペイン（画面分割）
+                        </h2>
+                        <div class="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40%">操作</th>
+                                        <th style="width: 60%">キー</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>左右に分割</td>
+                                        <td><code>Ctrl+b</code> → <code>%</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>上下に分割</td>
+                                        <td><code>Ctrl+b</code> → <code>"</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>ペイン間移動</td>
+                                        <td><code>Ctrl+b</code> → <code>矢印キー</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>ペインを閉じる</td>
+                                        <td><code>exit</code> または <code>Ctrl+d</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- よく使う流れ -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            よく使う流れ
+                        </h2>
+                        <pre><code># VPSにMoshで接続後、セッションに復帰
+tmux a -t dev
+
+# セッションがなければ新規作成
+tmux new -s dev</code></pre>
+                        <p class="text-warm-gray-600 leading-relaxed mt-4">
+                            <code>tmux a</code> でデタッチしたセッションに戻れるのが、Moshとの組み合わせで「切れない環境」を実現しているポイントです。端末を閉じても <code>tmux a</code> で全部元通りになります。
+                        </p>
+                    </div>
+
+                    <!-- 1日の利用フロー -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            1日の利用フロー
+                        </h2>
+                        <p class="text-warm-gray-600 leading-relaxed mb-6">
+                            自宅 → 外出 → 自宅の流れで、tmuxセッションがデバイスをまたいで維持される様子。
+                        </p>
+
+                        <!-- 朝：自宅 -->
+                        <div class="mb-6">
+                            <div class="flex items-center mb-3">
+                                <span class="bg-navy-50 text-navy-700 text-xs font-medium px-3 py-1 rounded mr-3">朝</span>
+                                <span class="font-medium text-warm-gray-700">自宅 — Windows デスクトップ</span>
+                            </div>
+                            <div class="bg-warm-gray-50 p-4 rounded-lg border-elegant">
+                                <pre class="mb-0"><code># Mosh で VPS に接続
+mosh user@vps-server
+
+# tmux セッションを作成して作業開始
+tmux new -s dev
+
+# ウィンドウを分けて作業
+#   0: コーディング（Claude Code）
+#   1: テスト実行
+#   2: git 操作</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- 矢印 -->
+                        <div class="flex justify-center my-4">
+                            <div class="flex flex-col items-center">
+                                <p class="text-xs text-warm-gray-400 mb-1">外出前にデタッチ</p>
+                                <code class="text-sm">Ctrl+b → d</code>
+                                <svg class="w-5 h-5 text-navy-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- 日中：外出先 -->
+                        <div class="mb-6">
+                            <div class="flex items-center mb-3">
+                                <span class="bg-navy-50 text-navy-700 text-xs font-medium px-3 py-1 rounded mr-3">日中</span>
+                                <span class="font-medium text-warm-gray-700">外出先 — MacBook / iPad mini / Android</span>
+                            </div>
+                            <div class="bg-warm-gray-50 p-4 rounded-lg border-elegant">
+                                <pre class="mb-0"><code># どのデバイスからでも同じ操作
+mosh user@vps-server
+
+# 朝のセッションにそのまま復帰
+tmux a -t dev
+
+# → ウィンドウ 0, 1, 2 がすべてそのまま残っている
+# → カーソル位置も、実行中の処理もそのまま</code></pre>
+                                <p class="text-warm-gray-500 text-xs mt-3">
+                                    iPad mini / Android の場合は Termux + Mosh で同様に接続。病院の待合室や移動中でも <code>tmux a</code> で即復帰。
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 矢印 -->
+                        <div class="flex justify-center my-4">
+                            <div class="flex flex-col items-center">
+                                <p class="text-xs text-warm-gray-400 mb-1">帰宅前にデタッチ</p>
+                                <code class="text-sm">Ctrl+b → d</code>
+                                <svg class="w-5 h-5 text-navy-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- 夜：自宅 -->
+                        <div class="mb-4">
+                            <div class="flex items-center mb-3">
+                                <span class="bg-navy-50 text-navy-700 text-xs font-medium px-3 py-1 rounded mr-3">夜</span>
+                                <span class="font-medium text-warm-gray-700">自宅 — Windows デスクトップ</span>
+                            </div>
+                            <div class="bg-warm-gray-50 p-4 rounded-lg border-elegant">
+                                <pre class="mb-0"><code># 再び同じセッションに復帰
+mosh user@vps-server
+tmux a -t dev
+
+# → 1日を通してセッションが途切れていない
+# → 朝の続きからそのまま再開</code></pre>
+                            </div>
+                        </div>
+
+                        <p class="text-warm-gray-500 text-xs leading-relaxed mt-4">
+                            ポイント: tmux セッションは VPS 上で動き続けているため、手元のデバイスが変わっても <code>tmux a</code> だけで全ての作業状態に復帰できます。Mosh の自動再接続と組み合わせることで、通信の切断すら意識せずに作業を継続できます。
+                        </p>
+                    </div>
+
+                    <!-- 注記 -->
+                    <div class="text-center pt-8 mt-10 border-t border-warm-gray-200">
+                        <p class="text-xs text-warm-gray-400">
+                            このページはリファレンス用の非公開ページです
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- 戻るリンク -->
+                <div class="mt-10 text-center">
+                    <a href="../index.html" class="text-warm-gray-500 hover:text-warm-gray-700 text-sm inline-flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        トップに戻る
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- フッター -->
+    <footer class="bg-warm-gray-800 text-warm-gray-300 py-12">
+        <div class="container mx-auto px-6">
+            <div class="text-center">
+                <p class="text-sm tracking-wider mb-2">
+                    &copy; 2026 AYCC
+                </p>
+                <p class="text-xs text-warm-gray-500">
+                    AI YASUDA CREATIVE & CONSULTING
+                </p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
