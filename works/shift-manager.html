@@ -70,6 +70,48 @@
             transition: width 0.3s ease;
         }
         .link-underline:hover::after { width: 100%; }
+
+        /* Lightbox */
+        .clickable-img {
+            cursor: zoom-in;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .clickable-img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .lightbox-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            cursor: zoom-out;
+        }
+        .lightbox-overlay.active { display: flex; }
+        .lightbox-img {
+            max-width: 95%;
+            max-height: 95vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px; right: 20px;
+            width: 44px; height: 44px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .lightbox-close:hover { background: rgba(255,255,255,0.2); }
     </style>
 </head>
 <body class="bg-warm-gray-50">
@@ -131,17 +173,17 @@
                         <div class="space-y-8">
                             <div class="text-center">
                                 <div class="inline-block bg-navy-50 text-navy-700 text-xs px-3 py-1 rounded-full mb-3">シフト表（自動生成）</div>
-                                <img src="../images/shift-manager-schedule.png" alt="シフト表画面" class="w-full rounded-lg shadow-md border border-warm-gray-200">
+                                <img src="../images/shift-manager-schedule.png" alt="シフト表画面" class="clickable-img w-full rounded-lg shadow-md border border-warm-gray-200" onclick="openLightbox(this)">
                                 <p class="text-xs text-warm-gray-500 mt-2">人員配置条件・スタッフ希望・NGペア制約を考慮して自動生成</p>
                             </div>
                             <div class="text-center">
                                 <div class="inline-block bg-navy-50 text-navy-700 text-xs px-3 py-1 rounded-full mb-3">配置条件・NGペア設定</div>
-                                <img src="../images/shift-manager-constraints.png" alt="配置条件画面" class="w-full rounded-lg shadow-md border border-warm-gray-200">
+                                <img src="../images/shift-manager-constraints.png" alt="配置条件画面" class="clickable-img w-full rounded-lg shadow-md border border-warm-gray-200" onclick="openLightbox(this)">
                                 <p class="text-xs text-warm-gray-500 mt-2">役職別の人員基準やスタッフ間の同時勤務NGペアを管理</p>
                             </div>
                             <div class="text-center">
                                 <div class="inline-block bg-rose-100 text-rose-700 text-xs px-3 py-1 rounded-full mb-3">NEW スタッフ専用 希望提出画面</div>
-                                <img src="../images/shift-manager-staff-request.png" alt="スタッフ専用希望提出画面" class="w-full max-w-sm mx-auto rounded-lg shadow-md border border-warm-gray-200">
+                                <img src="../images/shift-manager-staff-request.png" alt="スタッフ専用希望提出画面" class="clickable-img w-full max-w-sm mx-auto rounded-lg shadow-md border border-warm-gray-200" onclick="openLightbox(this)">
                                 <p class="text-xs text-warm-gray-500 mt-2">スタッフ個人専用のURLから簡単に希望を提出</p>
                             </div>
                         </div>
@@ -331,6 +373,27 @@
             </div>
         </div>
     </footer>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox-overlay" onclick="closeLightbox()">
+        <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <img id="lightbox-img" class="lightbox-img" src="" alt="拡大画像">
+    </div>
+
+    <script>
+        function openLightbox(img) {
+            document.getElementById('lightbox-img').src = img.src;
+            document.getElementById('lightbox').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLightbox();
+        });
+    </script>
 
 </body>
 </html>
