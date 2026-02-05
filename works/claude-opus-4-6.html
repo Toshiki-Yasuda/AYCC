@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Anthropic社の最新フラッグシップモデル Claude Opus 4.6 について。AYCCの開発基盤を支える最先端AIの概要、スペック、新機能、ベンチマーク、料金体系を解説。">
+    <title>Claude Opus 4.6 について | AYCC</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+    <link rel="apple-touch-icon" href="../images/favicon.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rose': {
+                            50: '#fdf2f4',
+                            100: '#fce7eb',
+                            200: '#f9d0d9',
+                            300: '#f4a9ba',
+                            400: '#ec7a95',
+                            500: '#d4a5a5',
+                            600: '#b8848f',
+                            700: '#9a6b75',
+                            800: '#7d5660',
+                            900: '#5c4048',
+                        },
+                        'navy': {
+                            50: '#f5f7fa',
+                            100: '#eaeef4',
+                            200: '#d0dbe8',
+                            300: '#a7bdd4',
+                            400: '#7899bc',
+                            500: '#5a7ea5',
+                            600: '#47658a',
+                            700: '#3a5270',
+                            800: '#2d3e54',
+                            900: '#1e2a3a',
+                        },
+                        'warm-gray': {
+                            50: '#fafaf9',
+                            100: '#f5f5f4',
+                            200: '#e7e5e4',
+                            300: '#d6d3d1',
+                            400: '#a8a29e',
+                            500: '#78716c',
+                            600: '#57534e',
+                            700: '#44403c',
+                            800: '#292524',
+                            900: '#1c1917',
+                        }
+                    },
+                    fontFamily: {
+                        'serif': ['Noto Serif JP', 'serif'],
+                        'sans': ['Noto Sans JP', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            color: #44403c;
+            letter-spacing: 0.02em;
+        }
+
+        .font-elegant {
+            font-family: 'Noto Serif JP', serif;
+        }
+
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, #d4a5a5, #a7bdd4);
+            margin: 0 auto;
+        }
+
+        .border-elegant {
+            border: 1px solid rgba(168, 162, 158, 0.3);
+        }
+
+        .link-underline {
+            position: relative;
+        }
+
+        .link-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+
+        .link-underline:hover::after {
+            width: 100%;
+        }
+
+        code {
+            background-color: #f5f5f4;
+            border: 1px solid #e7e5e4;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            color: #2d3e54;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #f5f7fa;
+            color: #2d3e54;
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border: 1px solid #d0dbe8;
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e7e5e4;
+        }
+
+        tr:hover {
+            background-color: #fafaf9;
+        }
+    </style>
+</head>
+<body class="bg-warm-gray-50">
+
+    <!-- ヘッダー -->
+    <header class="bg-white/90 backdrop-blur-sm border-b border-warm-gray-200 sticky top-0 z-50">
+        <nav class="container mx-auto pl-2 pr-6 py-5">
+            <div class="flex justify-between items-center">
+                <!-- ロゴ -->
+                <a href="../index.html" class="flex items-center space-x-4">
+                    <img src="../images/logo.png" alt="AYCC Logo" class="h-10">
+                </a>
+
+                <!-- ナビゲーション -->
+                <div class="hidden md:flex space-x-10">
+                    <a href="../index.html#home" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">ホーム</a>
+                    <a href="../index.html#services" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">サービス</a>
+                    <a href="../index.html#works" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">実績</a>
+                    <a href="../index.html#about" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">会社概要</a>
+                    <a href="digital-environment.html" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">開発体制</a>
+                    <a href="claude-opus-4-6.html" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">Opus 4.6</a>
+                    <a href="../index.html#contact" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">お問い合わせ</a>
+                </div>
+
+                <!-- 戻るボタン（モバイル） -->
+                <a href="../index.html#about" class="md:hidden text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-sm">
+                    ← 戻る
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="py-16 md:py-24">
+        <div class="container mx-auto px-6">
+
+            <!-- パンくずリスト -->
+            <nav class="mb-8 text-sm text-warm-gray-500">
+                <a href="../index.html" class="hover:text-warm-gray-700">ホーム</a>
+                <span class="mx-2">/</span>
+                <a href="../index.html#about" class="hover:text-warm-gray-700">会社概要</a>
+                <span class="mx-2">/</span>
+                <span class="text-warm-gray-700">Claude Opus 4.6 について</span>
+            </nav>
+
+            <!-- タイトル -->
+            <div class="text-center mb-16">
+                <h1 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-2">
+                    Claude Opus 4.6
+                </h1>
+                <p class="text-sm text-warm-gray-400 tracking-wider mb-4">AYCCの開発基盤を支える最新AIモデル</p>
+                <div class="divider"></div>
+            </div>
+
+            <!-- コンテンツ -->
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white p-8 md:p-12 border-elegant">
+
+                    <!-- セクション1: 概要 -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            概要
+                        </h2>
+                        <p class="text-warm-gray-600 leading-relaxed mb-4">
+                            Claude Opus 4.6は、Anthropic社が2026年2月6日（日本時間）にリリースした最新のフラッグシップモデルです。前世代のOpus 4.5から大幅に進化し、コード生成能力、長時間のエージェント作業、大規模コードベースでの信頼性が格段に向上しています。
+                        </p>
+                        <p class="text-warm-gray-600 leading-relaxed mb-4">
+                            特に注目すべきは、<span class="font-medium text-warm-gray-800">適応型思考（Adaptive Thinking）</span>やエージェントチーム機能など、従来は複数のAIに分担させていた複雑な作業を単一モデル内で並行処理できる点です。これにより、設計・実装・検証をシームレスに統合したワークフローが可能になりました。
+                        </p>
+                        <p class="text-warm-gray-600 leading-relaxed">
+                            AYCCでは、このOpus 4.6を中核に据えて開発環境を完全最適化し、個人事業主でありながらチーム開発に匹敵する生産性と品質管理体制を実現しています。
+                        </p>
+                    </div>
+
+                    <!-- セクション2: 主要スペック -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            主要スペック
+                        </h2>
+                        <div class="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40%">項目</th>
+                                        <th style="width: 60%">仕様</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>モデルID</td>
+                                        <td><code>claude-opus-4-6</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>コンテキストウィンドウ</td>
+                                        <td>最大100万トークン（ベータ）</td>
+                                    </tr>
+                                    <tr>
+                                        <td>最大出力トークン</td>
+                                        <td>128,000トークン</td>
+                                    </tr>
+                                    <tr>
+                                        <td>適応型思考</td>
+                                        <td>対応（低・中・高・最大の4段階）</td>
+                                    </tr>
+                                    <tr>
+                                        <td>コンテキスト圧縮</td>
+                                        <td>対応（ベータ）</td>
+                                    </tr>
+                                    <tr>
+                                        <td>エージェントチーム</td>
+                                        <td>対応</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Office統合</td>
+                                        <td>PowerPoint（ベータ）/ Excel</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- セクション3: 主な新機能 -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            主な新機能
+                        </h2>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <!-- 適応型思考 -->
+                            <div class="bg-warm-gray-50 p-6 rounded-lg border-elegant">
+                                <p class="font-medium text-navy-700 mb-3">適応型思考（Adaptive Thinking）</p>
+                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
+                                    モデルが文脈から拡張思考の必要性を自動判断します。<code>effort</code> パラメータで低・中・高・最大の4段階を明示的に指定することも可能。
+                                </p>
+                                <p class="text-warm-gray-600 text-sm leading-relaxed">
+                                    品質・速度・コストのトレードオフを柔軟に制御できるため、タスクの重要度や複雑性に応じて最適なモードを選択できます。
+                                </p>
+                            </div>
+
+                            <!-- エージェントチーム -->
+                            <div class="bg-warm-gray-50 p-6 rounded-lg border-elegant">
+                                <p class="font-medium text-navy-700 mb-3">エージェントチーム</p>
+                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
+                                    Claude Code内で複数のエージェントを並列実行できます。異なるコンポーネントを同時に作業させ、自律的に調整する能力を持ちます。
+                                </p>
+                                <p class="text-warm-gray-600 text-sm leading-relaxed">
+                                    個人開発でありながらチーム開発に近い生産性を実現し、設計・実装・レビューを同時並行で進められます。
+                                </p>
+                            </div>
+
+                            <!-- コンテキスト圧縮 -->
+                            <div class="bg-warm-gray-50 p-6 rounded-lg border-elegant">
+                                <p class="font-medium text-navy-700 mb-3">コンテキスト圧縮</p>
+                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
+                                    古いコンテキストを自動的に要約・置換し、長時間の作業でもコンテキスト上限に達しにくくなっています。
+                                </p>
+                                <p class="text-warm-gray-600 text-sm leading-relaxed">
+                                    長期間のエージェント作業を可能にし、複雑なプロジェクトでも一貫した文脈を保持したまま開発を継続できます。
+                                </p>
+                            </div>
+
+                            <!-- Office統合 -->
+                            <div class="bg-warm-gray-50 p-6 rounded-lg border-elegant">
+                                <p class="font-medium text-navy-700 mb-3">Office統合</p>
+                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
+                                    <span class="font-medium text-warm-gray-700">PowerPoint:</span> サイドパネルからスライドマスター・レイアウト・フォントを読み取り、ブランドに沿ったデッキを生成・編集。
+                                </p>
+                                <p class="text-warm-gray-600 text-sm leading-relaxed">
+                                    <span class="font-medium text-warm-gray-700">Excel:</span> 構造化されていないデータの自動推論、多段階変更の1パス実行が可能。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- セクション4: ベンチマーク -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            ベンチマーク
+                        </h2>
+                        <p class="text-warm-gray-600 leading-relaxed mb-6">
+                            Opus 4.6は複数の主要ベンチマークで業界最高水準のスコアを記録しています。特にGPT-5.2との直接比較では、約70%の確率で高スコアを獲得する結果となりました。
+                        </p>
+
+                        <div class="space-y-4">
+                            <!-- Terminal-Bench -->
+                            <div class="bg-navy-50 p-5 rounded-lg border-l-4 border-navy-400">
+                                <div class="flex justify-between items-start mb-2">
+                                    <p class="font-medium text-navy-700">Terminal-Bench 2.0（エージェント型コーディング）</p>
+                                    <span class="text-2xl font-bold text-navy-800">65.4%</span>
+                                </div>
+                                <p class="text-warm-gray-600 text-sm">業界最高スコア。実際のコーディングタスクにおけるエージェント性能を測定。</p>
+                            </div>
+
+                            <!-- GDPval-AA -->
+                            <div class="bg-navy-50 p-5 rounded-lg border-l-4 border-navy-400">
+                                <div class="flex justify-between items-start mb-2">
+                                    <p class="font-medium text-navy-700">GDPval-AA（金融・法律等の実務タスク）</p>
+                                    <span class="text-2xl font-bold text-navy-800">1606 Elo</span>
+                                </div>
+                                <p class="text-warm-gray-600 text-sm">GPT-5.2を144ポイント上回る結果。専門性の高い実務タスクでの優位性を示しています。</p>
+                            </div>
+
+                            <!-- その他ベンチマーク -->
+                            <div class="bg-navy-50 p-5 rounded-lg border-l-4 border-navy-400">
+                                <p class="font-medium text-navy-700 mb-3">その他の主要ベンチマーク</p>
+                                <ul class="space-y-2 text-sm text-warm-gray-600">
+                                    <li class="flex items-start">
+                                        <span class="text-navy-500 mr-2 mt-0.5">•</span>
+                                        <div>
+                                            <span class="font-medium text-warm-gray-700">Humanity's Last Exam（学際的推論）:</span> 最先端モデルをリード
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-navy-500 mr-2 mt-0.5">•</span>
+                                        <div>
+                                            <span class="font-medium text-warm-gray-700">BrowseComp（高難度情報検索）:</span> 最高パフォーマンスを記録
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-navy-500 mr-2 mt-0.5">•</span>
+                                        <div>
+                                            <span class="font-medium text-warm-gray-700">MRCR v2（長文検索・8針1M版）:</span> 76%（Sonnet 4.5は18.5%）
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- セクション5: 料金体系 -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            料金体系
+                        </h2>
+                        <p class="text-warm-gray-600 leading-relaxed mb-6">
+                            Claude Opus 4.6の料金は、入力・出力トークン数とコンテキストサイズに応じて設定されています。以下は主要モデルとの比較です。
+                        </p>
+                        <div class="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 25%">モデル</th>
+                                        <th style="width: 25%">入力（100万トークン）</th>
+                                        <th style="width: 25%">出力（100万トークン）</th>
+                                        <th style="width: 25%">特徴</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>Opus 4.6</code></td>
+                                        <td>$5</td>
+                                        <td>$25</td>
+                                        <td>最高性能・エージェント向け</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>Opus 4.6</code><br><span class="text-xs text-warm-gray-500">（200K超）</span></td>
+                                        <td>$10</td>
+                                        <td>$37.50</td>
+                                        <td>100万トークン利用時</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>Sonnet 4.5</code></td>
+                                        <td>$3</td>
+                                        <td>$15</td>
+                                        <td>バランス型</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>Haiku 4.5</code></td>
+                                        <td>$1</td>
+                                        <td>$5</td>
+                                        <td>高速・低コスト</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-warm-gray-500 text-xs mt-4 leading-relaxed">
+                            上記はAPI利用時のトークン単価です。個人で利用する場合は、以下のサブスクリプションプランが用意されています。
+                        </p>
+
+                        <!-- 利用プラン -->
+                        <div class="mt-6">
+                            <p class="font-medium text-warm-gray-700 mb-4">個人向けサブスクリプションプラン</p>
+                            <div class="overflow-x-auto">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%">プラン</th>
+                                            <th style="width: 20%">月額</th>
+                                            <th style="width: 60%">概要</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Free</td>
+                                            <td>無料</td>
+                                            <td>基本的な会話利用。まずはClaudeを試してみたい方に。</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pro</td>
+                                            <td>$20</td>
+                                            <td>Freeの5倍の利用量。優先アクセス。日常業務でのAI活用に。</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Max 5x</td>
+                                            <td>$100</td>
+                                            <td>Proの5倍の利用量。Claude Code完全対応。本格的な開発利用に。</td>
+                                        </tr>
+                                        <tr class="bg-navy-50">
+                                            <td><span class="font-medium text-navy-700">Max 20x</span></td>
+                                            <td><span class="font-medium text-navy-700">$200</span></td>
+                                            <td><span class="text-navy-700">Proの20倍の利用量。最高優先度。AYCCではこのプランを利用しています。</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-warm-gray-600 text-sm mt-4 leading-relaxed">
+                                AYCCでは開発業務に最大限活用するためMax 20xプランを採用していますが、Claudeの基本的な能力は<span class="font-medium text-warm-gray-700">無料プランからでも体験できます</span>。Proプラン（月額$20 / 約3,000円）でも十分に実用的で、日常のビジネス文書作成やデータ分析、アイデア整理などに活用いただけます。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- セクション6: AYCCでの活用 -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            AYCCでの活用
+                        </h2>
+                        <p class="text-warm-gray-600 leading-relaxed mb-4">
+                            AYCCでは、Claude Max 20xプランを契約し、Claude Code + Opus 4.6を中心に開発環境を完全一本化しています。従来の「マルチCLI」体制から、単一モデルによる統合開発体制への移行により、コンテキストの一貫性が保たれ、品質と開発速度の両方が向上しました。
+                        </p>
+
+                        <div class="bg-warm-gray-50 p-6 rounded-lg border-elegant mb-6">
+                            <p class="font-medium text-warm-gray-700 mb-4">CLAUDE.mdによるプロジェクト管理</p>
+                            <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
+                                各プロジェクトのルートに配置する <code>CLAUDE.md</code> ファイルに、コーディング規約・アーキテクチャ方針・禁止事項・ワークフローを記述しています。
+                            </p>
+                            <p class="text-warm-gray-600 text-sm leading-relaxed">
+                                Opus 4.6はこのファイルを自動的に読み込み、プロジェクト固有のルールに従って自律的に判断・行動します。エンジニアが毎回細かく指示を出さなくても、一貫した品質基準とコードスタイルが保たれます。
+                            </p>
+                        </div>
+
+                        <div class="bg-warm-gray-50 p-6 rounded-lg border-elegant mb-6">
+                            <p class="font-medium text-warm-gray-700 mb-4">サブエージェントによる並行処理</p>
+                            <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
+                                エージェントチーム機能により、設計・実装・レビューを並行処理できます。複数のコンポーネントを同時に作業させながら、全体の整合性を保つことが可能です。
+                            </p>
+                            <p class="text-warm-gray-600 text-sm leading-relaxed">
+                                個人事業主でありながらチーム開発に匹敵する生産性を実現し、お客様への迅速な納品を支えています。
+                            </p>
+                        </div>
+
+                        <div class="text-center mt-8">
+                            <a href="digital-environment.html" class="inline-block bg-navy-600 text-white font-medium px-8 py-3 rounded text-sm tracking-wider hover:bg-navy-700 transition-all duration-300">
+                                場所を選ばない開発体制について詳しく見る
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 注記 -->
+                    <div class="bg-warm-gray-50 p-5 rounded-lg border-elegant">
+                        <p class="text-xs text-warm-gray-500 leading-relaxed">
+                            本ページの情報は2026年2月6日時点のものです。最新情報はAnthropic公式サイトをご確認ください。
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- 戻るリンク -->
+                <div class="mt-10 text-center">
+                    <a href="../index.html#about" class="text-warm-gray-500 hover:text-warm-gray-700 text-sm inline-flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        会社概要に戻る
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- 個人向けコンサルティング（フッター直前のフルワイドCTA） -->
+    <section id="personal-consulting" class="bg-navy-800 py-16 md:py-20">
+        <div class="container mx-auto px-6 max-w-3xl">
+            <div class="text-center mb-8">
+                <p class="text-xs font-medium text-navy-300 tracking-widest mb-3">PERSONAL CONSULTING</p>
+                <h2 class="font-elegant text-xl md:text-2xl text-white mb-4">
+                    あなた専用の IT/AI スキルアップ支援
+                </h2>
+                <div class="w-12 h-0.5 bg-gradient-to-r from-rose-400 to-navy-300 mx-auto"></div>
+            </div>
+
+            <p class="text-navy-200 leading-relaxed mb-4 text-center">
+                Claudeは無料プランからでも利用できますが、「登録したけど何に使えばいいか分からない」<br class="hidden md:block">「もっと活用したいけど使いこなせていない」という方も多いのではないでしょうか。
+            </p>
+            <p class="text-navy-200 leading-relaxed mb-10 text-center">
+                AYCCでは、Claude Max 20xプランを日常的に使い込んでいるエンジニアが、<br class="hidden md:block">あなたの業務や目標に合わせた<span class="font-medium text-white">フルカスタマイズのAI活用コンサルティング</span>を行っています。
+            </p>
+
+            <div class="bg-white/10 backdrop-blur-sm p-6 rounded-lg border border-white/20 max-w-xl mx-auto mb-10">
+                <p class="text-sm font-medium text-rose-300 mb-4 text-center">こんな方におすすめです</p>
+                <ul class="space-y-3 text-sm text-navy-100">
+                    <li class="flex items-start">
+                        <span class="text-rose-400 mr-3 mt-0.5 flex-shrink-0">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        </span>
+                        Claudeを使い始めたが、もっと効果的な使い方を知りたい
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-rose-400 mr-3 mt-0.5 flex-shrink-0">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        </span>
+                        AIで業務を効率化したいが、自分の業務にどう適用すればいいか分からない
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-rose-400 mr-3 mt-0.5 flex-shrink-0">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        </span>
+                        資料作成やデータ分析にAIを活かしたい
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-rose-400 mr-3 mt-0.5 flex-shrink-0">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        </span>
+                        どのプランが自分に合っているか相談したい
+                    </li>
+                </ul>
+            </div>
+
+            <div class="text-center">
+                <p class="text-navy-300 text-sm leading-relaxed mb-6">
+                    「こんなこと聞いていいのかな」という内容でも大丈夫です。<br class="hidden md:block">ご予算やペースもご相談に応じます。
+                </p>
+                <a href="../index.html#contact" class="inline-block bg-white text-navy-800 font-medium px-10 py-3.5 rounded text-sm tracking-wider hover:bg-rose-50 transition-all duration-300 shadow-lg">
+                    まずは気軽にご相談ください
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- フッター -->
+    <footer class="bg-warm-gray-800 text-warm-gray-300 py-12">
+        <div class="container mx-auto px-6">
+            <div class="text-center">
+                <p class="text-sm tracking-wider mb-2">
+                    &copy; 2026 AYCC
+                </p>
+                <p class="text-xs text-warm-gray-500">
+                    AI YASUDA CREATIVE & CONSULTING
+                </p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
