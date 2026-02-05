@@ -294,70 +294,90 @@
                     <!-- AI活用 -->
                     <div class="mb-10">
                         <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
-                            複数AIを連携させた開発手法
+                            最新AIモデルに最適化した開発体制
                         </h2>
                         <p class="text-warm-gray-600 leading-relaxed mb-4">
-                            AYCCでは、特性の異なる複数のAIモデルを目的に応じて使い分け、連携させる<span class="font-medium text-warm-gray-800">「AIオーケストレーション」</span>を開発ワークフローに組み込んでいます。
+                            AYCCでは当初、特性の異なる複数のAI CLIツールを使い分ける「マルチCLI」体制で開発を行っていました。しかし2026年2月5日、Anthropic社の最新モデル<span class="font-medium text-warm-gray-800">Claude Opus 4.6</span>のリリースを機に、開発環境を根本から刷新しました。
                         </p>
                         <p class="text-warm-gray-600 leading-relaxed mb-6">
-                            小さな画面のiPad miniからでも高度な開発が可能なのは、作業の実行をAIが担い、エンジニアは設計判断と品質管理に集中できる体制を構築しているからです。
+                            Opus 4.6は、従来は複数のAIに分担させていた設計・実装・レビューを<span class="font-medium text-warm-gray-800">単一モデルの中で並行処理</span>できるサブエージェント機能を備えています。これにより、モデル間のコンテキスト受け渡しロスがなくなり、品質と速度の両方が向上しました。
                         </p>
 
+                        <!-- Claude Code 中心の構成 -->
+                        <div class="bg-warm-gray-50 p-6 rounded-lg border-elegant mb-6">
+                            <p class="text-xs font-medium text-warm-gray-700 tracking-wider mb-4 text-center">現在の開発体制</p>
+                            <div class="flex flex-col items-center gap-3">
+                                <span class="bg-navy-50 px-6 py-3 rounded border border-navy-200 text-center">
+                                    <span class="text-xs font-medium text-navy-600 tracking-wider block mb-1">Anthropic Claude Code</span>
+                                    <span class="font-elegant text-lg font-medium text-navy-800">Opus 4.6</span>
+                                </span>
+                                <div class="flex flex-col items-center my-1">
+                                    <svg class="w-5 h-5 text-navy-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                    </svg>
+                                    <p class="text-xs text-warm-gray-400 mt-1">サブエージェントによる並行処理</p>
+                                </div>
+                                <div class="flex flex-col md:flex-row items-center gap-2 md:gap-4">
+                                    <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-sm text-warm-gray-600 text-center w-36">設計・計画</span>
+                                    <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-sm text-warm-gray-600 text-center w-36">実装・コード生成</span>
+                                    <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-sm text-warm-gray-600 text-center w-36">レビュー・検証</span>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="grid md:grid-cols-3 gap-4 mb-6">
-                            <div class="bg-warm-gray-50 p-6 rounded-lg text-center border-elegant">
-                                <p class="text-xs font-medium text-navy-600 tracking-wider mb-1">設計・統括</p>
-                                <p class="font-elegant text-lg text-warm-gray-800 mb-2">Anthropic<br>Claude Code</p>
-                                <p class="text-sm text-warm-gray-500">論理的な長文理解と構造化が得意で、アーキテクチャ設計やタスク分解を担当します。</p>
+                            <div class="bg-warm-gray-50 p-5 rounded-lg border-elegant">
+                                <p class="text-xs font-medium text-navy-600 tracking-wider mb-2">コンテキストの一貫性</p>
+                                <p class="text-sm text-warm-gray-500">プロジェクト全体の文脈を保持したまま、設計から実装・テストまでを一貫して処理。複数モデル間での情報の欠落がありません。</p>
                             </div>
-                            <div class="bg-warm-gray-50 p-6 rounded-lg text-center border-elegant">
-                                <p class="text-xs font-medium text-navy-600 tracking-wider mb-1">コード生成・実装</p>
-                                <p class="font-elegant text-lg text-warm-gray-800 mb-2">OpenAI<br>Codex CLI</p>
-                                <p class="text-sm text-warm-gray-500">高速なコード生成。定型的な実装やユーティリティの作成を効率的に処理します。</p>
+                            <div class="bg-warm-gray-50 p-5 rounded-lg border-elegant">
+                                <p class="text-xs font-medium text-navy-600 tracking-wider mb-2">自律的な並行処理</p>
+                                <p class="text-sm text-warm-gray-500">サブエージェント機能により、独立したタスクを同時に実行。調査と実装の同時進行など、チーム開発に近い動きを1モデルで実現します。</p>
                             </div>
-                            <div class="bg-warm-gray-50 p-6 rounded-lg text-center border-elegant">
-                                <p class="text-xs font-medium text-navy-600 tracking-wider mb-1">検証・リサーチ</p>
-                                <p class="font-elegant text-lg text-warm-gray-800 mb-2">Google<br>Gemini CLI</p>
-                                <p class="text-sm text-warm-gray-500">最新のドキュメントや技術情報へのアクセスに強く、レビューや調査を担います。</p>
+                            <div class="bg-warm-gray-50 p-5 rounded-lg border-elegant">
+                                <p class="text-xs font-medium text-navy-600 tracking-wider mb-2">高度な判断力</p>
+                                <p class="text-sm text-warm-gray-500">Opus 4.6の深い推論能力により、設計判断やエッジケースの検討をAI自身が行い、エンジニアは最終確認に集中できます。</p>
                             </div>
                         </div>
 
                         <p class="text-warm-gray-600 leading-relaxed mb-4">
-                            エンジニアがコードを一行ずつ手書きするのではなく、日本語による指示でAIに作業を委託し、その出力を精査・統合するワークフローです。
+                            小さな画面のiPad miniからでも高度な開発が可能なのは、日本語による指示でAIが自律的に作業を進め、エンジニアは方針決定と品質管理に集中できる体制だからです。
                         </p>
 
                         <div class="bg-warm-gray-50 p-5 rounded-lg border-elegant">
                             <p class="text-xs font-medium text-warm-gray-700 tracking-wider mb-3">ワークフロー例</p>
                             <div class="flex flex-col md:flex-row md:items-center gap-0 text-sm text-warm-gray-600">
-                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">Claude Code で設計</span>
+                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">エンジニアが方針指示</span>
                                 <span class="text-warm-gray-300 px-2 text-center leading-none py-1 md:py-0 rotate-90 md:rotate-0">→</span>
-                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">Codex CLI でコード生成</span>
-                                <span class="text-warm-gray-300 px-2 text-center leading-none py-1 md:py-0 rotate-90 md:rotate-0">→</span>
-                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">Gemini CLI でレビュー</span>
+                                <span class="bg-navy-50 px-3 py-1.5 rounded border border-navy-200 text-center">Opus 4.6 が設計・実装・検証を並行処理</span>
                                 <span class="text-warm-gray-300 px-2 text-center leading-none py-1 md:py-0 rotate-90 md:rotate-0">→</span>
                                 <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">エンジニアが最終判断</span>
                             </div>
                         </div>
 
                         <p class="text-warm-gray-500 text-xs leading-relaxed mt-4">
-                            複数のAIを相互チェックさせることで、単一モデルに依存した場合に起きやすい誤りやバイアスを軽減しています。最終的な品質判断は必ず人間が行います。
+                            最終的な品質判断と方針決定は必ず人間が行います。AIの出力を盲信するのではなく、エンジニアの経験に基づく判断を最上位に置いています。
                         </p>
 
                         <div class="mt-6 bg-warm-gray-50 p-6 rounded-lg border-elegant">
-                            <p class="font-medium text-warm-gray-700 mb-3">独自の開発管理フレームワーク</p>
+                            <p class="font-medium text-warm-gray-700 mb-3">CLAUDE.md によるプロジェクト管理</p>
                             <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
-                                このAI連携は、場当たり的に行っているわけではありません。AYCCでは、AI駆動の開発プロセスを体系化した独自フレームワーク<span class="font-medium text-warm-gray-700">「ADS（Agent Director System）」</span>を構築・運用しています。
+                                AIの動作は場当たり的に制御しているわけではありません。各プロジェクトのルートに配置する<span class="font-medium text-warm-gray-700">CLAUDE.md</span>ファイルに、コーディング規約・アーキテクチャ方針・禁止事項・ワークフローを記述しています。
+                            </p>
+                            <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
+                                Opus 4.6はこのファイルを自動的に読み込み、プロジェクト固有のルールに従って自律的に判断・行動します。エンジニアが毎回細かく指示を出さなくても、一貫した品質基準とコードスタイルが保たれる仕組みです。
                             </p>
                             <div class="flex flex-col md:flex-row md:items-center gap-0 text-sm text-warm-gray-600 mb-4">
-                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">方針判断</span>
+                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">CLAUDE.md（方針・規約）</span>
                                 <span class="text-warm-gray-300 px-2 text-center leading-none py-1 md:py-0 rotate-90 md:rotate-0">→</span>
-                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">タスク分解</span>
+                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">Opus 4.6 が自律判断</span>
                                 <span class="text-warm-gray-300 px-2 text-center leading-none py-1 md:py-0 rotate-90 md:rotate-0">→</span>
-                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">AI実行・実装</span>
+                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">並行実行・品質検証</span>
                                 <span class="text-warm-gray-300 px-2 text-center leading-none py-1 md:py-0 rotate-90 md:rotate-0">→</span>
-                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">品質検証</span>
+                                <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">エンジニアが承認</span>
                             </div>
                             <p class="text-warm-gray-500 text-xs leading-relaxed">
-                                全体方針の決定からタスクの分解、AIへの作業指示、コードレビュー、Git管理までを4つの層で構造化しています。これにより、「誰がいつ何を判断し、どのAIがどの作業を担当するか」が明確になり、個人開発でありながら組織的な品質管理が可能になっています。
+                                従来の独自フレームワーク（ADS）は廃止し、Claude Code自体が持つサブエージェント機能とCLAUDE.mdの組み合わせに移行しました。ツール側の進化に合わせて常に最適な体制を追求しています。
                             </p>
                         </div>
                     </div>
