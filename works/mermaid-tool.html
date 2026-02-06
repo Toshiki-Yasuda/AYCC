@@ -4127,12 +4127,16 @@
             }
         ];
 
-        let currentPhasePrompts = null;
-        let activePhase = 1;
-        let debounceTimer;
-        let renderCount = 0;
-        let currentTheme = 'default';
-        let compareTheme = 'default';
+        const appState = {
+            currentPhasePrompts: null,
+            activePhase: 1,
+            debounceTimer: null,
+            renderCount: 0,
+            currentTheme: 'default',
+            compareTheme: 'default',
+            asisDebounce: null,
+            tobeDebounce: null
+        };
 
         mermaid.initialize({
             startOnLoad: false,
@@ -4145,6 +4149,73 @@
             const div = document.createElement('div');
             div.textContent = str;
             return div.innerHTML;
+        }
+
+        // --- 定数定義 ---
+        const CATEGORY_LABELS = {
+            problem: '問題点',
+            improvement: '改善案',
+            question: '確認事項',
+            memo: 'メモ'
+        };
+
+        const CATEGORY_COLORS = {
+            problem: '#ef4444',
+            improvement: '#3b82f6',
+            question: '#d97706',
+            memo: '#6b7280'
+        };
+
+        const CATEGORY_BADGE_STYLES = {
+            problem: { label: '問題点', color: 'bg-red-50 text-red-600 border-red-200' },
+            improvement: { label: '改善案', color: 'bg-blue-50 text-blue-600 border-blue-200' },
+            question: { label: '確認事項', color: 'bg-amber-50 text-amber-600 border-amber-200' },
+            memo: { label: 'メモ', color: 'bg-green-50 text-green-600 border-green-200' }
+        };
+
+        const CATEGORY_ORDER = ['problem', 'improvement', 'question', 'memo'];
+
+        const DEBOUNCE_MS = 300;
+        const TOAST_DURATION_MS = 2500;
+        const TOAST_FADE_MS = 300;
+        const FILENAME_SANITIZE_REGEX = /[<>:"\/\\|?*]/g;
+
+        // --- ユーティリティ関数 ---
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-warm-gray-800 text-white text-sm px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity duration-300';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), TOAST_FADE_MS);
+            }, TOAST_DURATION_MS);
+        }
+
+        function sanitizeFilename(name) {
+            return name.replace(FILENAME_SANITIZE_REGEX, '_');
+        }
+
+        function getProjectName(fallback = 'diagram') {
+            return document.getElementById('project-name').value.trim() || fallback;
+        }
+
+        function svgToImagePromise(svgElement) {
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+            const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(svgBlob);
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => {
+                    URL.revokeObjectURL(url);
+                    resolve(img);
+                };
+                img.onerror = (err) => {
+                    URL.revokeObjectURL(url);
+                    reject(err);
+                };
+                img.src = url;
+            });
         }
 
         // アノテーション管理クラス
@@ -4264,7 +4335,7 @@
             }
 
             toggleAnnotationMode(target, enabled) {
-                const previewEl = this.getPreviewEl(target);
+                const previewEl = this.getTargetElement(target, 'preview');
                 if (!previewEl) return;
 
                 if (enabled) {
@@ -4276,7 +4347,7 @@
                 }
 
                 // パネルの表示/非表示
-                const panelEl = this.getPanelEl(target);
+                const panelEl = this.getTargetElement(target, 'panel');
                 if (panelEl) {
                     if (enabled) {
                         panelEl.classList.remove('hidden');
@@ -4364,7 +4435,7 @@
             }
 
             applyAnnotationStyles(target) {
-                const previewEl = this.getPreviewEl(target);
+                const previewEl = this.getTargetElement(target, 'preview');
                 if (!previewEl) return;
 
                 const svg = previewEl.querySelector('svg');
@@ -4397,7 +4468,7 @@
             }
 
             renderAnnotationList(target) {
-                const listEl = this.getListEl(target);
+                const listEl = this.getTargetElement(target, 'list');
                 if (!listEl) return;
 
                 const anns = this.annotations[target];
@@ -4407,16 +4478,9 @@
                     return;
                 }
 
-                const categoryLabels = {
-                    problem: '問題点',
-                    improvement: '改善案',
-                    question: '質問',
-                    memo: 'メモ'
-                };
-
                 listEl.innerHTML = anns.map(ann => `
                     <div class="flex items-start gap-3 p-3 bg-white border border-warm-gray-200 rounded-lg text-sm">
-                        <span class="shrink-0 category-badge ${ann.category}">${categoryLabels[ann.category]}</span>
+                        <span class="shrink-0 category-badge ${ann.category}">${CATEGORY_LABELS[ann.category]}</span>
                         <div class="flex-1 min-w-0">
                             <p class="font-medium text-warm-gray-800 text-xs mb-0.5">${escapeHTML(ann.nodeText)}</p>
                             <p class="text-warm-gray-600 text-xs">${escapeHTML(ann.comment)}</p>
@@ -4439,15 +4503,8 @@
             }
 
             exportToIssues() {
-                const categoryLabels = {
-                    problem: '問題点',
-                    improvement: '改善案',
-                    question: '質問',
-                    memo: 'メモ'
-                };
-
                 // As-Isのアノテーションを優先、なければsingleのものを使用
-                const sourceAnns = this.annotations.asis.length > 0 ? this.annotations.asis : this.annotations.single;
+                const sourceAnns = this.getSourceAnnotations();
 
                 if (sourceAnns.length === 0) {
                     alert('転送するアノテーションがありません');
@@ -4455,7 +4512,7 @@
                 }
 
                 const issuesText = sourceAnns
-                    .map(ann => `- 【${categoryLabels[ann.category]}】${ann.nodeText}: ${ann.comment}`)
+                    .map(ann => `- 【${CATEGORY_LABELS[ann.category]}】${ann.nodeText}: ${ann.comment}`)
                     .join('\n');
 
                 const issuesInput = document.getElementById('issues-input');
@@ -4471,14 +4528,7 @@
             }
 
             generateAIPrompt() {
-                const categoryLabels = {
-                    problem: '問題点',
-                    improvement: '改善案',
-                    question: '確認事項',
-                    memo: 'メモ'
-                };
-
-                const sourceAnns = this.annotations.asis.length > 0 ? this.annotations.asis : this.annotations.single;
+                const sourceAnns = this.getSourceAnnotations();
                 if (sourceAnns.length === 0) {
                     alert('アノテーションがありません。まず図にアノテーションを追加してください。');
                     return;
@@ -4487,15 +4537,11 @@
                 const mermaidCode = document.getElementById('asis-editor')?.value || document.getElementById('editor').value || '';
 
                 // カテゴリ別にグループ化
-                const grouped = {};
-                sourceAnns.forEach(ann => {
-                    if (!grouped[ann.category]) grouped[ann.category] = [];
-                    grouped[ann.category].push(ann);
-                });
+                const grouped = this.groupByCategory(sourceAnns);
 
                 let annotationSection = '';
                 for (const [cat, anns] of Object.entries(grouped)) {
-                    annotationSection += `\n### ${categoryLabels[cat]}\n`;
+                    annotationSection += `\n### ${CATEGORY_LABELS[cat]}\n`;
                     anns.forEach(ann => {
                         annotationSection += `- **${ann.nodeText}**: ${ann.comment}\n`;
                     });
@@ -4520,47 +4566,27 @@ ${annotationSection}
 4. **期待される効果**（定量的に示せるものは数値で）`;
 
                 navigator.clipboard.writeText(prompt).then(() => {
-                    // Show a brief toast notification
-                    const toast = document.createElement('div');
-                    toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-warm-gray-800 text-white text-sm px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity duration-300';
-                    toast.textContent = 'AIプロンプトをコピーしました — Claudeに貼り付けてください';
-                    document.body.appendChild(toast);
-                    setTimeout(() => {
-                        toast.style.opacity = '0';
-                        setTimeout(() => toast.remove(), 300);
-                    }, 2500);
+                    showToast('AIプロンプトをコピーしました — Claudeに貼り付けてください');
                 }).catch(() => {
                     alert('クリップボードへのコピーに失敗しました');
                 });
             }
 
             exportToMarkdown() {
-                const categoryLabels = {
-                    problem: '問題点',
-                    improvement: '改善案',
-                    question: '確認事項',
-                    memo: 'メモ'
-                };
-                const categoryOrder = ['problem', 'improvement', 'question', 'memo'];
-
-                const sourceAnns = this.annotations.asis.length > 0 ? this.annotations.asis : this.annotations.single;
+                const sourceAnns = this.getSourceAnnotations();
                 if (sourceAnns.length === 0) {
                     alert('コピーするアノテーションがありません');
                     return;
                 }
 
-                const grouped = {};
-                sourceAnns.forEach(ann => {
-                    if (!grouped[ann.category]) grouped[ann.category] = [];
-                    grouped[ann.category].push(ann);
-                });
+                const grouped = this.groupByCategory(sourceAnns);
 
                 let md = '## 業務フロー分析レポート\n\n';
                 md += `分析日: ${new Date().toLocaleDateString('ja-JP')}\n\n`;
 
-                categoryOrder.forEach(cat => {
+                CATEGORY_ORDER.forEach(cat => {
                     if (grouped[cat] && grouped[cat].length > 0) {
-                        md += `### ${categoryLabels[cat]}（${grouped[cat].length}件）\n\n`;
+                        md += `### ${CATEGORY_LABELS[cat]}（${grouped[cat].length}件）\n\n`;
                         grouped[cat].forEach(ann => {
                             md += `- **${ann.nodeText}**: ${ann.comment}\n`;
                         });
@@ -4569,25 +4595,14 @@ ${annotationSection}
                 });
 
                 navigator.clipboard.writeText(md).then(() => {
-                    const toast = document.createElement('div');
-                    toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-warm-gray-800 text-white text-sm px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity duration-300';
-                    toast.textContent = 'Markdownをクリップボードにコピーしました';
-                    document.body.appendChild(toast);
-                    setTimeout(() => {
-                        toast.style.opacity = '0';
-                        setTimeout(() => toast.remove(), 300);
-                    }, 2500);
+                    showToast('Markdownをクリップボードにコピーしました');
                 }).catch(() => {
                     alert('クリップボードへのコピーに失敗しました');
                 });
             }
 
             renderSummary(target) {
-                const summaryEl = target === 'single'
-                    ? document.getElementById('annotation-summary')
-                    : target === 'asis'
-                    ? document.getElementById('compare-annotation-summary')
-                    : document.getElementById('tobe-annotation-summary');
+                const summaryEl = this.getTargetElement(target, 'summary');
 
                 if (!summaryEl) return;
 
@@ -4597,13 +4612,6 @@ ${annotationSection}
                     return;
                 }
 
-                const categoryConfig = {
-                    problem: { label: '問題点', color: 'bg-red-50 text-red-600 border-red-200' },
-                    improvement: { label: '改善案', color: 'bg-blue-50 text-blue-600 border-blue-200' },
-                    question: { label: '確認事項', color: 'bg-amber-50 text-amber-600 border-amber-200' },
-                    memo: { label: 'メモ', color: 'bg-green-50 text-green-600 border-green-200' }
-                };
-
                 const counts = {};
                 anns.forEach(a => {
                     counts[a.category] = (counts[a.category] || 0) + 1;
@@ -4611,30 +4619,32 @@ ${annotationSection}
 
                 summaryEl.innerHTML = Object.entries(counts)
                     .map(([cat, count]) => {
-                        const cfg = categoryConfig[cat];
+                        const cfg = CATEGORY_BADGE_STYLES[cat];
                         return `<span class="text-xs px-2 py-0.5 rounded-full border ${cfg.color}">${cfg.label} ${count}</span>`;
                     }).join('');
             }
 
-            getPreviewEl(target) {
-                if (target === 'single') return document.getElementById('preview-area');
-                if (target === 'asis') return document.getElementById('asis-preview');
-                if (target === 'tobe') return document.getElementById('tobe-preview');
-                return null;
+            getTargetElement(target, type) {
+                const TARGET_ELEMENT_MAP = {
+                    single: { preview: 'preview-area', list: 'annotation-list', panel: 'annotation-panel', summary: 'annotation-summary' },
+                    asis: { preview: 'asis-preview', list: 'asis-annotation-list', panel: 'asis-annotation-panel', summary: 'compare-annotation-summary' },
+                    tobe: { preview: 'tobe-preview', list: 'tobe-annotation-list', panel: 'tobe-annotation-panel', summary: 'tobe-annotation-summary' }
+                };
+                const id = TARGET_ELEMENT_MAP[target]?.[type];
+                return id ? document.getElementById(id) : null;
             }
 
-            getListEl(target) {
-                if (target === 'single') return document.getElementById('annotation-list');
-                if (target === 'asis') return document.getElementById('asis-annotation-list');
-                if (target === 'tobe') return document.getElementById('tobe-annotation-list');
-                return null;
+            getSourceAnnotations() {
+                return this.annotations.asis.length > 0 ? this.annotations.asis : this.annotations.single;
             }
 
-            getPanelEl(target) {
-                if (target === 'single') return document.getElementById('annotation-panel');
-                if (target === 'asis') return document.getElementById('asis-annotation-panel');
-                if (target === 'tobe') return document.getElementById('tobe-annotation-panel');
-                return null;
+            groupByCategory(annotations) {
+                const grouped = {};
+                CATEGORY_ORDER.forEach(cat => { grouped[cat] = []; });
+                annotations.forEach(ann => {
+                    if (grouped[ann.category]) grouped[ann.category].push(ann);
+                });
+                return grouped;
             }
 
             getAnnotationsForSave() {
@@ -4677,7 +4687,6 @@ ${annotationSection}
         const tobePreview = document.getElementById('tobe-preview');
         const asisTemplateSelect = document.getElementById('asis-template-select');
         const compareThemeSelect = document.getElementById('compare-theme-select');
-        let asisDebounce, tobeDebounce;
 
         const industryGroup = document.createElement('optgroup');
         industryGroup.label = '業種別';
@@ -4809,16 +4818,19 @@ ${annotationSection}
             templateSelect.value = index;
         }
 
-        templateSelect.addEventListener('change', (e) => {
-            if (e.target.value !== '') {
-                loadTemplate(parseInt(e.target.value));
-            }
-        });
+        // ========== エディタ関連イベント ==========
+        function initEditorEvents() {
+            templateSelect.addEventListener('change', (e) => {
+                if (e.target.value !== '') {
+                    loadTemplate(parseInt(e.target.value));
+                }
+            });
 
-        editor.addEventListener('input', () => {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(updatePreview, 300);
-        });
+            editor.addEventListener('input', () => {
+                clearTimeout(appState.debounceTimer);
+                appState.debounceTimer = setTimeout(updatePreview, DEBOUNCE_MS);
+            });
+        }
 
         async function updatePreview() {
             const code = editor.value.trim();
@@ -4837,7 +4849,7 @@ ${annotationSection}
 
             try {
                 previewArea.innerHTML = '';
-                const { svg } = await mermaid.render('mermaid-svg-' + renderCount++, code);
+                const { svg } = await mermaid.render('mermaid-svg-' + appState.renderCount++, code);
                 previewArea.innerHTML = svg;
 
                 // アノテーション機能を適用
@@ -4850,92 +4862,102 @@ ${annotationSection}
             }
         }
 
-        document.getElementById('copy-code-btn').addEventListener('click', () => {
-            const code = editor.value;
-            if (!code.trim()) {
-                alert('コピーするコードがありません');
-                return;
-            }
-            navigator.clipboard.writeText(code).then(() => {
-                const btn = document.getElementById('copy-code-btn');
-                const originalText = btn.textContent;
-                btn.textContent = 'コピーしました!';
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                }, 2000);
-            }).catch(() => {
-                alert('クリップボードへのコピーに失敗しました');
-            });
-        });
-
-        document.getElementById('clear-btn').addEventListener('click', () => {
-            if (confirm('エディタとプレビューをクリアしますか？')) {
-                editor.value = '';
-                previewArea.innerHTML = '<p class="text-warm-gray-400 text-sm">図がここに表示されます</p>';
-                templateSelect.value = '';
-                currentPhasePrompts = null;
-            }
-        });
-
-        document.getElementById('download-png-btn').addEventListener('click', () => {
-            const svg = previewArea.querySelector('svg');
-            if (!svg) {
-                alert('ダウンロードする図がありません');
-                return;
-            }
-
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const svgData = new XMLSerializer().serializeToString(svg);
-            const img = new Image();
-
-            const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-            const url = URL.createObjectURL(svgBlob);
-
-            img.onload = () => {
-                canvas.width = img.width * 2;
-                canvas.height = img.height * 2;
-                ctx.fillStyle = 'white';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-                canvas.toBlob((blob) => {
-                    const projectName = document.getElementById('project-name').value.trim() || 'diagram';
-                    const safeName = projectName.replace(/[<>:"/\\|?*]/g, '_');
-                    const link = document.createElement('a');
-                    link.download = `${safeName}.png`;
-                    link.href = URL.createObjectURL(blob);
-                    link.click();
-                    URL.revokeObjectURL(url);
+        function initEditorButtonEvents() {
+            document.getElementById('copy-code-btn').addEventListener('click', () => {
+                const code = editor.value;
+                if (!code.trim()) {
+                    alert('コピーするコードがありません');
+                    return;
+                }
+                navigator.clipboard.writeText(code).then(() => {
+                    const btn = document.getElementById('copy-code-btn');
+                    const originalText = btn.textContent;
+                    btn.textContent = 'コピーしました!';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                    }, 2000);
+                }).catch(() => {
+                    alert('クリップボードへのコピーに失敗しました');
                 });
-            };
+            });
 
-            img.src = url;
-        });
+            document.getElementById('clear-btn').addEventListener('click', () => {
+                if (confirm('エディタとプレビューをクリアしますか？')) {
+                    editor.value = '';
+                    previewArea.innerHTML = '<p class="text-warm-gray-400 text-sm">図がここに表示されます</p>';
+                    templateSelect.value = '';
+                    appState.currentPhasePrompts = null;
+                }
+            });
 
-        document.getElementById('download-svg-btn').addEventListener('click', () => {
-            const svg = previewArea.querySelector('svg');
-            if (!svg) {
-                alert('ダウンロードする図がありません');
-                return;
-            }
+            document.getElementById('download-png-btn').addEventListener('click', () => {
+                const svg = previewArea.querySelector('svg');
+                if (!svg) {
+                    alert('ダウンロードする図がありません');
+                    return;
+                }
 
-            const projectName = document.getElementById('project-name').value.trim() || 'diagram';
-            const safeName = projectName.replace(/[<>:"/\\|?*]/g, '_');
-            const svgData = new XMLSerializer().serializeToString(svg);
-            const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.download = `${safeName}.svg`;
-            link.href = url;
-            link.click();
-            URL.revokeObjectURL(url);
-        });
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const svgData = new XMLSerializer().serializeToString(svg);
+                const img = new Image();
+
+                const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+                const url = URL.createObjectURL(svgBlob);
+
+                img.onload = () => {
+                    canvas.width = img.width * 2;
+                    canvas.height = img.height * 2;
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                    canvas.toBlob((blob) => {
+                        const safeName = sanitizeFilename(getProjectName());
+                        const link = document.createElement('a');
+                        link.download = `${safeName}.png`;
+                        link.href = URL.createObjectURL(blob);
+                        link.click();
+                        URL.revokeObjectURL(url);
+                    });
+                };
+
+                img.src = url;
+            });
+
+            document.getElementById('download-svg-btn').addEventListener('click', () => {
+                const svg = previewArea.querySelector('svg');
+                if (!svg) {
+                    alert('ダウンロードする図がありません');
+                    return;
+                }
+
+                const safeName = sanitizeFilename(getProjectName());
+                const svgData = new XMLSerializer().serializeToString(svg);
+                const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `${safeName}.svg`;
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+            });
+
+            themeSelect.addEventListener('change', (e) => {
+                appState.currentTheme = e.target.value;
+                mermaid.initialize({
+                    startOnLoad: false,
+                    theme: appState.currentTheme,
+                    securityLevel: 'loose'
+                });
+                updatePreview();
+            });
+        }
 
         function showModal(title, prompt) {
             modalTitle.textContent = `${title} - プロンプトビルダー`;
-            currentPhasePrompts = prompt;
-            activePhase = 1;
+            appState.currentPhasePrompts = prompt;
+            appState.activePhase = 1;
 
             // Phase1の内容を表示
             document.getElementById('phase1-text').textContent = prompt.phase1;
@@ -4954,7 +4976,7 @@ ${annotationSection}
         }
 
         function switchPhase(phase) {
-            activePhase = phase;
+            appState.activePhase = phase;
             document.querySelectorAll('.phase-tab').forEach(t => {
                 t.classList.toggle('active', t.dataset.phase == phase);
             });
@@ -4967,16 +4989,15 @@ ${annotationSection}
         }
 
         function updatePhase2Text() {
-            if (!currentPhasePrompts) return;
+            if (!appState.currentPhasePrompts) return;
             const asisCode = document.getElementById('asis-editor')?.value || document.getElementById('editor').value || '';
-            let text = currentPhasePrompts.phase2.replace('{{ASIS_CODE}}', asisCode || '（As-Isエディタにコードを入力してください）');
+            let text = appState.currentPhasePrompts.phase2.replace('{{ASIS_CODE}}', asisCode || '（As-Isエディタにコードを入力してください）');
 
             // アノテーションがあれば追加コンテキストとして付加
             const anns = annotationManager.annotations.asis.length > 0 ? annotationManager.annotations.asis : annotationManager.annotations.single;
             if (anns.length > 0) {
-                const categoryLabels = { problem: '問題点', improvement: '改善案', question: '確認事項', memo: 'メモ' };
                 const annotationContext = '\n\n【参考】コンサルタントが現場で発見したメモ：\n' +
-                    anns.map(a => `- 【${categoryLabels[a.category]}】${a.nodeText}: ${a.comment}`).join('\n') +
+                    anns.map(a => `- 【${CATEGORY_LABELS[a.category]}】${a.nodeText}: ${a.comment}`).join('\n') +
                     '\n\n上記の現場メモも考慮に入れて分析してください。';
                 text += annotationContext;
             }
@@ -4985,82 +5006,78 @@ ${annotationSection}
         }
 
         function updatePhase3Text() {
-            if (!currentPhasePrompts) return;
+            if (!appState.currentPhasePrompts) return;
             const asisCode = document.getElementById('asis-editor')?.value || document.getElementById('editor').value || '';
             const issues = document.getElementById('issues-input').value.trim() || '（上の入力欄に課題を箇条書きで入力してください）';
-            const text = currentPhasePrompts.phase3
+            const text = appState.currentPhasePrompts.phase3
                 .replace('{{ASIS_CODE}}', asisCode || '（As-Isエディタにコードを入力してください）')
                 .replace('{{ISSUES}}', issues);
             document.getElementById('phase3-text').textContent = text;
         }
 
-        document.getElementById('close-modal-btn').addEventListener('click', () => {
-            modal.classList.remove('modal-open');
-        });
-
-        // フェーズタブのイベント
-        document.querySelectorAll('.phase-tab').forEach(tab => {
-            tab.addEventListener('click', () => switchPhase(parseInt(tab.dataset.phase)));
-        });
-
-        // 課題入力のリアルタイム反映
-        document.getElementById('issues-input').addEventListener('input', updatePhase3Text);
-
-        document.getElementById('copy-prompt-btn').addEventListener('click', () => {
-            if (!currentPhasePrompts) {
-                alert('コピーするプロンプトがありません');
-                return;
-            }
-
-            let text;
-            if (activePhase === 1) text = document.getElementById('phase1-text').textContent;
-            else if (activePhase === 2) text = document.getElementById('phase2-text').textContent;
-            else text = document.getElementById('phase3-text').textContent;
-
-            navigator.clipboard.writeText(text).then(() => {
-                const btn = document.getElementById('copy-prompt-btn');
-                const originalText = btn.textContent;
-                btn.textContent = 'コピーしました!';
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                }, 2000);
-            }).catch(() => {
-                alert('クリップボードへのコピーに失敗しました');
-            });
-        });
-
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
+        // ========== モーダル関連イベント ==========
+        function initModalEvents() {
+            document.getElementById('close-modal-btn').addEventListener('click', () => {
                 modal.classList.remove('modal-open');
-            }
-        });
-
-        themeSelect.addEventListener('change', (e) => {
-            currentTheme = e.target.value;
-            mermaid.initialize({
-                startOnLoad: false,
-                theme: currentTheme,
-                securityLevel: 'loose'
             });
-            updatePreview();
-        });
+
+            // フェーズタブのイベント
+            document.querySelectorAll('.phase-tab').forEach(tab => {
+                tab.addEventListener('click', () => switchPhase(parseInt(tab.dataset.phase)));
+            });
+
+            // 課題入力のリアルタイム反映
+            document.getElementById('issues-input').addEventListener('input', updatePhase3Text);
+
+            document.getElementById('copy-prompt-btn').addEventListener('click', () => {
+                if (!appState.currentPhasePrompts) {
+                    alert('コピーするプロンプトがありません');
+                    return;
+                }
+
+                let text;
+                if (appState.activePhase === 1) text = document.getElementById('phase1-text').textContent;
+                else if (appState.activePhase === 2) text = document.getElementById('phase2-text').textContent;
+                else text = document.getElementById('phase3-text').textContent;
+
+                navigator.clipboard.writeText(text).then(() => {
+                    const btn = document.getElementById('copy-prompt-btn');
+                    const originalText = btn.textContent;
+                    btn.textContent = 'コピーしました!';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                    }, 2000);
+                }).catch(() => {
+                    alert('クリップボードへのコピーに失敗しました');
+                });
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('modal-open');
+                }
+            });
+        }
 
         // === 比較モード関連の関数 ===
 
-        // モード切替
-        modeSingle.addEventListener('click', () => {
-            singleMode.classList.remove('hidden');
-            compareMode.classList.add('hidden');
-            modeSingle.classList.add('active');
-            modeCompare.classList.remove('active');
-        });
+        // ========== 比較モード関連イベント ==========
+        function initCompareModeEvents() {
+            // モード切替
+            modeSingle.addEventListener('click', () => {
+                singleMode.classList.remove('hidden');
+                compareMode.classList.add('hidden');
+                modeSingle.classList.add('active');
+                modeCompare.classList.remove('active');
+            });
 
-        modeCompare.addEventListener('click', () => {
-            singleMode.classList.add('hidden');
-            compareMode.classList.remove('hidden');
-            modeCompare.classList.add('active');
-            modeSingle.classList.remove('active');
-        });
+            modeCompare.addEventListener('click', () => {
+                singleMode.classList.add('hidden');
+                compareMode.classList.remove('hidden');
+                modeCompare.classList.add('active');
+                modeSingle.classList.remove('active');
+            });
+        }
 
         // 比較モードのプレビュー更新関数
         async function renderComparePreview(editorEl, previewEl) {
@@ -5083,10 +5100,10 @@ ${annotationSection}
                 // 比較モードのテーマを使用
                 mermaid.initialize({
                     startOnLoad: false,
-                    theme: compareTheme,
+                    theme: appState.compareTheme,
                     securityLevel: 'loose'
                 });
-                const { svg } = await mermaid.render('mermaid-svg-' + renderCount++, code);
+                const { svg } = await mermaid.render('mermaid-svg-' + appState.renderCount++, code);
                 previewEl.innerHTML = svg;
 
                 // アノテーション機能を適用
@@ -5100,34 +5117,36 @@ ${annotationSection}
             }
         }
 
-        // As-Isエディタの入力イベント
-        asisEditor.addEventListener('input', () => {
-            clearTimeout(asisDebounce);
-            asisDebounce = setTimeout(() => renderComparePreview(asisEditor, asisPreview), 300);
-        });
+        function initCompareEditorEvents() {
+            // As-Isエディタの入力イベント
+            asisEditor.addEventListener('input', () => {
+                clearTimeout(appState.asisDebounce);
+                appState.asisDebounce = setTimeout(() => renderComparePreview(asisEditor, asisPreview), DEBOUNCE_MS);
+            });
 
-        // To-Beエディタの入力イベント
-        tobeEditor.addEventListener('input', () => {
-            clearTimeout(tobeDebounce);
-            tobeDebounce = setTimeout(() => renderComparePreview(tobeEditor, tobePreview), 300);
-        });
+            // To-Beエディタの入力イベント
+            tobeEditor.addEventListener('input', () => {
+                clearTimeout(appState.tobeDebounce);
+                appState.tobeDebounce = setTimeout(() => renderComparePreview(tobeEditor, tobePreview), DEBOUNCE_MS);
+            });
 
-        // As-Isからコピーボタン
-        document.getElementById('copy-asis-to-tobe').addEventListener('click', () => {
-            tobeEditor.value = asisEditor.value;
-            renderComparePreview(tobeEditor, tobePreview);
-        });
+            // As-Isからコピーボタン
+            document.getElementById('copy-asis-to-tobe').addEventListener('click', () => {
+                tobeEditor.value = asisEditor.value;
+                renderComparePreview(tobeEditor, tobePreview);
+            });
 
-        // As-Isテンプレート選択
-        asisTemplateSelect.addEventListener('change', (e) => {
-            if (e.target.value !== '') {
-                const index = parseInt(e.target.value);
-                const template = templates[index];
-                asisEditor.value = template.mermaid;
-                renderComparePreview(asisEditor, asisPreview);
-                showModal(template.name, template.prompt);
-            }
-        });
+            // As-Isテンプレート選択
+            asisTemplateSelect.addEventListener('change', (e) => {
+                if (e.target.value !== '') {
+                    const index = parseInt(e.target.value);
+                    const template = templates[index];
+                    asisEditor.value = template.mermaid;
+                    renderComparePreview(asisEditor, asisPreview);
+                    showModal(template.name, template.prompt);
+                }
+            });
+        }
 
         // ヘルパー関数: コードコピー
         function setupCopyBtn(btnId, editorEl) {
@@ -5217,78 +5236,86 @@ ${annotationSection}
             });
         }
 
-        // As-Is用ボタンのセットアップ
-        setupCopyBtn('asis-copy-btn', asisEditor);
-        setupClearBtn('asis-clear-btn', asisEditor, asisPreview, 'As-Is図がここに表示されます');
-        setupPngDownload('asis-png-btn', asisPreview, 'mermaid-asis.png');
-        setupSvgDownload('asis-svg-btn', asisPreview, 'mermaid-asis.svg');
+        function initCompareButtonEvents() {
+            // As-Is用ボタンのセットアップ
+            setupCopyBtn('asis-copy-btn', asisEditor);
+            setupClearBtn('asis-clear-btn', asisEditor, asisPreview, 'As-Is図がここに表示されます');
+            setupPngDownload('asis-png-btn', asisPreview, 'mermaid-asis.png');
+            setupSvgDownload('asis-svg-btn', asisPreview, 'mermaid-asis.svg');
 
-        // To-Be用ボタンのセットアップ
-        setupCopyBtn('tobe-copy-btn', tobeEditor);
-        setupClearBtn('tobe-clear-btn', tobeEditor, tobePreview, 'To-Be図がここに表示されます');
-        setupPngDownload('tobe-png-btn', tobePreview, 'mermaid-tobe.png');
-        setupSvgDownload('tobe-svg-btn', tobePreview, 'mermaid-tobe.svg');
+            // To-Be用ボタンのセットアップ
+            setupCopyBtn('tobe-copy-btn', tobeEditor);
+            setupClearBtn('tobe-clear-btn', tobeEditor, tobePreview, 'To-Be図がここに表示されます');
+            setupPngDownload('tobe-png-btn', tobePreview, 'mermaid-tobe.png');
+            setupSvgDownload('tobe-svg-btn', tobePreview, 'mermaid-tobe.svg');
 
-        // 比較モードのテーマ切替
-        compareThemeSelect.addEventListener('change', async (e) => {
-            compareTheme = e.target.value;
-            mermaid.initialize({
-                startOnLoad: false,
-                theme: compareTheme,
-                securityLevel: 'loose'
+            // 比較モードのテーマ切替
+            compareThemeSelect.addEventListener('change', async (e) => {
+                appState.compareTheme = e.target.value;
+                mermaid.initialize({
+                    startOnLoad: false,
+                    theme: compareTheme,
+                    securityLevel: 'loose'
+                });
+                // 両方のプレビューを再レンダリング
+                await renderComparePreview(asisEditor, asisPreview);
+                await renderComparePreview(tobeEditor, tobePreview);
             });
-            // 両方のプレビューを再レンダリング
-            await renderComparePreview(asisEditor, asisPreview);
-            await renderComparePreview(tobeEditor, tobePreview);
-        });
+        }
 
-        const menuToggle = document.getElementById('menu-toggle');
-        const mobileMenu = document.getElementById('mobile-menu');
-        menuToggle.addEventListener('click', () => {
-            mobileMenu.classList.toggle('menu-open');
-        });
-        const mobileLinks = mobileMenu.querySelectorAll('a');
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('menu-open');
+        // ========== ナビゲーション関連イベント ==========
+        function initNavigationEvents() {
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            menuToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('menu-open');
             });
-        });
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('menu-open');
+                });
+            });
+        }
 
         // === LocalStorage保存機能 ===
 
-        // 保存ボタン
-        document.getElementById('save-btn').addEventListener('click', () => {
-            const name = document.getElementById('project-name').value.trim();
-            if (!name) {
-                alert('プロジェクト名を入力してください');
-                return;
-            }
+        // ========== プロジェクト関連イベント ==========
+        function initProjectEvents() {
+            // 保存ボタン
+            document.getElementById('save-btn').addEventListener('click', () => {
+                const name = document.getElementById('project-name').value.trim();
+                if (!name) {
+                    alert('プロジェクト名を入力してください');
+                    return;
+                }
 
-            const project = {
-                name: name,
-                savedAt: new Date().toISOString(),
-                singleEditor: editor.value,
-                asisEditor: asisEditor.value,
-                tobeEditor: tobeEditor.value,
-                annotations: annotationManager.getAnnotationsForSave()
-            };
+                const project = {
+                    name: name,
+                    savedAt: new Date().toISOString(),
+                    singleEditor: editor.value,
+                    asisEditor: asisEditor.value,
+                    tobeEditor: tobeEditor.value,
+                    annotations: annotationManager.getAnnotationsForSave()
+                };
 
-            let projects = JSON.parse(localStorage.getItem('mermaid-projects') || '[]');
-            const existingIndex = projects.findIndex(p => p.name === name);
-            if (existingIndex >= 0) {
-                if (!confirm(`「${name}」を上書きしますか？`)) return;
-                projects[existingIndex] = project;
-            } else {
-                projects.push(project);
-            }
-            localStorage.setItem('mermaid-projects', JSON.stringify(projects));
-            renderProjectList();
+                let projects = JSON.parse(localStorage.getItem('mermaid-projects') || '[]');
+                const existingIndex = projects.findIndex(p => p.name === name);
+                if (existingIndex >= 0) {
+                    if (!confirm(`「${name}」を上書きしますか？`)) return;
+                    projects[existingIndex] = project;
+                } else {
+                    projects.push(project);
+                }
+                localStorage.setItem('mermaid-projects', JSON.stringify(projects));
+                renderProjectList();
 
-            const btn = document.getElementById('save-btn');
-            const originalText = btn.textContent;
-            btn.textContent = '保存しました!';
-            setTimeout(() => btn.textContent = originalText, 2000);
-        });
+                const btn = document.getElementById('save-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '保存しました!';
+                setTimeout(() => btn.textContent = originalText, 2000);
+            });
+        }
 
         // プロジェクト一覧を描画
         function renderProjectList() {
@@ -5358,19 +5385,21 @@ ${annotationSection}
             });
         }
 
-        // Event delegation for project list
-        document.getElementById('project-list').addEventListener('click', (e) => {
-            const btn = e.target.closest('[data-action]');
-            if (!btn) return;
-            const projectId = btn.closest('[data-project-id]')?.dataset.projectId;
-            if (!projectId) return;
+        function initProjectListEvents() {
+            // Event delegation for project list
+            document.getElementById('project-list').addEventListener('click', (e) => {
+                const btn = e.target.closest('[data-action]');
+                if (!btn) return;
+                const projectId = btn.closest('[data-project-id]')?.dataset.projectId;
+                if (!projectId) return;
 
-            const action = btn.dataset.action;
-            if (action === 'load') loadProject(parseInt(projectId));
-            if (action === 'duplicate') duplicateProject(parseInt(projectId));
-            if (action === 'export') exportProjectJSON(parseInt(projectId));
-            if (action === 'delete') deleteProject(parseInt(projectId));
-        });
+                const action = btn.dataset.action;
+                if (action === 'load') loadProject(parseInt(projectId));
+                if (action === 'duplicate') duplicateProject(parseInt(projectId));
+                if (action === 'export') exportProjectJSON(parseInt(projectId));
+                if (action === 'delete') deleteProject(parseInt(projectId));
+            });
+        }
 
         // プロジェクト読み込み
         function loadProject(index) {
@@ -5576,6 +5605,77 @@ ${annotationSection}
         // === 共有モーダル ===
         const shareModal = document.getElementById('share-modal');
 
+        // ========== 共有関連イベント ==========
+        function initShareEvents() {
+            document.getElementById('close-share-modal').addEventListener('click', closeShareModal);
+            shareModal.addEventListener('click', (e) => {
+                if (e.target === shareModal) closeShareModal();
+            });
+
+            document.getElementById('copy-share-url').addEventListener('click', () => {
+                const urlInput = document.getElementById('share-url-display');
+                urlInput.select();
+                navigator.clipboard.writeText(urlInput.value).then(() => {
+                    const btn = document.getElementById('copy-share-url');
+                    const originalText = btn.textContent;
+                    btn.textContent = 'コピー済み!';
+                    setTimeout(() => btn.textContent = originalText, 2000);
+                }).catch(() => {
+                    alert('クリップボードへのコピーに失敗しました');
+                });
+            });
+
+            document.getElementById('download-qr').addEventListener('click', () => {
+                const qrCanvas = document.querySelector('#share-qr-code canvas');
+                if (!qrCanvas) {
+                    alert('QRコードが生成されていません');
+                    return;
+                }
+                const link = document.createElement('a');
+                link.download = 'mermaid-share-qr.png';
+                link.href = qrCanvas.toDataURL('image/png');
+                link.click();
+            });
+
+            document.getElementById('share-json-export').addEventListener('click', () => {
+                const projectName = getProjectName('project');
+                const data = {
+                    name: projectName,
+                    savedAt: new Date().toISOString(),
+                    singleEditor: document.getElementById('editor').value,
+                    asisEditor: document.getElementById('asis-editor').value,
+                    tobeEditor: document.getElementById('tobe-editor').value,
+                    annotations: window.annotationManager ? annotationManager.getAnnotationsForSave() : null
+                };
+
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `${projectName}.json`;
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+            });
+
+            // JSONインポートボタンのイベントリスナー
+            document.getElementById('import-json-btn').addEventListener('click', () => {
+                document.getElementById('import-json-input').click();
+            });
+
+            document.getElementById('import-json-input').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    importProjectJSON(file);
+                    e.target.value = ''; // リセット
+                }
+            });
+
+            // URL共有ボタンのイベントリスナー
+            document.getElementById('share-url-btn').addEventListener('click', () => {
+                openShareModal();
+            });
+        }
+
         function openShareModal() {
             const url = generateShareURL();
             if (!url) return;
@@ -5612,74 +5712,19 @@ ${annotationSection}
             document.body.style.overflow = '';
         }
 
-        // イベントリスナー
-        document.getElementById('close-share-modal').addEventListener('click', closeShareModal);
-        shareModal.addEventListener('click', (e) => {
-            if (e.target === shareModal) closeShareModal();
-        });
 
-        document.getElementById('copy-share-url').addEventListener('click', () => {
-            const urlInput = document.getElementById('share-url-display');
-            urlInput.select();
-            navigator.clipboard.writeText(urlInput.value).then(() => {
-                const btn = document.getElementById('copy-share-url');
-                const originalText = btn.textContent;
-                btn.textContent = 'コピー済み!';
-                setTimeout(() => btn.textContent = originalText, 2000);
-            }).catch(() => {
-                alert('クリップボードへのコピーに失敗しました');
-            });
-        });
-
-        document.getElementById('download-qr').addEventListener('click', () => {
-            const qrCanvas = document.querySelector('#share-qr-code canvas');
-            if (!qrCanvas) {
-                alert('QRコードが生成されていません');
-                return;
-            }
-            const link = document.createElement('a');
-            link.download = 'mermaid-share-qr.png';
-            link.href = qrCanvas.toDataURL('image/png');
-            link.click();
-        });
-
-        document.getElementById('share-json-export').addEventListener('click', () => {
-            const projectName = document.getElementById('project-name').value.trim() || 'project';
-            const data = {
-                name: projectName,
-                savedAt: new Date().toISOString(),
-                singleEditor: document.getElementById('editor').value,
-                asisEditor: document.getElementById('asis-editor').value,
-                tobeEditor: document.getElementById('tobe-editor').value,
-                annotations: window.annotationManager ? annotationManager.getAnnotationsForSave() : null
-            };
-
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.download = `${projectName}.json`;
-            link.href = url;
-            link.click();
-            URL.revokeObjectURL(url);
-        });
-
-        // JSONインポートボタンのイベントリスナー
-        document.getElementById('import-json-btn').addEventListener('click', () => {
-            document.getElementById('import-json-input').click();
-        });
-
-        document.getElementById('import-json-input').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                importProjectJSON(file);
-                e.target.value = ''; // リセット
-            }
-        });
-
-        // URL共有ボタンのイベントリスナー
-        document.getElementById('share-url-btn').addEventListener('click', () => {
-            openShareModal();
-        });
+        // ========== イベントリスナー初期化 ==========
+        initEditorEvents();
+        initEditorButtonEvents();
+        initModalEvents();
+        initCompareModeEvents();
+        initCompareEditorEvents();
+        initCompareButtonEvents();
+        initNavigationEvents();
+        initProjectEvents();
+        initProjectListEvents();
+        initShareEvents();
+        initReportEvents();
 
         // ページ読み込み時にプロジェクト一覧を表示
         renderProjectList();
@@ -5688,6 +5733,191 @@ ${annotationSection}
         restoreFromURL();
 
         // === PDF レポート生成 ===
+        function createPDFCanvas(width = 2970, height = 2100) {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, width, height);
+            return { canvas, ctx };
+        }
+
+        function renderPDFCoverPage(pdf, projectName, pageWidth, pageHeight) {
+            const { canvas, ctx } = createPDFCanvas();
+            ctx.fillStyle = '#292524';
+            ctx.font = 'bold 120px "Noto Serif JP", serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('業務フロー改善レポート', 1485, 800);
+
+            ctx.fillStyle = '#78716c';
+            ctx.font = '60px "Noto Sans JP", sans-serif';
+            ctx.fillText(projectName, 1485, 1000);
+
+            const today = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
+            ctx.fillStyle = '#a8a29e';
+            ctx.font = '40px "Noto Sans JP", sans-serif';
+            ctx.fillText(`作成日: ${today}`, 1485, 1600);
+            ctx.fillText('AYCC - AI YASUDA CREATIVE & CONSULTING', 1485, 1700);
+
+            pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
+        }
+
+        async function renderPDFDiagramPage(pdf, svg, title, titleColor, pageWidth, pageHeight) {
+            pdf.addPage();
+            const { canvas, ctx } = createPDFCanvas();
+            ctx.fillStyle = titleColor;
+            ctx.font = 'bold 80px "Noto Serif JP", serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(title, 1485, 200);
+
+            try {
+                const img = await svgToImagePromise(svg);
+                const scale = Math.min((pageWidth * 8) / img.width, (pageHeight * 6) / img.height);
+                const scaledWidth = img.width * scale;
+                const scaledHeight = img.height * scale;
+                const x = (2970 - scaledWidth) / 2;
+                ctx.drawImage(img, x, 400, scaledWidth, scaledHeight);
+            } catch (error) {
+                console.error('SVG rendering error:', error);
+            }
+
+            pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
+        }
+
+        function renderPDFIssuesPages(pdf, annotations, pageWidth, pageHeight) {
+            const maxRows = 12;
+            const totalPages = Math.ceil(annotations.length / maxRows);
+
+            for (let page = 0; page < totalPages; page++) {
+                pdf.addPage();
+                const { canvas, ctx } = createPDFCanvas();
+                ctx.fillStyle = '#292524';
+                ctx.font = 'bold 80px "Noto Serif JP", serif';
+                ctx.textAlign = 'center';
+                const pageLabel = totalPages > 1 ? `発見された課題（${page + 1}/${totalPages}）` : '発見された課題';
+                ctx.fillText(pageLabel, 1485, 200);
+
+                let y = 400;
+                const rowHeight = 120;
+
+                ctx.font = '45px "Noto Sans JP", sans-serif';
+                ctx.fillStyle = '#78716c';
+                ctx.textAlign = 'left';
+                ctx.fillText('カテゴリ', 200, y);
+                ctx.fillText('対象', 600, y);
+                ctx.fillText('コメント', 1200, y);
+                y += 80;
+
+                ctx.strokeStyle = '#d6d3d1';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(150, y);
+                ctx.lineTo(2820, y);
+                ctx.stroke();
+                y += 40;
+
+                const pageAnnotations = annotations.slice(page * maxRows, (page + 1) * maxRows);
+                pageAnnotations.forEach(ann => {
+                    ctx.fillStyle = CATEGORY_COLORS[ann.category];
+                    ctx.font = 'bold 40px "Noto Sans JP", sans-serif';
+                    ctx.fillText(CATEGORY_LABELS[ann.category], 200, y);
+
+                    ctx.fillStyle = '#44403c';
+                    ctx.font = '38px "Noto Sans JP", sans-serif';
+                    const nodeText = ann.nodeText.length > 20 ? ann.nodeText.substring(0, 20) + '...' : ann.nodeText;
+                    ctx.fillText(nodeText, 600, y);
+
+                    const comment = ann.comment.length > 40 ? ann.comment.substring(0, 40) + '...' : ann.comment;
+                    ctx.fillText(comment, 1200, y);
+
+                    y += rowHeight;
+                });
+
+                pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
+            }
+        }
+
+        function renderPDFSummaryPage(pdf, annotations, pageWidth, pageHeight) {
+            pdf.addPage();
+            const { canvas, ctx } = createPDFCanvas();
+            ctx.fillStyle = '#292524';
+            ctx.font = 'bold 80px "Noto Serif JP", serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('まとめ', 1485, 200);
+
+            const problems = annotations.filter(a => a.category === 'problem');
+            const improvements = annotations.filter(a => a.category === 'improvement');
+
+            let y = 400;
+            ctx.textAlign = 'left';
+
+            if (problems.length > 0) {
+                ctx.fillStyle = '#be185d';
+                ctx.font = 'bold 60px "Noto Serif JP", serif';
+                ctx.fillText('主要な課題', 300, y);
+                y += 100;
+
+                ctx.font = '45px "Noto Sans JP", sans-serif';
+                ctx.fillStyle = '#44403c';
+                problems.slice(0, 4).forEach(p => {
+                    ctx.fillStyle = '#ef4444';
+                    ctx.fillText('●', 350, y);
+                    ctx.fillStyle = '#44403c';
+                    const text = `${p.nodeText}: ${p.comment}`;
+                    const displayText = text.length > 60 ? text.substring(0, 60) + '...' : text;
+                    ctx.fillText(displayText, 450, y);
+                    y += 90;
+                });
+                y += 80;
+            }
+
+            if (improvements.length > 0) {
+                ctx.fillStyle = '#3a5270';
+                ctx.font = 'bold 60px "Noto Serif JP", serif';
+                ctx.fillText('改善提案', 300, y);
+                y += 100;
+
+                ctx.font = '45px "Noto Sans JP", sans-serif';
+                improvements.slice(0, 4).forEach(i => {
+                    ctx.fillStyle = '#3b82f6';
+                    ctx.fillText('●', 350, y);
+                    ctx.fillStyle = '#44403c';
+                    const text = `${i.nodeText}: ${i.comment}`;
+                    const displayText = text.length > 60 ? text.substring(0, 60) + '...' : text;
+                    ctx.fillText(displayText, 450, y);
+                    y += 90;
+                });
+            }
+
+            ctx.strokeStyle = '#d6d3d1';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(300, 1800);
+            ctx.lineTo(2670, 1800);
+            ctx.stroke();
+
+            ctx.fillStyle = '#a8a29e';
+            ctx.font = '40px "Noto Sans JP", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('AYCC - AI YASUDA CREATIVE & CONSULTING', 1485, 1900);
+
+            pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
+        }
+
+        function getReportData() {
+            const singleSvg = document.getElementById('preview-area').querySelector('svg');
+            const asisSvg = document.getElementById('asis-preview').querySelector('svg');
+            const tobeSvg = document.getElementById('tobe-preview').querySelector('svg');
+            const isCompareMode = !document.getElementById('compare-mode').classList.contains('hidden');
+            const mainSvg = isCompareMode ? asisSvg : singleSvg;
+            const mainTitle = isCompareMode ? 'As-Is（現状フロー）' : '業務フロー';
+            const annotations = isCompareMode
+                ? (window.annotationManager?.annotations?.asis || [])
+                : (window.annotationManager?.annotations?.single || []);
+            return { singleSvg, asisSvg, tobeSvg, isCompareMode, mainSvg, mainTitle, annotations };
+        }
+
         async function generatePDF() {
             const { jsPDF } = window.jspdf;
             if (!jsPDF) {
@@ -5695,252 +5925,24 @@ ${annotationSection}
                 return;
             }
 
-            const projectName = document.getElementById('project-name').value.trim() || '無題のプロジェクト';
+            const projectName = getProjectName('無題のプロジェクト');
             const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
             const pageWidth = 297;
             const pageHeight = 210;
 
-            function createPageCanvas(width = 2970, height = 2100) {
-                const canvas = document.createElement('canvas');
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, width, height);
-                return { canvas, ctx };
-            }
+            renderPDFCoverPage(pdf, projectName, pageWidth, pageHeight);
 
-            // ページ1: 表紙
-            const { canvas: coverCanvas, ctx: coverCtx } = createPageCanvas();
-            coverCtx.fillStyle = '#292524';
-            coverCtx.font = 'bold 120px "Noto Serif JP", serif';
-            coverCtx.textAlign = 'center';
-            coverCtx.fillText('業務フロー改善レポート', 1485, 800);
-
-            coverCtx.fillStyle = '#78716c';
-            coverCtx.font = '60px "Noto Sans JP", sans-serif';
-            coverCtx.fillText(projectName, 1485, 1000);
-
-            const today = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
-            coverCtx.fillStyle = '#a8a29e';
-            coverCtx.font = '40px "Noto Sans JP", sans-serif';
-            coverCtx.fillText(`作成日: ${today}`, 1485, 1600);
-            coverCtx.fillText('AYCC - AI YASUDA CREATIVE & CONSULTING', 1485, 1700);
-
-            pdf.addImage(coverCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
-
-            // 通常モードまたは比較モードの図を取得
-            const singleSvg = document.getElementById('preview-area').querySelector('svg');
-            const asisSvg = document.getElementById('asis-preview').querySelector('svg');
-            const tobeSvg = document.getElementById('tobe-preview').querySelector('svg');
-            const isCompareMode = !document.getElementById('compare-mode').classList.contains('hidden');
-
-            // ページ2: 図（通常モード or As-Is）
-            const mainSvg = isCompareMode ? asisSvg : singleSvg;
-            const mainTitle = isCompareMode ? 'As-Is（現状フロー）' : '業務フロー';
+            const { tobeSvg, isCompareMode, mainSvg, mainTitle, annotations } = getReportData();
             const mainColor = isCompareMode ? '#be185d' : '#292524';
 
-            if (mainSvg) {
-                pdf.addPage();
-                const { canvas: headerCanvas, ctx: headerCtx } = createPageCanvas();
-                headerCtx.fillStyle = mainColor;
-                headerCtx.font = 'bold 80px "Noto Serif JP", serif';
-                headerCtx.textAlign = 'center';
-                headerCtx.fillText(mainTitle, 1485, 200);
+            if (mainSvg) await renderPDFDiagramPage(pdf, mainSvg, mainTitle, mainColor, pageWidth, pageHeight);
+            if (annotations.length > 0) renderPDFIssuesPages(pdf, annotations, pageWidth, pageHeight);
 
-                try {
-                    const svgData = new XMLSerializer().serializeToString(mainSvg);
-                    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-                    const url = URL.createObjectURL(svgBlob);
-                    const img = new Image();
+            if (isCompareMode && tobeSvg) await renderPDFDiagramPage(pdf, tobeSvg, 'To-Be（改善後フロー）', '#3a5270', pageWidth, pageHeight);
 
-                    await new Promise((resolve, reject) => {
-                        img.onload = () => {
-                            const scale = Math.min((pageWidth * 8) / img.width, (pageHeight * 6) / img.height);
-                            const scaledWidth = img.width * scale;
-                            const scaledHeight = img.height * scale;
-                            const x = (2970 - scaledWidth) / 2;
-                            const y = 400;
+            if (annotations.length > 0) renderPDFSummaryPage(pdf, annotations, pageWidth, pageHeight);
 
-                            headerCtx.drawImage(img, x, y, scaledWidth, scaledHeight);
-                            URL.revokeObjectURL(url);
-                            resolve();
-                        };
-                        img.onerror = reject;
-                        img.src = url;
-                    });
-                } catch (error) {
-                    console.error('SVG rendering error:', error);
-                }
-
-                pdf.addImage(headerCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
-            }
-
-            // ページ3: 課題一覧
-            const annotations = isCompareMode
-                ? (window.annotationManager?.annotations?.asis || [])
-                : (window.annotationManager?.annotations?.single || []);
-            if (annotations.length > 0) {
-                const categoryLabels = { problem: '問題点', improvement: '改善案', question: '確認事項', memo: 'メモ' };
-                const categoryColors = { problem: '#ef4444', improvement: '#3b82f6', question: '#d97706', memo: '#6b7280' };
-                const maxRows = 12;
-                const totalPages = Math.ceil(annotations.length / maxRows);
-
-                for (let page = 0; page < totalPages; page++) {
-                    pdf.addPage();
-                    const { canvas: issueCanvas, ctx: issueCtx } = createPageCanvas();
-                    issueCtx.fillStyle = '#292524';
-                    issueCtx.font = 'bold 80px "Noto Serif JP", serif';
-                    issueCtx.textAlign = 'center';
-                    const pageLabel = totalPages > 1 ? `発見された課題（${page + 1}/${totalPages}）` : '発見された課題';
-                    issueCtx.fillText(pageLabel, 1485, 200);
-
-                    let y = 400;
-                    const rowHeight = 120;
-
-                    issueCtx.font = '45px "Noto Sans JP", sans-serif';
-                    issueCtx.fillStyle = '#78716c';
-                    issueCtx.textAlign = 'left';
-                    issueCtx.fillText('カテゴリ', 200, y);
-                    issueCtx.fillText('対象', 600, y);
-                    issueCtx.fillText('コメント', 1200, y);
-                    y += 80;
-
-                    issueCtx.strokeStyle = '#d6d3d1';
-                    issueCtx.lineWidth = 3;
-                    issueCtx.beginPath();
-                    issueCtx.moveTo(150, y);
-                    issueCtx.lineTo(2820, y);
-                    issueCtx.stroke();
-                    y += 40;
-
-                    const pageAnnotations = annotations.slice(page * maxRows, (page + 1) * maxRows);
-                    pageAnnotations.forEach(ann => {
-                        issueCtx.fillStyle = categoryColors[ann.category];
-                        issueCtx.font = 'bold 40px "Noto Sans JP", sans-serif';
-                        issueCtx.fillText(categoryLabels[ann.category], 200, y);
-
-                        issueCtx.fillStyle = '#44403c';
-                        issueCtx.font = '38px "Noto Sans JP", sans-serif';
-                        const nodeText = ann.nodeText.length > 20 ? ann.nodeText.substring(0, 20) + '...' : ann.nodeText;
-                        issueCtx.fillText(nodeText, 600, y);
-
-                        const comment = ann.comment.length > 40 ? ann.comment.substring(0, 40) + '...' : ann.comment;
-                        issueCtx.fillText(comment, 1200, y);
-
-                        y += rowHeight;
-                    });
-
-                    pdf.addImage(issueCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
-                }
-            }
-
-            // ページ4: To-Be図（比較モードのみ）
-            if (isCompareMode && tobeSvg) {
-                pdf.addPage();
-                const { canvas: tobeHeaderCanvas, ctx: tobeHeaderCtx } = createPageCanvas();
-                tobeHeaderCtx.fillStyle = '#3a5270';
-                tobeHeaderCtx.font = 'bold 80px "Noto Serif JP", serif';
-                tobeHeaderCtx.textAlign = 'center';
-                tobeHeaderCtx.fillText('To-Be（改善後フロー）', 1485, 200);
-
-                try {
-                    const svgData = new XMLSerializer().serializeToString(tobeSvg);
-                    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-                    const url = URL.createObjectURL(svgBlob);
-                    const img = new Image();
-
-                    await new Promise((resolve, reject) => {
-                        img.onload = () => {
-                            const scale = Math.min((pageWidth * 8) / img.width, (pageHeight * 6) / img.height);
-                            const scaledWidth = img.width * scale;
-                            const scaledHeight = img.height * scale;
-                            const x = (2970 - scaledWidth) / 2;
-                            const y = 400;
-
-                            tobeHeaderCtx.drawImage(img, x, y, scaledWidth, scaledHeight);
-                            URL.revokeObjectURL(url);
-                            resolve();
-                        };
-                        img.onerror = reject;
-                        img.src = url;
-                    });
-                } catch (error) {
-                    console.error('To-Be SVG rendering error:', error);
-                }
-
-                pdf.addImage(tobeHeaderCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
-            }
-
-            // ページ5: まとめ
-            if (annotations.length > 0) {
-                pdf.addPage();
-                const { canvas: summaryCanvas, ctx: summaryCtx } = createPageCanvas();
-                summaryCtx.fillStyle = '#292524';
-                summaryCtx.font = 'bold 80px "Noto Serif JP", serif';
-                summaryCtx.textAlign = 'center';
-                summaryCtx.fillText('まとめ', 1485, 200);
-
-                const problems = annotations.filter(a => a.category === 'problem');
-                const improvements = annotations.filter(a => a.category === 'improvement');
-
-                let y = 400;
-                summaryCtx.textAlign = 'left';
-
-                if (problems.length > 0) {
-                    summaryCtx.fillStyle = '#be185d';
-                    summaryCtx.font = 'bold 60px "Noto Serif JP", serif';
-                    summaryCtx.fillText('主要な課題', 300, y);
-                    y += 100;
-
-                    summaryCtx.font = '45px "Noto Sans JP", sans-serif';
-                    summaryCtx.fillStyle = '#44403c';
-                    problems.slice(0, 4).forEach(p => {
-                        summaryCtx.fillStyle = '#ef4444';
-                        summaryCtx.fillText('●', 350, y);
-                        summaryCtx.fillStyle = '#44403c';
-                        const text = `${p.nodeText}: ${p.comment}`;
-                        const displayText = text.length > 60 ? text.substring(0, 60) + '...' : text;
-                        summaryCtx.fillText(displayText, 450, y);
-                        y += 90;
-                    });
-                    y += 80;
-                }
-
-                if (improvements.length > 0) {
-                    summaryCtx.fillStyle = '#3a5270';
-                    summaryCtx.font = 'bold 60px "Noto Serif JP", serif';
-                    summaryCtx.fillText('改善提案', 300, y);
-                    y += 100;
-
-                    summaryCtx.font = '45px "Noto Sans JP", sans-serif';
-                    improvements.slice(0, 4).forEach(i => {
-                        summaryCtx.fillStyle = '#3b82f6';
-                        summaryCtx.fillText('●', 350, y);
-                        summaryCtx.fillStyle = '#44403c';
-                        const text = `${i.nodeText}: ${i.comment}`;
-                        const displayText = text.length > 60 ? text.substring(0, 60) + '...' : text;
-                        summaryCtx.fillText(displayText, 450, y);
-                        y += 90;
-                    });
-                }
-
-                summaryCtx.strokeStyle = '#d6d3d1';
-                summaryCtx.lineWidth = 2;
-                summaryCtx.beginPath();
-                summaryCtx.moveTo(300, 1800);
-                summaryCtx.lineTo(2670, 1800);
-                summaryCtx.stroke();
-
-                summaryCtx.fillStyle = '#a8a29e';
-                summaryCtx.font = '40px "Noto Sans JP", sans-serif';
-                summaryCtx.textAlign = 'center';
-                summaryCtx.fillText('AYCC - AI YASUDA CREATIVE & CONSULTING', 1485, 1900);
-
-                pdf.addImage(summaryCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
-            }
-
-            const safeName = projectName.replace(/[<>:"/\\|?*]/g, '_');
+            const safeName = sanitizeFilename(projectName);
             pdf.save(`report-${safeName}.pdf`);
         }
 
@@ -5979,7 +5981,7 @@ ${annotationSection}
                     alert('プレゼンテーション用のコンテンツがありません。As-Is図またはTo-Be図を作成してください。');
                     return;
                 }
-                const projectName = document.getElementById('project-name').value.trim() || '無題のプロジェクト';
+                const projectName = getProjectName('無題のプロジェクト');
                 document.getElementById('pres-title').textContent = projectName;
                 this.currentSlide = 0;
                 this.isOpen = true;
@@ -5995,13 +5997,21 @@ ${annotationSection}
             }
 
             buildSlides() {
-                const projectName = document.getElementById('project-name').value.trim() || '無題のプロジェクト';
+                const projectName = getProjectName('無題のプロジェクト');
                 const today = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
+                const { tobeSvg, isCompareMode, mainSvg, mainTitle, annotations } = getReportData();
+                const mainTitleColor = isCompareMode ? 'text-rose-700' : 'text-warm-gray-800';
 
                 this.slides = [];
+                this.slides.push(this._buildTitleSlide(projectName, today));
+                if (mainSvg) this.slides.push(this._buildDiagramSlide(mainSvg, mainTitle, mainTitleColor));
+                if (annotations.length > 0) this.slides.push(this._buildIssuesSlide(annotations));
+                if (isCompareMode && tobeSvg) this.slides.push(this._buildDiagramSlide(tobeSvg, 'To-Be（改善後フロー）', 'text-navy-700'));
+                if (annotations.length > 0) this.slides.push(this._buildSummarySlide(annotations));
+            }
 
-                // スライド1: タイトル
-                this.slides.push({
+            _buildTitleSlide(projectName, today) {
+                return {
                     html: `
                         <div class="text-center py-16">
                             <p class="text-warm-gray-400 text-sm tracking-widest mb-8">BUSINESS FLOW IMPROVEMENT</p>
@@ -6012,103 +6022,74 @@ ${annotationSection}
                             <p class="text-sm text-warm-gray-400 mt-2">AYCC - AI YASUDA CREATIVE & CONSULTING</p>
                         </div>
                     `
-                });
+                };
+            }
 
-                // 通常モードまたは比較モードの図を取得
-                const singleSvg = document.getElementById('preview-area').querySelector('svg');
-                const asisSvg = document.getElementById('asis-preview').querySelector('svg');
-                const isCompareMode = !document.getElementById('compare-mode').classList.contains('hidden');
+            _buildDiagramSlide(svg, title, titleColor) {
+                return {
+                    html: `
+                        <h2 class="font-elegant text-2xl ${titleColor} mb-6 text-center">${title}</h2>
+                        <div class="flex justify-center">${svg.outerHTML}</div>
+                    `
+                };
+            }
 
-                const mainSvg = isCompareMode ? asisSvg : singleSvg;
-                const mainTitle = isCompareMode ? 'As-Is（現状フロー）' : '業務フロー';
-                const mainTitleColor = isCompareMode ? 'text-rose-700' : 'text-warm-gray-800';
+            _buildIssuesSlide(annotations) {
+                const rows = annotations.map(a => `
+                    <tr class="border-b border-warm-gray-200">
+                        <td class="py-3 px-4"><span style="color:${CATEGORY_COLORS[a.category]}" class="font-medium text-sm">${CATEGORY_LABELS[a.category]}</span></td>
+                        <td class="py-3 px-4 text-sm text-warm-gray-700">${escapeHTML(a.nodeText)}</td>
+                        <td class="py-3 px-4 text-sm text-warm-gray-600">${escapeHTML(a.comment)}</td>
+                    </tr>
+                `).join('');
 
-                // スライド2: メイン図（通常モード or As-Is）
-                if (mainSvg) {
-                    this.slides.push({
-                        html: `
-                            <h2 class="font-elegant text-2xl ${mainTitleColor} mb-6 text-center">${mainTitle}</h2>
-                            <div class="flex justify-center">${mainSvg.outerHTML}</div>
-                        `
-                    });
-                }
+                return {
+                    html: `
+                        <h2 class="font-elegant text-2xl text-warm-gray-800 mb-6 text-center">発見された課題</h2>
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b-2 border-warm-gray-300">
+                                    <th class="py-3 px-4 text-left text-sm text-warm-gray-500 w-24">カテゴリ</th>
+                                    <th class="py-3 px-4 text-left text-sm text-warm-gray-500 w-40">対象</th>
+                                    <th class="py-3 px-4 text-left text-sm text-warm-gray-500">コメント</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    `
+                };
+            }
 
-                // スライド3: 課題一覧
-                const annotations = isCompareMode
-                    ? (window.annotationManager?.annotations?.asis || [])
-                    : (window.annotationManager?.annotations?.single || []);
-                if (annotations.length > 0) {
-                    const categoryLabels = { problem: '問題点', improvement: '改善案', question: '確認事項', memo: 'メモ' };
-                    const categoryColors = { problem: '#ef4444', improvement: '#3b82f6', question: '#d97706', memo: '#6b7280' };
+            _buildSummarySlide(annotations) {
+                const improvements = annotations.filter(a => a.category === 'improvement');
+                const problems = annotations.filter(a => a.category === 'problem');
 
-                    const rows = annotations.map(a => `
-                        <tr class="border-b border-warm-gray-200">
-                            <td class="py-3 px-4"><span style="color:${categoryColors[a.category]}" class="font-medium text-sm">${categoryLabels[a.category]}</span></td>
-                            <td class="py-3 px-4 text-sm text-warm-gray-700">${escapeHTML(a.nodeText)}</td>
-                            <td class="py-3 px-4 text-sm text-warm-gray-600">${escapeHTML(a.comment)}</td>
-                        </tr>
-                    `).join('');
-
-                    this.slides.push({
-                        html: `
-                            <h2 class="font-elegant text-2xl text-warm-gray-800 mb-6 text-center">発見された課題</h2>
-                            <table class="w-full">
-                                <thead>
-                                    <tr class="border-b-2 border-warm-gray-300">
-                                        <th class="py-3 px-4 text-left text-sm text-warm-gray-500 w-24">カテゴリ</th>
-                                        <th class="py-3 px-4 text-left text-sm text-warm-gray-500 w-40">対象</th>
-                                        <th class="py-3 px-4 text-left text-sm text-warm-gray-500">コメント</th>
-                                    </tr>
-                                </thead>
-                                <tbody>${rows}</tbody>
-                            </table>
-                        `
-                    });
-                }
-
-                // スライド4: To-Be（比較モードのみ）
-                const tobeSvg = document.getElementById('tobe-preview').querySelector('svg');
-                if (isCompareMode && tobeSvg) {
-                    this.slides.push({
-                        html: `
-                            <h2 class="font-elegant text-2xl text-navy-700 mb-6 text-center">To-Be（改善後フロー）</h2>
-                            <div class="flex justify-center">${tobeSvg.outerHTML}</div>
-                        `
-                    });
-                }
-
-                // スライド5: まとめ
-                if (annotations.length > 0) {
-                    const improvements = annotations.filter(a => a.category === 'improvement');
-                    const problems = annotations.filter(a => a.category === 'problem');
-
-                    this.slides.push({
-                        html: `
-                            <div class="py-8">
-                                <h2 class="font-elegant text-2xl text-warm-gray-800 mb-8 text-center">まとめ</h2>
-                                ${problems.length > 0 ? `
-                                <div class="mb-8">
-                                    <h3 class="text-lg text-rose-700 font-medium mb-3">主要な課題</h3>
-                                    <ul class="space-y-2">
-                                        ${problems.map(p => `<li class="text-sm text-warm-gray-600 flex items-start gap-2"><span class="text-rose-500 mt-1">●</span><span>${escapeHTML(p.nodeText)}: ${escapeHTML(p.comment)}</span></li>`).join('')}
-                                    </ul>
-                                </div>
-                                ` : ''}
-                                ${improvements.length > 0 ? `
-                                <div class="mb-8">
-                                    <h3 class="text-lg text-navy-700 font-medium mb-3">改善提案</h3>
-                                    <ul class="space-y-2">
-                                        ${improvements.map(i => `<li class="text-sm text-warm-gray-600 flex items-start gap-2"><span class="text-navy-500 mt-1">●</span><span>${escapeHTML(i.nodeText)}: ${escapeHTML(i.comment)}</span></li>`).join('')}
-                                    </ul>
-                                </div>
-                                ` : ''}
-                                <div class="text-center mt-12 pt-8 border-t border-warm-gray-200">
-                                    <p class="text-sm text-warm-gray-400">AYCC - AI YASUDA CREATIVE & CONSULTING</p>
-                                </div>
+                return {
+                    html: `
+                        <div class="py-8">
+                            <h2 class="font-elegant text-2xl text-warm-gray-800 mb-8 text-center">まとめ</h2>
+                            ${problems.length > 0 ? `
+                            <div class="mb-8">
+                                <h3 class="text-lg text-rose-700 font-medium mb-3">主要な課題</h3>
+                                <ul class="space-y-2">
+                                    ${problems.map(p => `<li class="text-sm text-warm-gray-600 flex items-start gap-2"><span class="text-rose-500 mt-1">●</span><span>${escapeHTML(p.nodeText)}: ${escapeHTML(p.comment)}</span></li>`).join('')}
+                                </ul>
                             </div>
-                        `
-                    });
-                }
+                            ` : ''}
+                            ${improvements.length > 0 ? `
+                            <div class="mb-8">
+                                <h3 class="text-lg text-navy-700 font-medium mb-3">改善提案</h3>
+                                <ul class="space-y-2">
+                                    ${improvements.map(i => `<li class="text-sm text-warm-gray-600 flex items-start gap-2"><span class="text-navy-500 mt-1">●</span><span>${escapeHTML(i.nodeText)}: ${escapeHTML(i.comment)}</span></li>`).join('')}
+                                </ul>
+                            </div>
+                            ` : ''}
+                            <div class="text-center mt-12 pt-8 border-t border-warm-gray-200">
+                                <p class="text-sm text-warm-gray-400">AYCC - AI YASUDA CREATIVE & CONSULTING</p>
+                            </div>
+                        </div>
+                    `
+                };
             }
 
             render() {
@@ -6143,31 +6124,34 @@ ${annotationSection}
 
         const presentationMode = new PresentationMode();
 
-        // PDF・プレゼンボタンのイベントリスナー
-        document.getElementById('pdf-report-btn').addEventListener('click', async () => {
-            const btn = document.getElementById('pdf-report-btn');
-            const originalText = btn.textContent;
-            btn.textContent = '生成中...';
-            btn.disabled = true;
+        // ========== レポート関連イベント ==========
+        function initReportEvents() {
+            // PDF・プレゼンボタンのイベントリスナー
+            document.getElementById('pdf-report-btn').addEventListener('click', async () => {
+                const btn = document.getElementById('pdf-report-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '生成中...';
+                btn.disabled = true;
 
-            try {
-                await generatePDF();
-                btn.textContent = '完了!';
-                setTimeout(() => {
+                try {
+                    await generatePDF();
+                    btn.textContent = '完了!';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.disabled = false;
+                    }, 2000);
+                } catch (error) {
+                    console.error('PDF generation error:', error);
+                    alert('PDFの生成に失敗しました: ' + error.message);
                     btn.textContent = originalText;
                     btn.disabled = false;
-                }, 2000);
-            } catch (error) {
-                console.error('PDF generation error:', error);
-                alert('PDFの生成に失敗しました: ' + error.message);
-                btn.textContent = originalText;
-                btn.disabled = false;
-            }
-        });
+                }
+            });
 
-        document.getElementById('presentation-btn').addEventListener('click', () => {
-            presentationMode.open();
-        });
+            document.getElementById('presentation-btn').addEventListener('click', () => {
+                presentationMode.open();
+            });
+        }
 
         // スクロールアニメーション
         const fadeElements = document.querySelectorAll('.fade-in-section');
