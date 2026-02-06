@@ -21,6 +21,9 @@
     <!-- Mermaid.js -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+
     <!-- Custom Tailwind Configuration -->
     <script>
         tailwind.config = {
@@ -590,13 +593,20 @@
                 </div>
 
                 <!-- テーマ選択（比較モード用、2つの図に共通適用） -->
-                <div class="flex justify-center mt-6">
+                <div class="flex justify-center mt-6 gap-4 flex-wrap items-center">
                     <select id="compare-theme-select" class="border border-warm-gray-300 rounded px-3 py-1.5 text-xs focus:outline-none">
                         <option value="default">テーマ: Default</option>
                         <option value="neutral">テーマ: Neutral</option>
                         <option value="dark">テーマ: Dark</option>
                         <option value="forest">テーマ: Forest</option>
                     </select>
+
+                    <button id="pdf-report-btn" class="border border-rose-400 text-rose-600 text-sm px-5 py-2 tracking-wider hover:bg-rose-600 hover:text-white hover:border-rose-600 transition-all duration-300 rounded">
+                        PDFレポート出力
+                    </button>
+                    <button id="presentation-btn" class="border border-navy-400 text-navy-600 text-sm px-5 py-2 tracking-wider hover:bg-navy-700 hover:text-white hover:border-navy-700 transition-all duration-300 rounded">
+                        プレゼンテーション
+                    </button>
                 </div>
             </div>
             <!-- /比較モード -->
@@ -2741,7 +2751,488 @@
 
         // ページ読み込み時にプロジェクト一覧を表示
         renderProjectList();
+
+        // === PDF レポート生成 ===
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            if (!jsPDF) {
+                alert('jsPDFライブラリの読み込みに失敗しました');
+                return;
+            }
+
+            const projectName = document.getElementById('project-name').value.trim() || '無題のプロジェクト';
+            const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+            const pageWidth = 297;
+            const pageHeight = 210;
+
+            function createPageCanvas(width = 2970, height = 2100) {
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, width, height);
+                return { canvas, ctx };
+            }
+
+            // ページ1: 表紙
+            const { canvas: coverCanvas, ctx: coverCtx } = createPageCanvas();
+            coverCtx.fillStyle = '#292524';
+            coverCtx.font = 'bold 120px "Noto Serif JP", serif';
+            coverCtx.textAlign = 'center';
+            coverCtx.fillText('業務フロー改善レポート', 1485, 800);
+
+            coverCtx.fillStyle = '#78716c';
+            coverCtx.font = '60px "Noto Sans JP", sans-serif';
+            coverCtx.fillText(projectName, 1485, 1000);
+
+            const today = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
+            coverCtx.fillStyle = '#a8a29e';
+            coverCtx.font = '40px "Noto Sans JP", sans-serif';
+            coverCtx.fillText(`作成日: ${today}`, 1485, 1600);
+            coverCtx.fillText('AYCC - AI YASUDA CREATIVE & CONSULTING', 1485, 1700);
+
+            pdf.addImage(coverCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
+
+            // ページ2: As-Is図
+            const asisSvg = document.getElementById('asis-preview').querySelector('svg');
+            if (asisSvg) {
+                pdf.addPage();
+                const { canvas: headerCanvas, ctx: headerCtx } = createPageCanvas();
+                headerCtx.fillStyle = '#be185d';
+                headerCtx.font = 'bold 80px "Noto Serif JP", serif';
+                headerCtx.textAlign = 'center';
+                headerCtx.fillText('As-Is（現状フロー）', 1485, 200);
+
+                try {
+                    const svgData = new XMLSerializer().serializeToString(asisSvg);
+                    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+                    const url = URL.createObjectURL(svgBlob);
+                    const img = new Image();
+
+                    await new Promise((resolve, reject) => {
+                        img.onload = () => {
+                            const scale = Math.min((pageWidth * 8) / img.width, (pageHeight * 6) / img.height);
+                            const scaledWidth = img.width * scale;
+                            const scaledHeight = img.height * scale;
+                            const x = (2970 - scaledWidth) / 2;
+                            const y = 400;
+
+                            headerCtx.drawImage(img, x, y, scaledWidth, scaledHeight);
+                            URL.revokeObjectURL(url);
+                            resolve();
+                        };
+                        img.onerror = reject;
+                        img.src = url;
+                    });
+                } catch (error) {
+                    console.error('As-Is SVG rendering error:', error);
+                }
+
+                pdf.addImage(headerCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
+            }
+
+            // ページ3: 課題一覧
+            const annotations = window.annotationManager?.annotations?.asis || [];
+            if (annotations.length > 0) {
+                pdf.addPage();
+                const { canvas: issueCanvas, ctx: issueCtx } = createPageCanvas();
+                issueCtx.fillStyle = '#292524';
+                issueCtx.font = 'bold 80px "Noto Serif JP", serif';
+                issueCtx.textAlign = 'center';
+                issueCtx.fillText('発見された課題', 1485, 200);
+
+                const categoryLabels = { problem: '問題点', improvement: '改善案', question: '質問', memo: 'メモ' };
+                const categoryColors = { problem: '#ef4444', improvement: '#3b82f6', question: '#d97706', memo: '#6b7280' };
+
+                let y = 400;
+                const rowHeight = 120;
+                const maxRows = 12;
+
+                issueCtx.font = '45px "Noto Sans JP", sans-serif';
+                issueCtx.fillStyle = '#78716c';
+                issueCtx.textAlign = 'left';
+                issueCtx.fillText('カテゴリ', 200, y);
+                issueCtx.fillText('対象', 600, y);
+                issueCtx.fillText('コメント', 1200, y);
+                y += 80;
+
+                issueCtx.strokeStyle = '#d6d3d1';
+                issueCtx.lineWidth = 3;
+                issueCtx.beginPath();
+                issueCtx.moveTo(150, y);
+                issueCtx.lineTo(2820, y);
+                issueCtx.stroke();
+                y += 40;
+
+                annotations.slice(0, maxRows).forEach(ann => {
+                    issueCtx.fillStyle = categoryColors[ann.category];
+                    issueCtx.font = 'bold 40px "Noto Sans JP", sans-serif';
+                    issueCtx.fillText(categoryLabels[ann.category], 200, y);
+
+                    issueCtx.fillStyle = '#44403c';
+                    issueCtx.font = '38px "Noto Sans JP", sans-serif';
+                    const nodeText = ann.nodeText.length > 20 ? ann.nodeText.substring(0, 20) + '...' : ann.nodeText;
+                    issueCtx.fillText(nodeText, 600, y);
+
+                    const comment = ann.comment.length > 40 ? ann.comment.substring(0, 40) + '...' : ann.comment;
+                    issueCtx.fillText(comment, 1200, y);
+
+                    y += rowHeight;
+                });
+
+                pdf.addImage(issueCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
+            }
+
+            // ページ4: To-Be図
+            const tobeSvg = document.getElementById('tobe-preview').querySelector('svg');
+            if (tobeSvg) {
+                pdf.addPage();
+                const { canvas: tobeHeaderCanvas, ctx: tobeHeaderCtx } = createPageCanvas();
+                tobeHeaderCtx.fillStyle = '#3a5270';
+                tobeHeaderCtx.font = 'bold 80px "Noto Serif JP", serif';
+                tobeHeaderCtx.textAlign = 'center';
+                tobeHeaderCtx.fillText('To-Be（改善後フロー）', 1485, 200);
+
+                try {
+                    const svgData = new XMLSerializer().serializeToString(tobeSvg);
+                    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+                    const url = URL.createObjectURL(svgBlob);
+                    const img = new Image();
+
+                    await new Promise((resolve, reject) => {
+                        img.onload = () => {
+                            const scale = Math.min((pageWidth * 8) / img.width, (pageHeight * 6) / img.height);
+                            const scaledWidth = img.width * scale;
+                            const scaledHeight = img.height * scale;
+                            const x = (2970 - scaledWidth) / 2;
+                            const y = 400;
+
+                            tobeHeaderCtx.drawImage(img, x, y, scaledWidth, scaledHeight);
+                            URL.revokeObjectURL(url);
+                            resolve();
+                        };
+                        img.onerror = reject;
+                        img.src = url;
+                    });
+                } catch (error) {
+                    console.error('To-Be SVG rendering error:', error);
+                }
+
+                pdf.addImage(tobeHeaderCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
+            }
+
+            // ページ5: まとめ
+            if (annotations.length > 0) {
+                pdf.addPage();
+                const { canvas: summaryCanvas, ctx: summaryCtx } = createPageCanvas();
+                summaryCtx.fillStyle = '#292524';
+                summaryCtx.font = 'bold 80px "Noto Serif JP", serif';
+                summaryCtx.textAlign = 'center';
+                summaryCtx.fillText('まとめ', 1485, 200);
+
+                const problems = annotations.filter(a => a.category === 'problem');
+                const improvements = annotations.filter(a => a.category === 'improvement');
+
+                let y = 400;
+                summaryCtx.textAlign = 'left';
+
+                if (problems.length > 0) {
+                    summaryCtx.fillStyle = '#be185d';
+                    summaryCtx.font = 'bold 60px "Noto Serif JP", serif';
+                    summaryCtx.fillText('主要な課題', 300, y);
+                    y += 100;
+
+                    summaryCtx.font = '45px "Noto Sans JP", sans-serif';
+                    summaryCtx.fillStyle = '#44403c';
+                    problems.slice(0, 4).forEach(p => {
+                        summaryCtx.fillStyle = '#ef4444';
+                        summaryCtx.fillText('●', 350, y);
+                        summaryCtx.fillStyle = '#44403c';
+                        const text = `${p.nodeText}: ${p.comment}`;
+                        const displayText = text.length > 60 ? text.substring(0, 60) + '...' : text;
+                        summaryCtx.fillText(displayText, 450, y);
+                        y += 90;
+                    });
+                    y += 80;
+                }
+
+                if (improvements.length > 0) {
+                    summaryCtx.fillStyle = '#3a5270';
+                    summaryCtx.font = 'bold 60px "Noto Serif JP", serif';
+                    summaryCtx.fillText('改善提案', 300, y);
+                    y += 100;
+
+                    summaryCtx.font = '45px "Noto Sans JP", sans-serif';
+                    improvements.slice(0, 4).forEach(i => {
+                        summaryCtx.fillStyle = '#3b82f6';
+                        summaryCtx.fillText('●', 350, y);
+                        summaryCtx.fillStyle = '#44403c';
+                        const text = `${i.nodeText}: ${i.comment}`;
+                        const displayText = text.length > 60 ? text.substring(0, 60) + '...' : text;
+                        summaryCtx.fillText(displayText, 450, y);
+                        y += 90;
+                    });
+                }
+
+                summaryCtx.strokeStyle = '#d6d3d1';
+                summaryCtx.lineWidth = 2;
+                summaryCtx.beginPath();
+                summaryCtx.moveTo(300, 1800);
+                summaryCtx.lineTo(2670, 1800);
+                summaryCtx.stroke();
+
+                summaryCtx.fillStyle = '#a8a29e';
+                summaryCtx.font = '40px "Noto Sans JP", sans-serif';
+                summaryCtx.textAlign = 'center';
+                summaryCtx.fillText('AYCC - AI YASUDA CREATIVE & CONSULTING', 1485, 1900);
+
+                pdf.addImage(summaryCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
+            }
+
+            pdf.save(`report-${projectName}.pdf`);
+        }
+
+        // === プレゼンテーションモード ===
+        class PresentationMode {
+            constructor() {
+                this.currentSlide = 0;
+                this.slides = [];
+                this.overlay = document.getElementById('presentation-overlay');
+                this.isOpen = false;
+                this.init();
+            }
+
+            init() {
+                document.getElementById('pres-close').addEventListener('click', () => this.close());
+                document.getElementById('pres-prev').addEventListener('click', () => this.prev());
+                document.getElementById('pres-next').addEventListener('click', () => this.next());
+
+                document.addEventListener('keydown', (e) => {
+                    if (!this.isOpen) return;
+                    if (e.key === 'Escape') this.close();
+                    if (e.key === 'ArrowRight' || e.key === ' ') {
+                        e.preventDefault();
+                        this.next();
+                    }
+                    if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        this.prev();
+                    }
+                });
+            }
+
+            open() {
+                this.buildSlides();
+                if (this.slides.length === 0) {
+                    alert('プレゼンテーション用のコンテンツがありません。As-Is図またはTo-Be図を作成してください。');
+                    return;
+                }
+                this.currentSlide = 0;
+                this.isOpen = true;
+                this.overlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                this.render();
+            }
+
+            close() {
+                this.isOpen = false;
+                this.overlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+
+            buildSlides() {
+                const projectName = document.getElementById('project-name').value.trim() || '無題のプロジェクト';
+                const today = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
+
+                this.slides = [];
+
+                // スライド1: タイトル
+                this.slides.push({
+                    html: `
+                        <div class="text-center py-16">
+                            <p class="text-warm-gray-400 text-sm tracking-widest mb-8">BUSINESS FLOW IMPROVEMENT</p>
+                            <h1 class="font-elegant text-4xl text-warm-gray-800 mb-4">業務フロー改善レポート</h1>
+                            <div class="divider mb-8"></div>
+                            <p class="text-xl text-warm-gray-600 mb-12">${projectName}</p>
+                            <p class="text-sm text-warm-gray-400">${today}</p>
+                            <p class="text-sm text-warm-gray-400 mt-2">AYCC - AI YASUDA CREATIVE & CONSULTING</p>
+                        </div>
+                    `
+                });
+
+                // スライド2: As-Is
+                const asisSvg = document.getElementById('asis-preview').querySelector('svg');
+                if (asisSvg) {
+                    this.slides.push({
+                        html: `
+                            <h2 class="font-elegant text-2xl text-rose-700 mb-6 text-center">As-Is（現状フロー）</h2>
+                            <div class="flex justify-center">${asisSvg.outerHTML}</div>
+                        `
+                    });
+                }
+
+                // スライド3: 課題一覧
+                const annotations = window.annotationManager?.annotations?.asis || [];
+                if (annotations.length > 0) {
+                    const categoryLabels = { problem: '問題点', improvement: '改善案', question: '質問', memo: 'メモ' };
+                    const categoryColors = { problem: '#ef4444', improvement: '#3b82f6', question: '#d97706', memo: '#6b7280' };
+
+                    const rows = annotations.map(a => `
+                        <tr class="border-b border-warm-gray-200">
+                            <td class="py-3 px-4"><span style="color:${categoryColors[a.category]}" class="font-medium text-sm">${categoryLabels[a.category]}</span></td>
+                            <td class="py-3 px-4 text-sm text-warm-gray-700">${a.nodeText}</td>
+                            <td class="py-3 px-4 text-sm text-warm-gray-600">${a.comment}</td>
+                        </tr>
+                    `).join('');
+
+                    this.slides.push({
+                        html: `
+                            <h2 class="font-elegant text-2xl text-warm-gray-800 mb-6 text-center">発見された課題</h2>
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b-2 border-warm-gray-300">
+                                        <th class="py-3 px-4 text-left text-sm text-warm-gray-500 w-24">カテゴリ</th>
+                                        <th class="py-3 px-4 text-left text-sm text-warm-gray-500 w-40">対象</th>
+                                        <th class="py-3 px-4 text-left text-sm text-warm-gray-500">コメント</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${rows}</tbody>
+                            </table>
+                        `
+                    });
+                }
+
+                // スライド4: To-Be
+                const tobeSvg = document.getElementById('tobe-preview').querySelector('svg');
+                if (tobeSvg) {
+                    this.slides.push({
+                        html: `
+                            <h2 class="font-elegant text-2xl text-navy-700 mb-6 text-center">To-Be（改善後フロー）</h2>
+                            <div class="flex justify-center">${tobeSvg.outerHTML}</div>
+                        `
+                    });
+                }
+
+                // スライド5: まとめ
+                if (annotations.length > 0) {
+                    const improvements = annotations.filter(a => a.category === 'improvement');
+                    const problems = annotations.filter(a => a.category === 'problem');
+
+                    this.slides.push({
+                        html: `
+                            <div class="py-8">
+                                <h2 class="font-elegant text-2xl text-warm-gray-800 mb-8 text-center">まとめ</h2>
+                                ${problems.length > 0 ? `
+                                <div class="mb-8">
+                                    <h3 class="text-lg text-rose-700 font-medium mb-3">主要な課題</h3>
+                                    <ul class="space-y-2">
+                                        ${problems.map(p => `<li class="text-sm text-warm-gray-600 flex items-start gap-2"><span class="text-rose-500 mt-1">●</span><span>${p.nodeText}: ${p.comment}</span></li>`).join('')}
+                                    </ul>
+                                </div>
+                                ` : ''}
+                                ${improvements.length > 0 ? `
+                                <div class="mb-8">
+                                    <h3 class="text-lg text-navy-700 font-medium mb-3">改善提案</h3>
+                                    <ul class="space-y-2">
+                                        ${improvements.map(i => `<li class="text-sm text-warm-gray-600 flex items-start gap-2"><span class="text-navy-500 mt-1">●</span><span>${i.nodeText}: ${i.comment}</span></li>`).join('')}
+                                    </ul>
+                                </div>
+                                ` : ''}
+                                <div class="text-center mt-12 pt-8 border-t border-warm-gray-200">
+                                    <p class="text-sm text-warm-gray-400">AYCC - AI YASUDA CREATIVE & CONSULTING</p>
+                                </div>
+                            </div>
+                        `
+                    });
+                }
+            }
+
+            render() {
+                const slide = this.slides[this.currentSlide];
+                document.getElementById('pres-slide').innerHTML = slide.html;
+                document.getElementById('pres-page-indicator').textContent = `${this.currentSlide + 1} / ${this.slides.length}`;
+
+                const svgs = document.getElementById('pres-slide').querySelectorAll('svg');
+                svgs.forEach(svg => {
+                    svg.style.maxWidth = '100%';
+                    svg.style.height = 'auto';
+                });
+
+                document.getElementById('pres-prev').style.visibility = this.currentSlide === 0 ? 'hidden' : 'visible';
+                document.getElementById('pres-next').style.visibility = this.currentSlide === this.slides.length - 1 ? 'hidden' : 'visible';
+            }
+
+            next() {
+                if (this.currentSlide < this.slides.length - 1) {
+                    this.currentSlide++;
+                    this.render();
+                }
+            }
+
+            prev() {
+                if (this.currentSlide > 0) {
+                    this.currentSlide--;
+                    this.render();
+                }
+            }
+        }
+
+        const presentationMode = new PresentationMode();
+
+        // PDF・プレゼンボタンのイベントリスナー
+        document.getElementById('pdf-report-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('pdf-report-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '生成中...';
+            btn.disabled = true;
+
+            try {
+                await generatePDF();
+                btn.textContent = '完了!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }, 2000);
+            } catch (error) {
+                console.error('PDF generation error:', error);
+                alert('PDFの生成に失敗しました: ' + error.message);
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        document.getElementById('presentation-btn').addEventListener('click', () => {
+            presentationMode.open();
+        });
     </script>
+
+    <!-- プレゼンテーションモード -->
+    <div id="presentation-overlay" class="hidden fixed inset-0 z-[300] bg-warm-gray-900 flex flex-col">
+        <!-- ヘッダー -->
+        <div class="flex items-center justify-between px-8 py-4">
+            <span class="text-warm-gray-400 text-sm" id="pres-title"></span>
+            <div class="flex items-center gap-4">
+                <span class="text-warm-gray-400 text-sm" id="pres-page-indicator">1 / 5</span>
+                <button id="pres-close" class="text-warm-gray-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- スライドコンテンツ -->
+        <div class="flex-1 flex items-center justify-center px-8 pb-8">
+            <div id="pres-slide" class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-full overflow-auto p-12">
+                <!-- スライド内容がここに動的挿入 -->
+            </div>
+        </div>
+
+        <!-- ナビゲーション -->
+        <div class="flex justify-center gap-4 pb-6">
+            <button id="pres-prev" class="text-warm-gray-400 hover:text-white px-4 py-2 transition-colors">← 前へ</button>
+            <button id="pres-next" class="text-warm-gray-400 hover:text-white px-4 py-2 transition-colors">次へ →</button>
+        </div>
+    </div>
 
     <!-- アノテーション追加ポップアップ -->
     <div id="annotation-popup" class="hidden">
