@@ -259,6 +259,108 @@
             background: #3a5270;
             color: #fff;
         }
+
+        /* アノテーション関連 */
+        .annotation-mode .node {
+            cursor: crosshair !important;
+        }
+
+        .annotation-mode .node:hover rect,
+        .annotation-mode .node:hover polygon,
+        .annotation-mode .node:hover circle,
+        .annotation-mode .node:hover ellipse {
+            stroke: #f59e0b !important;
+            stroke-width: 3px !important;
+            stroke-dasharray: 5 !important;
+        }
+
+        .annotated-problem rect,
+        .annotated-problem polygon,
+        .annotated-problem circle,
+        .annotated-problem ellipse {
+            stroke: #ef4444 !important;
+            stroke-width: 3px !important;
+        }
+
+        .annotated-improvement rect,
+        .annotated-improvement polygon,
+        .annotated-improvement circle,
+        .annotated-improvement ellipse {
+            stroke: #3b82f6 !important;
+            stroke-width: 3px !important;
+        }
+
+        .annotated-question rect,
+        .annotated-question polygon,
+        .annotated-question circle,
+        .annotated-question ellipse {
+            stroke: #f59e0b !important;
+            stroke-width: 3px !important;
+        }
+
+        .annotated-memo rect,
+        .annotated-memo polygon,
+        .annotated-memo circle,
+        .annotated-memo ellipse {
+            stroke: #6b7280 !important;
+            stroke-width: 3px !important;
+        }
+
+        .annotation-popup {
+            position: fixed;
+            z-index: 200;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e7e5e4;
+            padding: 1rem;
+            width: 20rem;
+            max-width: 90vw;
+        }
+
+        .annotation-category-btn {
+            transition: all 0.2s;
+        }
+
+        .annotation-category-btn.selected {
+            ring: 2px;
+            ring-offset: 2px;
+            font-weight: 600;
+            transform: scale(1.05);
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid;
+        }
+
+        .category-badge.problem {
+            background: #fef2f2;
+            color: #ef4444;
+            border-color: #fecaca;
+        }
+
+        .category-badge.improvement {
+            background: #eff6ff;
+            color: #3b82f6;
+            border-color: #bfdbfe;
+        }
+
+        .category-badge.question {
+            background: #fffbeb;
+            color: #d97706;
+            border-color: #fde68a;
+        }
+
+        .category-badge.memo {
+            background: #f9fafb;
+            color: #6b7280;
+            border-color: #e5e7eb;
+        }
     </style>
 </head>
 <body class="bg-warm-gray-50">
@@ -359,12 +461,21 @@
                 <div class="bg-white p-6 border-elegant">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-sm font-medium text-warm-gray-700">プレビュー</h3>
-                        <select id="theme-select" class="border border-warm-gray-300 rounded px-2 py-1 text-xs focus:outline-none">
-                            <option value="default">テーマ: Default</option>
-                            <option value="neutral">テーマ: Neutral</option>
-                            <option value="dark">テーマ: Dark</option>
-                            <option value="forest">テーマ: Forest</option>
-                        </select>
+                        <div class="flex items-center gap-3">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" id="annotation-toggle" class="sr-only peer">
+                                <div class="relative w-9 h-5 bg-warm-gray-200 rounded-full peer peer-checked:bg-rose-400 transition-colors">
+                                    <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-4"></div>
+                                </div>
+                                <span class="text-xs text-warm-gray-500">アノテーション</span>
+                            </label>
+                            <select id="theme-select" class="border border-warm-gray-300 rounded px-2 py-1 text-xs focus:outline-none">
+                                <option value="default">テーマ: Default</option>
+                                <option value="neutral">テーマ: Neutral</option>
+                                <option value="dark">テーマ: Dark</option>
+                                <option value="forest">テーマ: Forest</option>
+                            </select>
+                        </div>
                     </div>
                     <div id="preview-area" class="bg-white border border-warm-gray-200 rounded p-4 flex items-center justify-center">
                         <p class="text-warm-gray-400 text-sm">図がここに表示されます</p>
@@ -376,6 +487,15 @@
                         <button id="download-svg-btn" class="border border-warm-gray-400 text-warm-gray-600 text-sm px-5 py-2.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
                             SVGダウンロード
                         </button>
+                    </div>
+                    <div id="annotation-panel" class="mt-4 hidden">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="text-sm font-medium text-warm-gray-700">アノテーション一覧</h4>
+                            <button id="export-annotations-btn" class="text-xs text-navy-600 hover:text-navy-800 transition-colors">課題に転送 →</button>
+                        </div>
+                        <div id="annotation-list" class="space-y-2">
+                            <p class="text-warm-gray-400 text-xs">アノテーションはまだありません</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -404,6 +524,13 @@
                         <div class="bg-white p-6 border-elegant">
                             <div class="flex items-center justify-between mb-3">
                                 <h4 class="text-sm font-medium text-warm-gray-700">プレビュー</h4>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" id="compare-annotation-toggle" class="sr-only peer">
+                                    <div class="relative w-9 h-5 bg-warm-gray-200 rounded-full peer peer-checked:bg-rose-400 transition-colors">
+                                        <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-4"></div>
+                                    </div>
+                                    <span class="text-xs text-warm-gray-500">アノテーション</span>
+                                </label>
                             </div>
                             <div id="asis-preview" class="bg-white border border-warm-gray-200 rounded p-4 flex items-center justify-center" style="min-height: 250px; overflow: auto;">
                                 <p class="text-warm-gray-400 text-sm">As-Is図がここに表示されます</p>
@@ -411,6 +538,14 @@
                             <div class="flex gap-3 mt-3">
                                 <button id="asis-png-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">PNG</button>
                                 <button id="asis-svg-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">SVG</button>
+                            </div>
+                            <div id="asis-annotation-panel" class="mt-4 hidden">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h4 class="text-sm font-medium text-warm-gray-700">アノテーション一覧</h4>
+                                </div>
+                                <div id="asis-annotation-list" class="space-y-2">
+                                    <p class="text-warm-gray-400 text-xs">アノテーションはまだありません</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -440,6 +575,15 @@
                             <div class="flex gap-3 mt-3">
                                 <button id="tobe-png-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">PNG</button>
                                 <button id="tobe-svg-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">SVG</button>
+                            </div>
+                            <div id="tobe-annotation-panel" class="mt-4 hidden">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h4 class="text-sm font-medium text-warm-gray-700">アノテーション一覧</h4>
+                                    <button id="export-compare-annotations-btn" class="text-xs text-navy-600 hover:text-navy-800 transition-colors">課題に転送 →</button>
+                                </div>
+                                <div id="tobe-annotation-list" class="space-y-2">
+                                    <p class="text-warm-gray-400 text-xs">アノテーションはまだありません</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1619,6 +1763,350 @@
             securityLevel: 'loose'
         });
 
+        // アノテーション管理クラス
+        class AnnotationManager {
+            constructor() {
+                this.annotations = {
+                    single: [],
+                    asis: [],
+                    tobe: []
+                };
+                this.annotationMode = false;
+                this.compareAnnotationMode = false;
+                this.currentTarget = null;
+                this.selectedCategory = 'problem';
+                this.currentNodeText = '';
+                this.popup = document.getElementById('annotation-popup');
+                this.init();
+            }
+
+            init() {
+                // 通常モードのトグル
+                const toggle = document.getElementById('annotation-toggle');
+                if (toggle) {
+                    toggle.addEventListener('change', (e) => {
+                        this.annotationMode = e.target.checked;
+                        this.toggleAnnotationMode('single', this.annotationMode);
+                    });
+                }
+
+                // 比較モードのトグル
+                const compareToggle = document.getElementById('compare-annotation-toggle');
+                if (compareToggle) {
+                    compareToggle.addEventListener('change', (e) => {
+                        this.compareAnnotationMode = e.target.checked;
+                        this.toggleAnnotationMode('asis', this.compareAnnotationMode);
+                        this.toggleAnnotationMode('tobe', this.compareAnnotationMode);
+                    });
+                }
+
+                // カテゴリボタン
+                document.querySelectorAll('.annotation-category-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.annotation-category-btn').forEach(b => {
+                            b.classList.remove('selected');
+                            b.style.transform = '';
+                            b.style.fontWeight = '';
+                        });
+                        btn.classList.add('selected');
+                        btn.style.transform = 'scale(1.05)';
+                        btn.style.fontWeight = '600';
+                        this.selectedCategory = btn.dataset.category;
+                    });
+                });
+
+                // デフォルトで問題点を選択
+                const problemBtn = document.querySelector('.annotation-category-btn[data-category="problem"]');
+                if (problemBtn) {
+                    problemBtn.classList.add('selected');
+                    problemBtn.style.transform = 'scale(1.05)';
+                    problemBtn.style.fontWeight = '600';
+                }
+
+                // 追加ボタン
+                document.getElementById('annotation-add').addEventListener('click', () => {
+                    const comment = document.getElementById('annotation-comment').value.trim();
+                    if (!comment) {
+                        alert('コメントを入力してください');
+                        return;
+                    }
+                    this.addAnnotation(this.currentNodeText, this.selectedCategory, comment, this.currentTarget);
+                    this.hidePopup();
+                });
+
+                // キャンセルボタン
+                document.getElementById('annotation-cancel').addEventListener('click', () => {
+                    this.hidePopup();
+                });
+
+                // ポップアップ外をクリックで閉じる
+                this.popup.addEventListener('click', (e) => {
+                    if (e.target === this.popup) {
+                        this.hidePopup();
+                    }
+                });
+
+                // 課題に転送ボタン（通常モード）
+                const exportBtn = document.getElementById('export-annotations-btn');
+                if (exportBtn) {
+                    exportBtn.addEventListener('click', () => this.exportToIssues());
+                }
+
+                // 課題に転送ボタン（比較モード）
+                const exportCompareBtn = document.getElementById('export-compare-annotations-btn');
+                if (exportCompareBtn) {
+                    exportCompareBtn.addEventListener('click', () => this.exportToIssues());
+                }
+            }
+
+            toggleAnnotationMode(target, enabled) {
+                const previewEl = this.getPreviewEl(target);
+                if (!previewEl) return;
+
+                if (enabled) {
+                    previewEl.classList.add('annotation-mode');
+                    this.attachNodeListeners(previewEl, target);
+                } else {
+                    previewEl.classList.remove('annotation-mode');
+                    this.detachNodeListeners(previewEl);
+                }
+
+                // パネルの表示/非表示
+                const panelEl = this.getPanelEl(target);
+                if (panelEl) {
+                    if (enabled) {
+                        panelEl.classList.remove('hidden');
+                    } else {
+                        panelEl.classList.add('hidden');
+                    }
+                }
+            }
+
+            attachNodeListeners(previewEl, target) {
+                const svg = previewEl.querySelector('svg');
+                if (!svg) return;
+
+                const nodes = svg.querySelectorAll('g.node, g[class*="node"]');
+                nodes.forEach(node => {
+                    node.style.cursor = 'crosshair';
+                    node.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const nodeText = this.getNodeText(node);
+                        this.showPopup(e, nodeText, target);
+                    });
+                });
+            }
+
+            detachNodeListeners(previewEl) {
+                const nodes = previewEl.querySelectorAll('g.node, g[class*="node"]');
+                nodes.forEach(node => {
+                    node.style.cursor = '';
+                    node.replaceWith(node.cloneNode(true));
+                });
+            }
+
+            getNodeText(nodeEl) {
+                const foreignObject = nodeEl.querySelector('foreignObject span, foreignObject div');
+                if (foreignObject) {
+                    return foreignObject.textContent.trim();
+                }
+                const textEl = nodeEl.querySelector('text');
+                if (textEl) {
+                    return textEl.textContent.trim();
+                }
+                return 'Unknown';
+            }
+
+            showPopup(event, nodeText, target) {
+                this.currentNodeText = nodeText;
+                this.currentTarget = target;
+
+                document.getElementById('annotation-node-name').textContent = nodeText;
+                document.getElementById('annotation-comment').value = '';
+
+                // ポップアップの位置を設定
+                const x = event.clientX;
+                const y = event.clientY;
+
+                this.popup.style.position = 'fixed';
+                this.popup.style.left = `${Math.min(x, window.innerWidth - 340)}px`;
+                this.popup.style.top = `${Math.min(y, window.innerHeight - 300)}px`;
+                this.popup.classList.remove('hidden');
+                this.popup.style.display = 'block';
+
+                document.getElementById('annotation-comment').focus();
+            }
+
+            hidePopup() {
+                this.popup.classList.add('hidden');
+                this.popup.style.display = 'none';
+            }
+
+            addAnnotation(nodeText, category, comment, target) {
+                const annotation = {
+                    id: Date.now(),
+                    nodeText,
+                    category,
+                    comment
+                };
+                this.annotations[target].push(annotation);
+                this.renderAnnotationList(target);
+                this.applyAnnotationStyles(target);
+            }
+
+            deleteAnnotation(id, target) {
+                this.annotations[target] = this.annotations[target].filter(a => a.id !== id);
+                this.renderAnnotationList(target);
+                this.applyAnnotationStyles(target);
+            }
+
+            applyAnnotationStyles(target) {
+                const previewEl = this.getPreviewEl(target);
+                if (!previewEl) return;
+
+                const svg = previewEl.querySelector('svg');
+                if (!svg) return;
+
+                // まずすべてのアノテーションスタイルをクリア
+                svg.querySelectorAll('g.node, g[class*="node"]').forEach(node => {
+                    node.classList.remove('annotated-problem', 'annotated-improvement', 'annotated-question', 'annotated-memo');
+                });
+
+                // アノテーションがあるノードにスタイルを適用
+                this.annotations[target].forEach(ann => {
+                    const node = this.findNodeByText(previewEl, ann.nodeText);
+                    if (node) {
+                        node.classList.add(`annotated-${ann.category}`);
+                    }
+                });
+            }
+
+            findNodeByText(previewEl, text) {
+                const svg = previewEl.querySelector('svg');
+                if (!svg) return null;
+
+                const nodes = svg.querySelectorAll('g.node, g[class*="node"]');
+                for (const node of nodes) {
+                    const nodeText = this.getNodeText(node);
+                    if (nodeText === text) return node;
+                }
+                return null;
+            }
+
+            renderAnnotationList(target) {
+                const listEl = this.getListEl(target);
+                if (!listEl) return;
+
+                const anns = this.annotations[target];
+
+                if (anns.length === 0) {
+                    listEl.innerHTML = '<p class="text-warm-gray-400 text-xs">アノテーションはまだありません</p>';
+                    return;
+                }
+
+                const categoryLabels = {
+                    problem: '問題点',
+                    improvement: '改善案',
+                    question: '質問',
+                    memo: 'メモ'
+                };
+
+                listEl.innerHTML = anns.map(ann => `
+                    <div class="flex items-start gap-3 p-3 bg-white border border-warm-gray-200 rounded-lg text-sm">
+                        <span class="shrink-0 category-badge ${ann.category}">${categoryLabels[ann.category]}</span>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-warm-gray-800 text-xs mb-0.5">${ann.nodeText}</p>
+                            <p class="text-warm-gray-600 text-xs">${ann.comment}</p>
+                        </div>
+                        <button class="delete-annotation-btn shrink-0 text-warm-gray-400 hover:text-red-500 transition-colors" data-id="${ann.id}" data-target="${target}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                `).join('');
+
+                // 削除ボタンのイベント
+                listEl.querySelectorAll('.delete-annotation-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.deleteAnnotation(parseInt(btn.dataset.id), btn.dataset.target);
+                    });
+                });
+            }
+
+            exportToIssues() {
+                const categoryLabels = {
+                    problem: '問題点',
+                    improvement: '改善案',
+                    question: '質問',
+                    memo: 'メモ'
+                };
+
+                // As-Isのアノテーションを優先、なければsingleのものを使用
+                const sourceAnns = this.annotations.asis.length > 0 ? this.annotations.asis : this.annotations.single;
+
+                if (sourceAnns.length === 0) {
+                    alert('転送するアノテーションがありません');
+                    return;
+                }
+
+                const issuesText = sourceAnns
+                    .map(ann => `- 【${categoryLabels[ann.category]}】${ann.nodeText}: ${ann.comment}`)
+                    .join('\n');
+
+                const issuesInput = document.getElementById('issues-input');
+                if (issuesInput) {
+                    issuesInput.value = issuesText;
+                    if (typeof updatePhase3Text === 'function') {
+                        updatePhase3Text();
+                    }
+                    alert('アノテーションを課題入力に転送しました');
+                } else {
+                    alert('課題入力欄が見つかりません');
+                }
+            }
+
+            getPreviewEl(target) {
+                if (target === 'single') return document.getElementById('preview-area');
+                if (target === 'asis') return document.getElementById('asis-preview');
+                if (target === 'tobe') return document.getElementById('tobe-preview');
+                return null;
+            }
+
+            getListEl(target) {
+                if (target === 'single') return document.getElementById('annotation-list');
+                if (target === 'asis') return document.getElementById('asis-annotation-list');
+                if (target === 'tobe') return document.getElementById('tobe-annotation-list');
+                return null;
+            }
+
+            getPanelEl(target) {
+                if (target === 'single') return document.getElementById('annotation-panel');
+                if (target === 'asis') return document.getElementById('asis-annotation-panel');
+                if (target === 'tobe') return document.getElementById('tobe-annotation-panel');
+                return null;
+            }
+
+            getAnnotationsForSave() {
+                return this.annotations;
+            }
+
+            loadAnnotations(data) {
+                if (data) {
+                    this.annotations = {
+                        single: data.single || [],
+                        asis: data.asis || [],
+                        tobe: data.tobe || []
+                    };
+                    ['single', 'asis', 'tobe'].forEach(target => {
+                        this.renderAnnotationList(target);
+                        this.applyAnnotationStyles(target);
+                    });
+                }
+            }
+        }
+
+        // アノテーションマネージャーのインスタンス作成
+        const annotationManager = new AnnotationManager();
+
         const editor = document.getElementById('editor');
         const previewArea = document.getElementById('preview-area');
         const templateSelect = document.getElementById('template-select');
@@ -1721,6 +2209,12 @@
                 previewArea.innerHTML = '';
                 const { svg } = await mermaid.render('mermaid-svg-' + renderCount++, code);
                 previewArea.innerHTML = svg;
+
+                // アノテーション機能を適用
+                if (annotationManager.annotationMode) {
+                    annotationManager.attachNodeListeners(previewArea, 'single');
+                }
+                annotationManager.applyAnnotationStyles('single');
             } catch (error) {
                 previewArea.innerHTML = '<p class="text-red-500 text-sm">記法エラー: 正しいMermaid記法を入力してください</p>';
             }
@@ -1957,6 +2451,13 @@
                 });
                 const { svg } = await mermaid.render('mermaid-svg-' + renderCount++, code);
                 previewEl.innerHTML = svg;
+
+                // アノテーション機能を適用
+                const target = previewEl === asisPreview ? 'asis' : 'tobe';
+                if (annotationManager.compareAnnotationMode) {
+                    annotationManager.attachNodeListeners(previewEl, target);
+                }
+                annotationManager.applyAnnotationStyles(target);
             } catch (error) {
                 previewEl.innerHTML = '<p class="text-red-500 text-sm">記法エラー: 正しいMermaid記法を入力してください</p>';
             }
@@ -2129,7 +2630,8 @@
                 savedAt: new Date().toISOString(),
                 singleEditor: editor.value,
                 asisEditor: asisEditor.value,
-                tobeEditor: tobeEditor.value
+                tobeEditor: tobeEditor.value,
+                annotations: annotationManager.getAnnotationsForSave()
             };
 
             let projects = JSON.parse(localStorage.getItem('mermaid-projects') || '[]');
@@ -2213,6 +2715,11 @@
             // プロジェクト名も復元
             document.getElementById('project-name').value = project.name;
 
+            // アノテーションを復元
+            if (project.annotations) {
+                annotationManager.loadAnnotations(project.annotations);
+            }
+
             // プレビュー更新
             updatePreview();
             renderComparePreview(asisEditor, asisPreview);
@@ -2235,6 +2742,25 @@
         // ページ読み込み時にプロジェクト一覧を表示
         renderProjectList();
     </script>
+
+    <!-- アノテーション追加ポップアップ -->
+    <div id="annotation-popup" class="hidden">
+        <div class="bg-white rounded-lg shadow-xl border border-warm-gray-200 p-4 w-80">
+            <h4 class="text-sm font-medium text-warm-gray-800 mb-3">アノテーション追加</h4>
+            <p id="annotation-node-name" class="text-xs text-warm-gray-500 mb-3 bg-warm-gray-50 px-2 py-1 rounded"></p>
+            <div class="flex gap-2 mb-3 flex-wrap">
+                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border" data-category="problem" style="border-color:#fecaca;color:#ef4444;background:#fef2f2;">問題点</button>
+                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border" data-category="improvement" style="border-color:#bfdbfe;color:#3b82f6;background:#eff6ff;">改善案</button>
+                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border" data-category="question" style="border-color:#fde68a;color:#d97706;background:#fffbeb;">質問</button>
+                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border" data-category="memo" style="border-color:#e5e7eb;color:#6b7280;background:#f9fafb;">メモ</button>
+            </div>
+            <textarea id="annotation-comment" class="w-full border border-warm-gray-300 rounded px-3 py-2 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-navy-400 mb-3" placeholder="コメントを入力..."></textarea>
+            <div class="flex gap-2 justify-end">
+                <button id="annotation-cancel" class="text-xs text-warm-gray-500 px-3 py-1.5">キャンセル</button>
+                <button id="annotation-add" class="text-xs bg-navy-600 text-white px-4 py-1.5 rounded hover:bg-navy-700 transition-colors">追加</button>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
