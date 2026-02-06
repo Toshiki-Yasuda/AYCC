@@ -419,6 +419,22 @@
             </div>
             <!-- /比較モード -->
 
+            <!-- 保存セクション -->
+            <div class="mb-16">
+                <div class="bg-warm-gray-50 p-6 border-elegant">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <input id="project-name" type="text" placeholder="プロジェクト名を入力" class="border border-warm-gray-300 rounded px-3 py-2 text-sm flex-1 min-w-[200px] focus:outline-none focus:ring-2 focus:ring-navy-400">
+                        <button id="save-btn" class="border border-warm-gray-400 text-warm-gray-600 text-sm px-5 py-2.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">保存</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 保存済みプロジェクト一覧 -->
+            <div id="saved-projects" class="mb-16 hidden">
+                <h3 class="font-elegant text-lg text-warm-gray-800 mb-4">保存済みプロジェクト</h3>
+                <div id="project-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+
             <!-- テンプレートセクション -->
             <div class="mb-16">
                 <div class="text-center mb-10">
@@ -1319,6 +1335,127 @@
                 mobileMenu.classList.remove('menu-open');
             });
         });
+
+        // === LocalStorage保存機能 ===
+
+        // 保存ボタン
+        document.getElementById('save-btn').addEventListener('click', () => {
+            const name = document.getElementById('project-name').value.trim();
+            if (!name) {
+                alert('プロジェクト名を入力してください');
+                return;
+            }
+
+            const project = {
+                name: name,
+                savedAt: new Date().toISOString(),
+                singleEditor: editor.value,
+                asisEditor: asisEditor.value,
+                tobeEditor: tobeEditor.value
+            };
+
+            let projects = JSON.parse(localStorage.getItem('mermaid-projects') || '[]');
+            const existingIndex = projects.findIndex(p => p.name === name);
+            if (existingIndex >= 0) {
+                if (!confirm(`「${name}」を上書きしますか？`)) return;
+                projects[existingIndex] = project;
+            } else {
+                projects.push(project);
+            }
+            localStorage.setItem('mermaid-projects', JSON.stringify(projects));
+            renderProjectList();
+
+            const btn = document.getElementById('save-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '保存しました!';
+            setTimeout(() => btn.textContent = originalText, 2000);
+        });
+
+        // プロジェクト一覧を描画
+        function renderProjectList() {
+            const projects = JSON.parse(localStorage.getItem('mermaid-projects') || '[]');
+            const savedProjectsSection = document.getElementById('saved-projects');
+            const projectList = document.getElementById('project-list');
+
+            if (projects.length === 0) {
+                savedProjectsSection.classList.add('hidden');
+                return;
+            }
+
+            savedProjectsSection.classList.remove('hidden');
+            projectList.innerHTML = '';
+
+            projects.forEach((project, index) => {
+                const date = new Date(project.savedAt);
+                const formattedDate = date.toLocaleString('ja-JP');
+
+                const card = document.createElement('div');
+                card.className = 'bg-white p-4 border-elegant rounded-lg';
+                card.innerHTML = `
+                    <h4 class="font-medium text-warm-gray-800 text-sm mb-1">${project.name}</h4>
+                    <p class="text-xs text-warm-gray-400 mb-3">${formattedDate}</p>
+                    <div class="flex gap-2">
+                        <button class="load-project-btn border border-warm-gray-400 text-warm-gray-600 text-xs px-3 py-1.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300" data-index="${index}">読み込み</button>
+                        <button class="delete-project-btn border border-red-300 text-red-500 text-xs px-3 py-1.5 tracking-wider hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-300" data-index="${index}">削除</button>
+                    </div>
+                `;
+
+                projectList.appendChild(card);
+            });
+
+            // 読み込みボタンのイベント
+            document.querySelectorAll('.load-project-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(e.target.getAttribute('data-index'));
+                    loadProject(index);
+                });
+            });
+
+            // 削除ボタンのイベント
+            document.querySelectorAll('.delete-project-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(e.target.getAttribute('data-index'));
+                    deleteProject(index);
+                });
+            });
+        }
+
+        // プロジェクト読み込み
+        function loadProject(index) {
+            const projects = JSON.parse(localStorage.getItem('mermaid-projects') || '[]');
+            if (index < 0 || index >= projects.length) return;
+
+            const project = projects[index];
+
+            // エディタに値を復元
+            editor.value = project.singleEditor || '';
+            asisEditor.value = project.asisEditor || '';
+            tobeEditor.value = project.tobeEditor || '';
+
+            // プロジェクト名も復元
+            document.getElementById('project-name').value = project.name;
+
+            // プレビュー更新
+            updatePreview();
+            renderComparePreview(asisEditor, asisPreview);
+            renderComparePreview(tobeEditor, tobePreview);
+        }
+
+        // プロジェクト削除
+        function deleteProject(index) {
+            const projects = JSON.parse(localStorage.getItem('mermaid-projects') || '[]');
+            if (index < 0 || index >= projects.length) return;
+
+            const project = projects[index];
+            if (!confirm(`「${project.name}」を削除しますか？`)) return;
+
+            projects.splice(index, 1);
+            localStorage.setItem('mermaid-projects', JSON.stringify(projects));
+            renderProjectList();
+        }
+
+        // ページ読み込み時にプロジェクト一覧を表示
+        renderProjectList();
     </script>
 
 </body>
