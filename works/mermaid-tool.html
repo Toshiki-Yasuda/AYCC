@@ -555,6 +555,38 @@
             border-color: #ef4444;
         }
 
+        /* Presentation */
+        .pres-slide-transition {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .pres-slide-fade-out {
+            opacity: 0;
+            transform: scale(0.98);
+        }
+
+        .pres-nav-btn {
+            backdrop-filter: blur(4px);
+        }
+
+        .pres-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .pres-dot:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .pres-dot.active {
+            background: rgba(255, 255, 255, 0.9);
+            transform: scale(1.3);
+        }
+
         /* Modal animation */
         .modal-enter {
             animation: modalIn 0.2s ease-out;
@@ -914,16 +946,19 @@
                         <option value="dark">テーマ: Dark</option>
                         <option value="forest">テーマ: Forest</option>
                     </select>
-
-                    <button id="pdf-report-btn" class="btn btn-rose rounded">
-                        PDFレポート出力
-                    </button>
-                    <button id="presentation-btn" class="btn btn-navy rounded">
-                        プレゼンテーション
-                    </button>
                 </div>
             </div>
             <!-- /比較モード -->
+
+            <!-- レポート出力（両モード共通） -->
+            <div class="flex justify-center gap-4 flex-wrap items-center mb-16 mt-8">
+                <button id="pdf-report-btn" class="btn btn-rose rounded">
+                    PDFレポート出力
+                </button>
+                <button id="presentation-btn" class="btn btn-navy rounded">
+                    プレゼンテーション
+                </button>
+            </div>
 
             <!-- 保存セクション -->
             <div class="mb-16 pt-16 border-t border-warm-gray-200 fade-in-section">
@@ -1034,28 +1069,35 @@
     <!-- プレゼンテーションモード -->
     <div id="presentation-overlay" class="hidden fixed inset-0 z-[300] bg-warm-gray-900 flex flex-col">
         <!-- ヘッダー -->
-        <div class="flex items-center justify-between px-8 py-4">
-            <span class="text-warm-gray-400 text-sm" id="pres-title"></span>
+        <div class="flex items-center justify-between px-4 md:px-8 py-3">
+            <span class="text-warm-gray-400 text-sm truncate max-w-[200px]" id="pres-title"></span>
             <div class="flex items-center gap-4">
-                <span class="text-warm-gray-400 text-sm" id="pres-page-indicator">1 / 5</span>
-                <button id="pres-close" class="text-warm-gray-400 hover:text-white transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <span class="text-warm-gray-500 text-xs" id="pres-page-indicator">1 / 5</span>
+                <button id="pres-close" class="text-warm-gray-400 hover:text-white transition-colors p-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
         </div>
 
         <!-- スライドコンテンツ -->
-        <div class="flex-1 flex items-center justify-center px-8 pb-8">
-            <div id="pres-slide" class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-full overflow-auto p-12">
+        <div class="flex-1 flex items-center justify-center px-4 md:px-8 pb-4 relative">
+            <!-- 前へボタン -->
+            <button id="pres-prev" class="pres-nav-btn absolute left-2 md:left-6 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all z-10">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+
+            <div id="pres-slide" class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-full overflow-auto p-6 md:p-12 pres-slide-transition">
                 <!-- スライド内容がここに動的挿入 -->
             </div>
+
+            <!-- 次へボタン -->
+            <button id="pres-next" class="pres-nav-btn absolute right-2 md:right-6 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all z-10">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
         </div>
 
-        <!-- ナビゲーション -->
-        <div class="flex justify-center gap-4 pb-6">
-            <button id="pres-prev" class="text-warm-gray-400 hover:text-white px-4 py-2 transition-colors">← 前へ</button>
-            <button id="pres-next" class="text-warm-gray-400 hover:text-white px-4 py-2 transition-colors">次へ →</button>
-        </div>
+        <!-- ドットナビゲーション -->
+        <div class="flex justify-center gap-2 pb-4" id="pres-dots"></div>
     </div>
 
     <!-- アノテーション追加ポップアップ -->
@@ -6317,14 +6359,21 @@ ${annotationSection}
                 return;
             }
 
+            // フォント読み込みを待機してからCanvas描画
+            await document.fonts.ready;
+
             const projectName = getProjectName('無題のプロジェクト');
             const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
             const pageWidth = 297;
             const pageHeight = 210;
 
-            renderPDFCoverPage(pdf, projectName, pageWidth, pageHeight);
-
             const { tobeSvg, isCompareMode, mainSvg, mainTitle, annotations } = getReportData();
+            if (!mainSvg) {
+                showAlert('レポートに含める図がありません。先に図を作成してください。', 'warning');
+                return;
+            }
+
+            renderPDFCoverPage(pdf, projectName, pageWidth, pageHeight);
             const mainColor = isCompareMode ? '#be185d' : '#292524';
 
             if (mainSvg) await renderPDFDiagramPage(pdf, mainSvg, mainTitle, mainColor, pageWidth, pageHeight);
@@ -6339,12 +6388,18 @@ ${annotationSection}
         }
 
         // === プレゼンテーションモード ===
+        const ISSUES_PER_SLIDE = 8;
+
         class PresentationMode {
             constructor() {
                 this.currentSlide = 0;
                 this.slides = [];
                 this.overlay = document.getElementById('presentation-overlay');
+                this.slideEl = document.getElementById('pres-slide');
+                this.dotsEl = document.getElementById('pres-dots');
                 this.isOpen = false;
+                this.isAnimating = false;
+                this.touchStartX = 0;
                 this.init();
             }
 
@@ -6365,12 +6420,24 @@ ${annotationSection}
                         this.prev();
                     }
                 });
+
+                // タッチスワイプ対応
+                this.overlay.addEventListener('touchstart', (e) => {
+                    this.touchStartX = e.changedTouches[0].screenX;
+                }, { passive: true });
+                this.overlay.addEventListener('touchend', (e) => {
+                    const diff = e.changedTouches[0].screenX - this.touchStartX;
+                    if (Math.abs(diff) > 50) {
+                        if (diff < 0) this.next();
+                        else this.prev();
+                    }
+                }, { passive: true });
             }
 
             open() {
                 this.buildSlides();
-                if (this.slides.length === 0) {
-                    showAlert('プレゼンテーション用のコンテンツがありません。As-Is図またはTo-Be図を作成してください。', 'warning');
+                if (this.slides.length <= 1) {
+                    showAlert('レポートに含める図がありません。先に図を作成してください。', 'warning');
                     return;
                 }
                 const projectName = getProjectName('無題のプロジェクト');
@@ -6379,6 +6446,7 @@ ${annotationSection}
                 this.isOpen = true;
                 this.overlay.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
+                this._buildDots();
                 this.render();
             }
 
@@ -6397,7 +6465,7 @@ ${annotationSection}
                 this.slides = [];
                 this.slides.push(this._buildTitleSlide(projectName, today));
                 if (mainSvg) this.slides.push(this._buildDiagramSlide(mainSvg, mainTitle, mainTitleColor));
-                if (annotations.length > 0) this.slides.push(this._buildIssuesSlide(annotations));
+                if (annotations.length > 0) this._buildIssuesSlides(annotations).forEach(s => this.slides.push(s));
                 if (isCompareMode && tobeSvg) this.slides.push(this._buildDiagramSlide(tobeSvg, 'To-Be（改善後フロー）', 'text-navy-700'));
                 if (annotations.length > 0) this.slides.push(this._buildSummarySlide(annotations));
             }
@@ -6405,13 +6473,13 @@ ${annotationSection}
             _buildTitleSlide(projectName, today) {
                 return {
                     html: `
-                        <div class="text-center py-16">
-                            <p class="text-warm-gray-400 text-sm tracking-widest mb-8">BUSINESS FLOW IMPROVEMENT</p>
-                            <h1 class="font-elegant text-4xl text-warm-gray-800 mb-4">業務フロー改善レポート</h1>
-                            <div class="divider mb-8"></div>
-                            <p class="text-xl text-warm-gray-600 mb-12">${projectName}</p>
-                            <p class="text-sm text-warm-gray-400">${today}</p>
-                            <p class="text-sm text-warm-gray-400 mt-2">AYCC - AI YASUDA CREATIVE & CONSULTING</p>
+                        <div class="text-center py-8 md:py-16">
+                            <p class="text-warm-gray-400 text-xs md:text-sm tracking-widest mb-6 md:mb-8">BUSINESS FLOW IMPROVEMENT</p>
+                            <h1 class="font-elegant text-2xl md:text-4xl text-warm-gray-800 mb-4">業務フロー改善レポート</h1>
+                            <div class="divider mb-6 md:mb-8"></div>
+                            <p class="text-lg md:text-xl text-warm-gray-600 mb-8 md:mb-12">${escapeHTML(projectName)}</p>
+                            <p class="text-xs md:text-sm text-warm-gray-400">${today}</p>
+                            <p class="text-xs md:text-sm text-warm-gray-400 mt-2">AYCC - AI YASUDA CREATIVE & CONSULTING</p>
                         </div>
                     `
                 };
@@ -6420,36 +6488,47 @@ ${annotationSection}
             _buildDiagramSlide(svg, title, titleColor) {
                 return {
                     html: `
-                        <h2 class="font-elegant text-2xl ${titleColor} mb-6 text-center">${title}</h2>
-                        <div class="flex justify-center">${svg.outerHTML}</div>
+                        <h2 class="font-elegant text-xl md:text-2xl ${titleColor} mb-4 md:mb-6 text-center">${escapeHTML(title)}</h2>
+                        <div class="flex justify-center overflow-auto">${svg.outerHTML}</div>
                     `
                 };
             }
 
-            _buildIssuesSlide(annotations) {
-                const rows = annotations.map(a => `
-                    <tr class="border-b border-warm-gray-200">
-                        <td class="py-3 px-4"><span style="color:${CATEGORY_COLORS[a.category]}" class="font-medium text-sm">${CATEGORY_LABELS[a.category]}</span></td>
-                        <td class="py-3 px-4 text-sm text-warm-gray-700">${escapeHTML(a.nodeText)}</td>
-                        <td class="py-3 px-4 text-sm text-warm-gray-600">${escapeHTML(a.comment)}</td>
-                    </tr>
-                `).join('');
+            _buildIssuesSlides(annotations) {
+                const pages = [];
+                const totalPages = Math.ceil(annotations.length / ISSUES_PER_SLIDE);
 
-                return {
-                    html: `
-                        <h2 class="font-elegant text-2xl text-warm-gray-800 mb-6 text-center">発見された課題</h2>
-                        <table class="w-full">
-                            <thead>
-                                <tr class="border-b-2 border-warm-gray-300">
-                                    <th class="py-3 px-4 text-left text-sm text-warm-gray-500 w-24">カテゴリ</th>
-                                    <th class="py-3 px-4 text-left text-sm text-warm-gray-500 w-40">対象</th>
-                                    <th class="py-3 px-4 text-left text-sm text-warm-gray-500">コメント</th>
-                                </tr>
-                            </thead>
-                            <tbody>${rows}</tbody>
-                        </table>
-                    `
-                };
+                for (let page = 0; page < totalPages; page++) {
+                    const pageAnns = annotations.slice(page * ISSUES_PER_SLIDE, (page + 1) * ISSUES_PER_SLIDE);
+                    const pageLabel = totalPages > 1 ? `発見された課題（${page + 1}/${totalPages}）` : '発見された課題';
+
+                    const rows = pageAnns.map(a => `
+                        <tr class="border-b border-warm-gray-200">
+                            <td class="py-2 md:py-3 px-2 md:px-4"><span style="color:${CATEGORY_COLORS[a.category]}" class="font-medium text-xs md:text-sm">${CATEGORY_LABELS[a.category]}</span></td>
+                            <td class="py-2 md:py-3 px-2 md:px-4 text-xs md:text-sm text-warm-gray-700">${escapeHTML(a.nodeText)}</td>
+                            <td class="py-2 md:py-3 px-2 md:px-4 text-xs md:text-sm text-warm-gray-600">${escapeHTML(a.comment)}</td>
+                        </tr>
+                    `).join('');
+
+                    pages.push({
+                        html: `
+                            <h2 class="font-elegant text-xl md:text-2xl text-warm-gray-800 mb-4 md:mb-6 text-center">${pageLabel}</h2>
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr class="border-b-2 border-warm-gray-300">
+                                            <th class="py-2 md:py-3 px-2 md:px-4 text-left text-xs md:text-sm text-warm-gray-500 w-20 md:w-24">カテゴリ</th>
+                                            <th class="py-2 md:py-3 px-2 md:px-4 text-left text-xs md:text-sm text-warm-gray-500 w-28 md:w-40">対象</th>
+                                            <th class="py-2 md:py-3 px-2 md:px-4 text-left text-xs md:text-sm text-warm-gray-500">コメント</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>${rows}</tbody>
+                                </table>
+                            </div>
+                        `
+                    });
+                }
+                return pages;
             }
 
             _buildSummarySlide(annotations) {
@@ -6458,38 +6537,76 @@ ${annotationSection}
 
                 return {
                     html: `
-                        <div class="py-8">
-                            <h2 class="font-elegant text-2xl text-warm-gray-800 mb-8 text-center">まとめ</h2>
+                        <div class="py-4 md:py-8">
+                            <h2 class="font-elegant text-xl md:text-2xl text-warm-gray-800 mb-6 md:mb-8 text-center">まとめ</h2>
                             ${problems.length > 0 ? `
-                            <div class="mb-8">
-                                <h3 class="text-lg text-rose-700 font-medium mb-3">主要な課題</h3>
+                            <div class="mb-6 md:mb-8">
+                                <h3 class="text-base md:text-lg text-rose-700 font-medium mb-3">主要な課題</h3>
                                 <ul class="space-y-2">
-                                    ${problems.map(p => `<li class="text-sm text-warm-gray-600 flex items-start gap-2"><span class="text-rose-500 mt-1">●</span><span>${escapeHTML(p.nodeText)}: ${escapeHTML(p.comment)}</span></li>`).join('')}
+                                    ${problems.map(p => `<li class="text-xs md:text-sm text-warm-gray-600 flex items-start gap-2"><span class="text-rose-500 mt-0.5">●</span><span>${escapeHTML(p.nodeText)}: ${escapeHTML(p.comment)}</span></li>`).join('')}
                                 </ul>
                             </div>
                             ` : ''}
                             ${improvements.length > 0 ? `
-                            <div class="mb-8">
-                                <h3 class="text-lg text-navy-700 font-medium mb-3">改善提案</h3>
+                            <div class="mb-6 md:mb-8">
+                                <h3 class="text-base md:text-lg text-navy-700 font-medium mb-3">改善提案</h3>
                                 <ul class="space-y-2">
-                                    ${improvements.map(i => `<li class="text-sm text-warm-gray-600 flex items-start gap-2"><span class="text-navy-500 mt-1">●</span><span>${escapeHTML(i.nodeText)}: ${escapeHTML(i.comment)}</span></li>`).join('')}
+                                    ${improvements.map(i => `<li class="text-xs md:text-sm text-warm-gray-600 flex items-start gap-2"><span class="text-navy-500 mt-0.5">●</span><span>${escapeHTML(i.nodeText)}: ${escapeHTML(i.comment)}</span></li>`).join('')}
                                 </ul>
                             </div>
                             ` : ''}
-                            <div class="text-center mt-12 pt-8 border-t border-warm-gray-200">
-                                <p class="text-sm text-warm-gray-400">AYCC - AI YASUDA CREATIVE & CONSULTING</p>
+                            <div class="text-center mt-8 md:mt-12 pt-6 md:pt-8 border-t border-warm-gray-200">
+                                <p class="text-xs md:text-sm text-warm-gray-400">AYCC - AI YASUDA CREATIVE & CONSULTING</p>
                             </div>
                         </div>
                     `
                 };
             }
 
+            _buildDots() {
+                this.dotsEl.innerHTML = '';
+                this.slides.forEach((_, i) => {
+                    const dot = document.createElement('button');
+                    dot.className = `pres-dot${i === this.currentSlide ? ' active' : ''}`;
+                    dot.addEventListener('click', () => this.goTo(i));
+                    this.dotsEl.appendChild(dot);
+                });
+            }
+
+            _updateDots() {
+                const dots = this.dotsEl.querySelectorAll('.pres-dot');
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === this.currentSlide);
+                });
+            }
+
+            goTo(index) {
+                if (index === this.currentSlide || this.isAnimating) return;
+                this.isAnimating = true;
+
+                // フェードアウト
+                this.slideEl.classList.add('pres-slide-fade-out');
+                setTimeout(() => {
+                    this.currentSlide = index;
+                    this._renderContent();
+                    // フェードイン
+                    requestAnimationFrame(() => {
+                        this.slideEl.classList.remove('pres-slide-fade-out');
+                        this.isAnimating = false;
+                    });
+                }, 200);
+            }
+
             render() {
+                this._renderContent();
+            }
+
+            _renderContent() {
                 const slide = this.slides[this.currentSlide];
-                document.getElementById('pres-slide').innerHTML = slide.html;
+                this.slideEl.innerHTML = slide.html;
                 document.getElementById('pres-page-indicator').textContent = `${this.currentSlide + 1} / ${this.slides.length}`;
 
-                const svgs = document.getElementById('pres-slide').querySelectorAll('svg');
+                const svgs = this.slideEl.querySelectorAll('svg');
                 svgs.forEach(svg => {
                     svg.style.maxWidth = '100%';
                     svg.style.height = 'auto';
@@ -6497,19 +6614,18 @@ ${annotationSection}
 
                 document.getElementById('pres-prev').style.visibility = this.currentSlide === 0 ? 'hidden' : 'visible';
                 document.getElementById('pres-next').style.visibility = this.currentSlide === this.slides.length - 1 ? 'hidden' : 'visible';
+                this._updateDots();
             }
 
             next() {
                 if (this.currentSlide < this.slides.length - 1) {
-                    this.currentSlide++;
-                    this.render();
+                    this.goTo(this.currentSlide + 1);
                 }
             }
 
             prev() {
                 if (this.currentSlide > 0) {
-                    this.currentSlide--;
-                    this.render();
+                    this.goTo(this.currentSlide - 1);
                 }
             }
         }
