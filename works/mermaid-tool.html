@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Mermaid図作成ツール - 業務フローやシステム構成図を簡単に作成。10業種のテンプレート付き。AYCCが提供する無料オンラインツール。">
+    <title>Mermaid図作成ツール | AYCC</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+    <link rel="apple-touch-icon" href="../images/favicon.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rose': {
+                            50: '#fdf2f4',
+                            100: '#fce7eb',
+                            200: '#f9d0d9',
+                            300: '#f4a9ba',
+                            400: '#ec7a95',
+                            500: '#d4a5a5',
+                            600: '#b8848f',
+                            700: '#9a6b75',
+                            800: '#7d5660',
+                            900: '#5c4048',
+                        },
+                        'navy': {
+                            50: '#f5f7fa',
+                            100: '#eaeef4',
+                            200: '#d0dbe8',
+                            300: '#a7bdd4',
+                            400: '#7899bc',
+                            500: '#5a7ea5',
+                            600: '#47658a',
+                            700: '#3a5270',
+                            800: '#2d3e54',
+                            900: '#1e2a3a',
+                        },
+                        'warm-gray': {
+                            50: '#fafaf9',
+                            100: '#f5f5f4',
+                            200: '#e7e5e4',
+                            300: '#d6d3d1',
+                            400: '#a8a29e',
+                            500: '#78716c',
+                            600: '#57534e',
+                            700: '#44403c',
+                            800: '#292524',
+                            900: '#1c1917',
+                        }
+                    },
+                    fontFamily: {
+                        'serif': ['Noto Serif JP', 'serif'],
+                        'sans': ['Noto Sans JP', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            color: #44403c;
+            letter-spacing: 0.02em;
+        }
+
+        .font-elegant {
+            font-family: 'Noto Serif JP', serif;
+        }
+
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, #d4a5a5, #a7bdd4);
+            margin: 0 auto;
+        }
+
+        .border-elegant {
+            border: 1px solid rgba(168, 162, 158, 0.3);
+        }
+
+        .link-underline {
+            position: relative;
+        }
+
+        .link-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+
+        .link-underline:hover::after {
+            width: 100%;
+        }
+
+        #mobile-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: max-height 0.6s ease-out, opacity 0.6s ease-out;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+            margin-top: 0;
+        }
+
+        #mobile-menu.menu-open {
+            max-height: 500px;
+            opacity: 1;
+        }
+
+        #editor {
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 400px;
+        }
+
+        #preview-area {
+            min-height: 400px;
+            overflow: auto;
+        }
+
+        #preview-area svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .template-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .template-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #modal.modal-open {
+            display: flex;
+        }
+    </style>
+</head>
+<body class="bg-warm-gray-50">
+
+    <!-- ヘッダー -->
+    <header class="bg-white/90 backdrop-blur-sm border-b border-warm-gray-200 sticky top-0 z-50">
+        <nav class="container mx-auto pl-2 pr-6 py-5 relative">
+            <div class="flex justify-between items-center">
+                <!-- ロゴ -->
+                <a href="../index.html" class="flex items-center space-x-4">
+                    <img src="../images/logo.png" alt="AYCC Logo" class="h-10">
+                </a>
+
+                <!-- ナビゲーション -->
+                <div class="hidden md:flex space-x-10">
+                    <a href="../index.html#home" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">ホーム</a>
+                    <a href="../index.html#services" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">サービス</a>
+                    <a href="../index.html#works" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">実績</a>
+                    <a href="../index.html#about" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">会社概要</a>
+                    <a href="digital-environment.html" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">開発体制</a>
+                    <a href="claude-opus-4-6.html" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">Opus 4.6</a>
+                    <a href="../index.html#contact" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">お問い合わせ</a>
+                </div>
+
+                <!-- ハンバーガーメニュー(モバイル) -->
+                <button class="md:hidden" id="menu-toggle">
+                    <svg class="w-6 h-6 text-warm-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- モバイルメニュー -->
+            <div id="mobile-menu" class="md:hidden py-4 space-y-4">
+                <a href="../index.html#home" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">ホーム</a>
+                <a href="../index.html#services" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">サービス</a>
+                <a href="../index.html#works" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">実績</a>
+                <a href="../index.html#about" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">会社概要</a>
+                <a href="digital-environment.html" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">開発体制</a>
+                <a href="claude-opus-4-6.html" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">Opus 4.6</a>
+                <a href="../index.html#contact" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">お問い合わせ</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="py-16 md:py-24">
+        <div class="container mx-auto px-6">
+
+            <!-- パンくずリスト -->
+            <nav class="mb-8 text-sm text-warm-gray-500">
+                <a href="../index.html" class="hover:text-warm-gray-700">ホーム</a>
+                <span class="mx-2">/</span>
+                <a href="../index.html#services" class="hover:text-warm-gray-700">サービス</a>
+                <span class="mx-2">/</span>
+                <span class="text-warm-gray-700">Mermaid図作成ツール</span>
+            </nav>
+
+            <!-- タイトル -->
+            <div class="text-center mb-16">
+                <h1 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-2">
+                    Mermaid図作成ツール
+                </h1>
+                <p class="text-sm text-warm-gray-400 tracking-wider mb-4">業務フロー図を簡単に作成・編集</p>
+                <div class="divider"></div>
+            </div>
+
+            <!-- メインエリア（2カラム） -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+                <!-- 左: エディタ -->
+                <div class="bg-white p-6 border-elegant">
+                    <div class="mb-4">
+                        <label for="template-select" class="block text-sm font-medium text-warm-gray-700 mb-2">テンプレート選択</label>
+                        <select id="template-select" class="w-full border border-warm-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-400">
+                            <option value="">選択してください</option>
+                        </select>
+                    </div>
+                    <textarea id="editor" class="w-full border border-warm-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-400 resize-y" placeholder="ここにMermaid記法を入力..."></textarea>
+                    <div class="flex gap-3 mt-4">
+                        <button id="copy-code-btn" class="border border-warm-gray-400 text-warm-gray-600 text-sm px-5 py-2.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                            コードコピー
+                        </button>
+                        <button id="clear-btn" class="border border-warm-gray-400 text-warm-gray-600 text-sm px-5 py-2.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                            クリア
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 右: プレビュー -->
+                <div class="bg-white p-6 border-elegant">
+                    <h3 class="text-sm font-medium text-warm-gray-700 mb-4">プレビュー</h3>
+                    <div id="preview-area" class="bg-white border border-warm-gray-200 rounded p-4 flex items-center justify-center">
+                        <p class="text-warm-gray-400 text-sm">図がここに表示されます</p>
+                    </div>
+                    <div class="flex gap-3 mt-4">
+                        <button id="download-png-btn" class="border border-warm-gray-400 text-warm-gray-600 text-sm px-5 py-2.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                            PNGダウンロード
+                        </button>
+                        <button id="download-svg-btn" class="border border-warm-gray-400 text-warm-gray-600 text-sm px-5 py-2.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                            SVGダウンロード
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- テンプレートセクション -->
+            <div class="mb-16">
+                <div class="text-center mb-10">
+                    <h2 class="font-elegant text-xl md:text-2xl text-warm-gray-800 mb-2">
+                        業種別テンプレート
+                    </h2>
+                    <p class="text-sm text-warm-gray-500 mb-4">カードをクリックしてテンプレートを適用</p>
+                    <div class="divider"></div>
+                </div>
+
+                <div id="template-cards" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ヒアリングプロンプトモーダル -->
+    <div id="modal">
+        <div class="bg-white rounded-lg p-8 max-w-2xl mx-4 border-elegant max-h-[80vh] overflow-y-auto">
+            <h3 class="font-elegant text-lg text-warm-gray-800 mb-4" id="modal-title">ヒアリングプロンプト</h3>
+            <p class="text-sm text-warm-gray-600 leading-relaxed mb-6" id="modal-content"></p>
+            <div class="flex gap-3">
+                <button id="copy-prompt-btn" class="border border-warm-gray-400 text-warm-gray-600 text-sm px-5 py-2.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                    プロンプトをコピー
+                </button>
+                <button id="close-modal-btn" class="bg-navy-600 text-white text-sm px-5 py-2.5 tracking-wider hover:bg-navy-700 transition-all duration-300">
+                    閉じる
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- フッター -->
+    <footer class="bg-warm-gray-800 text-warm-gray-300 py-12">
+        <div class="container mx-auto px-6">
+            <div class="text-center">
+                <p class="text-sm tracking-wider mb-2">
+                    &copy; 2026 AYCC
+                </p>
+                <p class="text-xs text-warm-gray-500">
+                    AI YASUDA CREATIVE & CONSULTING
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        const templates = [
+            {
+                name: '飲食業：予約→来店フロー',
+                industry: '飲食業',
+                mermaid: `flowchart TD
+    A[予約受付] --> B{予約方法}
+    B -->|電話| C[電話対応]
+    B -->|Web| D[Web予約フォーム]
+    B -->|アプリ| E[アプリ予約]
+    C --> F[予約台帳に記録]
+    D --> F
+    E --> F
+    F --> G[前日リマインド]
+    G --> H{来店}
+    H -->|来店| I[席案内]
+    H -->|キャンセル| J[キャンセル処理]
+    I --> K[注文・提供]
+    K --> L[会計]
+    L --> M[アンケート・フォロー]`,
+                prompt: 'あなたは飲食業の業務フロー設計の専門家です。以下のポイントについてヒアリングし、Mermaid図を作成してください：①予約経路（電話/Web/アプリ/SNS）②キャンセルポリシー ③当日のオペレーション（受付→配席→注文→提供→会計）④リピート施策'
+            },
+            {
+                name: '音楽教室：入会→レッスン開始フロー',
+                industry: '音楽教室',
+                mermaid: `flowchart TD
+    A[問い合わせ] --> B[体験レッスン予約]
+    B --> C[体験レッスン実施]
+    C --> D{入会意思}
+    D -->|入会| E[入会手続き]
+    D -->|検討| F[フォロー連絡]
+    D -->|辞退| G[お礼連絡]
+    F --> D
+    E --> H[月謝設定]
+    H --> I[レッスン曜日・時間決定]
+    I --> J[初回レッスン]
+    J --> K[定期レッスン開始]`,
+                prompt: 'あなたは音楽教室の運営フロー設計の専門家です。以下のポイントについてヒアリングし、Mermaid図を作成してください：①問い合わせ経路 ②体験レッスンの流れ ③入会手続き ④月謝の支払い方法 ⑤レッスンスケジュール管理 ⑥発表会・イベント運営'
+            },
+            {
+                name: '小売・EC：注文→配送フロー',
+                industry: '小売・EC',
+                mermaid: `sequenceDiagram
+    participant C as 顧客
+    participant S as ECサイト
+    participant W as 倉庫
+    participant D as 配送業者
+    C->>S: 商品注文
+    S->>S: 在庫確認
+    S->>C: 注文確認メール
+    S->>W: 出荷指示
+    W->>W: ピッキング・梱包
+    W->>D: 配送依頼
+    D->>C: 配送通知
+    D->>C: 商品お届け
+    C->>S: 受取確認`,
+                prompt: 'あなたはEC・小売業の業務フロー設計の専門家です。以下のポイントについてヒアリングし、Mermaid図を作成してください：①注文受付チャネル ②在庫管理方法 ③決済手段 ④出荷・配送フロー ⑤返品・交換対応 ⑥顧客フォロー'
+            },
+            {
+                name: '医療・クリニック：患者受付→診察フロー',
+                industry: '医療・クリニック',
+                mermaid: `flowchart TD
+    A[来院・受付] --> B{初診/再診}
+    B -->|初診| C[問診票記入]
+    B -->|再診| D[診察券確認]
+    C --> E[保険証確認]
+    D --> E
+    E --> F[待合室]
+    F --> G[診察]
+    G --> H{検査必要}
+    H -->|あり| I[検査実施]
+    H -->|なし| J[診断・処方]
+    I --> J
+    J --> K[会計]
+    K --> L[薬局案内]
+    L --> M[次回予約]`,
+                prompt: 'あなたは医療機関の業務フロー設計の専門家です。以下のポイントについてヒアリングし、Mermaid図を作成してください：①予約システム ②受付フロー（初診/再診）③問診・診察の流れ ④検査フロー ⑤会計・レセプト ⑥次回予約・フォロー'
+            },
+            {
+                name: '不動産：物件問い合わせ→契約フロー',
+                industry: '不動産',
+                mermaid: `flowchart TD
+    A[物件問い合わせ] --> B[条件ヒアリング]
+    B --> C[物件提案]
+    C --> D[内見予約]
+    D --> E[内見実施]
+    E --> F{申込意思}
+    F -->|申込| G[入居申込]
+    F -->|再検討| C
+    G --> H[審査]
+    H -->|通過| I[契約手続き]
+    H -->|否決| J[再提案]
+    I --> K[重要事項説明]
+    K --> L[契約締結]
+    L --> M[鍵引渡し・入居]`,
+                prompt: 'あなたは不動産業の業務フロー設計の専門家です。以下のポイントについてヒアリングし、Mermaid図を作成してください：①集客チャネル（ポータル/自社サイト/来店）②条件ヒアリング項目 ③内見フロー ④申込→審査 ⑤契約手続き ⑥入居後フォロー'
+            },
+            {
+                name: 'IT/Web制作：システム開発フロー',
+                industry: 'IT/Web制作',
+                mermaid: `flowchart TD
+    A[要件ヒアリング] --> B[要件定義書作成]
+    B --> C[見積・提案]
+    C --> D{受注}
+    D -->|受注| E[設計]
+    D -->|失注| F[フィードバック記録]
+    E --> G[開発]
+    G --> H[テスト]
+    H --> I{検収}
+    I -->|OK| J[本番リリース]
+    I -->|修正| G
+    J --> K[運用・保守]`,
+                prompt: 'あなたはIT/Web制作の業務フロー設計の専門家です。以下のポイントについてヒアリングし、Mermaid図を作成してください：①要件定義の進め方 ②開発体制 ③テスト方針 ④リリースフロー ⑤運用・保守体制 ⑥変更管理'
+            },
+            {
+                name: '製造業：受注→出荷フロー',
+                industry: '製造業',
+                mermaid: `flowchart TD
+    A[受注] --> B[生産計画]
+    B --> C[資材調達]
+    C --> D[製造]
+    D --> E[品質検査]
+    E --> F{合格}
+    F -->|合格| G[梱包]
+    F -->|不合格| H[手直し・再検査]
+    H --> E
+    G --> I[出荷]
+    I --> J[納品]
+    J --> K[請求]`,
+                prompt: 'あなたは製造業の業務フロー設計の専門家です。以下のポイントについてヒアリングし、Mermaid図を作成してください：①受注管理方法 ②生産計画の立て方 ③資材調達フロー ④製造工程 ⑤品質管理 ⑥出荷・納品フロー'
+            },
+            {
+                name: '士業（税理士等）：顧問契約→月次対応フロー',
+                industry: '士業',
+                mermaid: `flowchart TD
+    A[初回相談] --> B[業務範囲確認]
+    B --> C[見積提示]
+    C --> D{契約}
+    D -->|契約| E[顧問契約締結]
+    D -->|見送り| F[フォロー]
+    E --> G[月次データ受領]
+    G --> H[仕訳・記帳]
+    H --> I[月次報告]
+    I --> J[決算準備]
+    J --> K[確定申告・届出]
+    K --> L[年次報告]`,
+                prompt: 'あなたは士業（税理士・会計士等）の業務フロー設計の専門家です。以下のポイントについてヒアリングし、Mermaid図を作成してください：①顧問契約の範囲 ②月次の資料受領方法 ③記帳・仕訳フロー ④月次報告 ⑤決算・申告スケジュール ⑥顧客とのコミュニケーション方法'
+            },
+            {
+                name: '美容・サロン：予約→施術→フォローフロー',
+                industry: '美容・サロン',
+                mermaid: `flowchart TD
+    A[予約] --> B{予約方法}
+    B -->|電話| C[電話受付]
+    B -->|Web| D[Web予約]
+    B -->|SNS| E[SNS予約]
+    C --> F[来店受付]
+    D --> F
+    E --> F
+    F --> G[カウンセリング]
+    G --> H[施術]
+    H --> I[仕上がり確認]
+    I --> J[会計]
+    J --> K[次回予約提案]
+    K --> L[アフターフォロー]`,
+                prompt: 'あなたは美容・サロン業の業務フロー設計の専門家です。以下のポイントについてヒアリングし、Mermaid図を作成してください：①予約チャネル ②カウンセリング内容 ③施術メニュー管理 ④会計・決済 ⑤リピート促進策 ⑥SNS活用'
+            },
+            {
+                name: '汎用：承認ワークフロー',
+                industry: '汎用',
+                mermaid: `flowchart TD
+    A[申請作成] --> B[上長に提出]
+    B --> C{一次承認}
+    C -->|承認| D[部長に回付]
+    C -->|差戻| E[修正・再提出]
+    E --> B
+    D --> F{最終承認}
+    F -->|承認| G[処理実行]
+    F -->|差戻| E
+    G --> H[完了通知]
+    H --> I[記録保存]`,
+                prompt: 'あなたは業務改善の専門家です。承認ワークフローについて以下のポイントをヒアリングし、Mermaid図を作成してください：①申請の種類 ②承認ステップ数 ③各ステップの承認者 ④差戻し時のフロー ⑤緊急時の対応 ⑥通知方法'
+            }
+        ];
+
+        let currentPrompt = '';
+        let debounceTimer;
+
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'default',
+            securityLevel: 'loose'
+        });
+
+        const editor = document.getElementById('editor');
+        const previewArea = document.getElementById('preview-area');
+        const templateSelect = document.getElementById('template-select');
+        const templateCards = document.getElementById('template-cards');
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalContent = document.getElementById('modal-content');
+
+        templates.forEach((template, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = template.name;
+            templateSelect.appendChild(option);
+
+            const card = document.createElement('div');
+            card.className = 'template-card bg-white p-6 border-elegant rounded-lg';
+            card.innerHTML = `
+                <div class="text-xs text-navy-500 mb-2 tracking-wider">${template.industry}</div>
+                <h3 class="font-medium text-warm-gray-800 text-sm mb-3">${template.name}</h3>
+                <p class="text-xs text-warm-gray-500">クリックして適用</p>
+            `;
+            card.addEventListener('click', () => loadTemplate(index));
+            templateCards.appendChild(card);
+        });
+
+        function loadTemplate(index) {
+            const template = templates[index];
+            editor.value = template.mermaid;
+            currentPrompt = template.prompt;
+            updatePreview();
+            showModal(template.name, template.prompt);
+            templateSelect.value = index;
+        }
+
+        templateSelect.addEventListener('change', (e) => {
+            if (e.target.value !== '') {
+                loadTemplate(parseInt(e.target.value));
+            }
+        });
+
+        editor.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(updatePreview, 300);
+        });
+
+        async function updatePreview() {
+            const code = editor.value.trim();
+            if (!code) {
+                previewArea.innerHTML = '<p class="text-warm-gray-400 text-sm">図がここに表示されます</p>';
+                return;
+            }
+
+            try {
+                const { svg } = await mermaid.render('mermaid-preview-svg', code);
+                previewArea.innerHTML = svg;
+            } catch (error) {
+                previewArea.innerHTML = '<p class="text-red-500 text-sm">記法エラー: 正しいMermaid記法を入力してください</p>';
+            }
+        }
+
+        document.getElementById('copy-code-btn').addEventListener('click', () => {
+            const code = editor.value;
+            if (!code.trim()) {
+                alert('コピーするコードがありません');
+                return;
+            }
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = document.getElementById('copy-code-btn');
+                const originalText = btn.textContent;
+                btn.textContent = 'コピーしました!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        });
+
+        document.getElementById('clear-btn').addEventListener('click', () => {
+            if (confirm('エディタとプレビューをクリアしますか？')) {
+                editor.value = '';
+                previewArea.innerHTML = '<p class="text-warm-gray-400 text-sm">図がここに表示されます</p>';
+                templateSelect.value = '';
+                currentPrompt = '';
+            }
+        });
+
+        document.getElementById('download-png-btn').addEventListener('click', () => {
+            const svg = previewArea.querySelector('svg');
+            if (!svg) {
+                alert('ダウンロードする図がありません');
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const svgData = new XMLSerializer().serializeToString(svg);
+            const img = new Image();
+
+            const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(svgBlob);
+
+            img.onload = () => {
+                canvas.width = img.width * 2;
+                canvas.height = img.height * 2;
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                canvas.toBlob((blob) => {
+                    const link = document.createElement('a');
+                    link.download = 'mermaid-diagram.png';
+                    link.href = URL.createObjectURL(blob);
+                    link.click();
+                    URL.revokeObjectURL(url);
+                });
+            };
+
+            img.src = url;
+        });
+
+        document.getElementById('download-svg-btn').addEventListener('click', () => {
+            const svg = previewArea.querySelector('svg');
+            if (!svg) {
+                alert('ダウンロードする図がありません');
+                return;
+            }
+
+            const svgData = new XMLSerializer().serializeToString(svg);
+            const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = 'mermaid-diagram.svg';
+            link.href = url;
+            link.click();
+            URL.revokeObjectURL(url);
+        });
+
+        function showModal(title, content) {
+            modalTitle.textContent = `${title} - ヒアリングプロンプト`;
+            modalContent.textContent = content;
+            modal.classList.add('modal-open');
+        }
+
+        document.getElementById('close-modal-btn').addEventListener('click', () => {
+            modal.classList.remove('modal-open');
+        });
+
+        document.getElementById('copy-prompt-btn').addEventListener('click', () => {
+            if (!currentPrompt) {
+                alert('コピーするプロンプトがありません');
+                return;
+            }
+            navigator.clipboard.writeText(currentPrompt).then(() => {
+                const btn = document.getElementById('copy-prompt-btn');
+                const originalText = btn.textContent;
+                btn.textContent = 'コピーしました!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('modal-open');
+            }
+        });
+
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('menu-open');
+        });
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('menu-open');
+            });
+        });
+    </script>
+
+</body>
+</html>
