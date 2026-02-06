@@ -721,6 +721,52 @@
         </div>
     </div>
 
+    <!-- プレゼンテーションモード -->
+    <div id="presentation-overlay" class="hidden fixed inset-0 z-[300] bg-warm-gray-900 flex flex-col">
+        <!-- ヘッダー -->
+        <div class="flex items-center justify-between px-8 py-4">
+            <span class="text-warm-gray-400 text-sm" id="pres-title"></span>
+            <div class="flex items-center gap-4">
+                <span class="text-warm-gray-400 text-sm" id="pres-page-indicator">1 / 5</span>
+                <button id="pres-close" class="text-warm-gray-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- スライドコンテンツ -->
+        <div class="flex-1 flex items-center justify-center px-8 pb-8">
+            <div id="pres-slide" class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-full overflow-auto p-12">
+                <!-- スライド内容がここに動的挿入 -->
+            </div>
+        </div>
+
+        <!-- ナビゲーション -->
+        <div class="flex justify-center gap-4 pb-6">
+            <button id="pres-prev" class="text-warm-gray-400 hover:text-white px-4 py-2 transition-colors">← 前へ</button>
+            <button id="pres-next" class="text-warm-gray-400 hover:text-white px-4 py-2 transition-colors">次へ →</button>
+        </div>
+    </div>
+
+    <!-- アノテーション追加ポップアップ -->
+    <div id="annotation-popup" class="hidden">
+        <div class="bg-white rounded-lg shadow-xl border border-warm-gray-200 p-4 w-80">
+            <h4 class="text-sm font-medium text-warm-gray-800 mb-3">アノテーション追加</h4>
+            <p id="annotation-node-name" class="text-xs text-warm-gray-500 mb-3 bg-warm-gray-50 px-2 py-1 rounded"></p>
+            <div class="flex gap-2 mb-3 flex-wrap">
+                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border" data-category="problem" style="border-color:#fecaca;color:#ef4444;background:#fef2f2;">問題点</button>
+                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border" data-category="improvement" style="border-color:#bfdbfe;color:#3b82f6;background:#eff6ff;">改善案</button>
+                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border" data-category="question" style="border-color:#fde68a;color:#d97706;background:#fffbeb;">質問</button>
+                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border" data-category="memo" style="border-color:#e5e7eb;color:#6b7280;background:#f9fafb;">メモ</button>
+            </div>
+            <textarea id="annotation-comment" class="w-full border border-warm-gray-300 rounded px-3 py-2 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-navy-400 mb-3" placeholder="コメントを入力..."></textarea>
+            <div class="flex gap-2 justify-end">
+                <button id="annotation-cancel" class="text-xs text-warm-gray-500 px-3 py-1.5">キャンセル</button>
+                <button id="annotation-add" class="text-xs bg-navy-600 text-white px-4 py-1.5 rounded hover:bg-navy-700 transition-colors">追加</button>
+            </div>
+        </div>
+    </div>
+
     <!-- フッター -->
     <footer class="bg-warm-gray-800 text-warm-gray-300 py-12">
         <div class="container mx-auto px-6">
@@ -3403,52 +3449,6 @@
             presentationMode.open();
         });
     </script>
-
-    <!-- プレゼンテーションモード -->
-    <div id="presentation-overlay" class="hidden fixed inset-0 z-[300] bg-warm-gray-900 flex flex-col">
-        <!-- ヘッダー -->
-        <div class="flex items-center justify-between px-8 py-4">
-            <span class="text-warm-gray-400 text-sm" id="pres-title"></span>
-            <div class="flex items-center gap-4">
-                <span class="text-warm-gray-400 text-sm" id="pres-page-indicator">1 / 5</span>
-                <button id="pres-close" class="text-warm-gray-400 hover:text-white transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-        </div>
-
-        <!-- スライドコンテンツ -->
-        <div class="flex-1 flex items-center justify-center px-8 pb-8">
-            <div id="pres-slide" class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-full overflow-auto p-12">
-                <!-- スライド内容がここに動的挿入 -->
-            </div>
-        </div>
-
-        <!-- ナビゲーション -->
-        <div class="flex justify-center gap-4 pb-6">
-            <button id="pres-prev" class="text-warm-gray-400 hover:text-white px-4 py-2 transition-colors">← 前へ</button>
-            <button id="pres-next" class="text-warm-gray-400 hover:text-white px-4 py-2 transition-colors">次へ →</button>
-        </div>
-    </div>
-
-    <!-- アノテーション追加ポップアップ -->
-    <div id="annotation-popup" class="hidden">
-        <div class="bg-white rounded-lg shadow-xl border border-warm-gray-200 p-4 w-80">
-            <h4 class="text-sm font-medium text-warm-gray-800 mb-3">アノテーション追加</h4>
-            <p id="annotation-node-name" class="text-xs text-warm-gray-500 mb-3 bg-warm-gray-50 px-2 py-1 rounded"></p>
-            <div class="flex gap-2 mb-3 flex-wrap">
-                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border" data-category="problem" style="border-color:#fecaca;color:#ef4444;background:#fef2f2;">問題点</button>
-                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border" data-category="improvement" style="border-color:#bfdbfe;color:#3b82f6;background:#eff6ff;">改善案</button>
-                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border" data-category="question" style="border-color:#fde68a;color:#d97706;background:#fffbeb;">質問</button>
-                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border" data-category="memo" style="border-color:#e5e7eb;color:#6b7280;background:#f9fafb;">メモ</button>
-            </div>
-            <textarea id="annotation-comment" class="w-full border border-warm-gray-300 rounded px-3 py-2 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-navy-400 mb-3" placeholder="コメントを入力..."></textarea>
-            <div class="flex gap-2 justify-end">
-                <button id="annotation-cancel" class="text-xs text-warm-gray-500 px-3 py-1.5">キャンセル</button>
-                <button id="annotation-add" class="text-xs bg-navy-600 text-white px-4 py-1.5 rounded hover:bg-navy-700 transition-colors">追加</button>
-            </div>
-        </div>
-    </div>
 
 </body>
 </html>
