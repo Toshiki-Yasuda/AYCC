@@ -4888,8 +4888,10 @@ ${annotationSection}
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
                 canvas.toBlob((blob) => {
+                    const projectName = document.getElementById('project-name').value.trim() || 'diagram';
+                    const safeName = projectName.replace(/[<>:"/\\|?*]/g, '_');
                     const link = document.createElement('a');
-                    link.download = 'mermaid-diagram.png';
+                    link.download = `${safeName}.png`;
                     link.href = URL.createObjectURL(blob);
                     link.click();
                     URL.revokeObjectURL(url);
@@ -4906,11 +4908,13 @@ ${annotationSection}
                 return;
             }
 
+            const projectName = document.getElementById('project-name').value.trim() || 'diagram';
+            const safeName = projectName.replace(/[<>:"/\\|?*]/g, '_');
             const svgData = new XMLSerializer().serializeToString(svg);
             const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
-            link.download = 'mermaid-diagram.svg';
+            link.download = `${safeName}.svg`;
             link.href = url;
             link.click();
             URL.revokeObjectURL(url);
@@ -5714,18 +5718,27 @@ ${annotationSection}
 
             pdf.addImage(coverCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
 
-            // ページ2: As-Is図
+            // 通常モードまたは比較モードの図を取得
+            const singleSvg = document.getElementById('preview-area').querySelector('svg');
             const asisSvg = document.getElementById('asis-preview').querySelector('svg');
-            if (asisSvg) {
+            const tobeSvg = document.getElementById('tobe-preview').querySelector('svg');
+            const isCompareMode = !document.getElementById('compare-mode').classList.contains('hidden');
+
+            // ページ2: 図（通常モード or As-Is）
+            const mainSvg = isCompareMode ? asisSvg : singleSvg;
+            const mainTitle = isCompareMode ? 'As-Is（現状フロー）' : '業務フロー';
+            const mainColor = isCompareMode ? '#be185d' : '#292524';
+
+            if (mainSvg) {
                 pdf.addPage();
                 const { canvas: headerCanvas, ctx: headerCtx } = createPageCanvas();
-                headerCtx.fillStyle = '#be185d';
+                headerCtx.fillStyle = mainColor;
                 headerCtx.font = 'bold 80px "Noto Serif JP", serif';
                 headerCtx.textAlign = 'center';
-                headerCtx.fillText('As-Is（現状フロー）', 1485, 200);
+                headerCtx.fillText(mainTitle, 1485, 200);
 
                 try {
-                    const svgData = new XMLSerializer().serializeToString(asisSvg);
+                    const svgData = new XMLSerializer().serializeToString(mainSvg);
                     const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
                     const url = URL.createObjectURL(svgBlob);
                     const img = new Image();
@@ -5746,67 +5759,73 @@ ${annotationSection}
                         img.src = url;
                     });
                 } catch (error) {
-                    console.error('As-Is SVG rendering error:', error);
+                    console.error('SVG rendering error:', error);
                 }
 
                 pdf.addImage(headerCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
             }
 
             // ページ3: 課題一覧
-            const annotations = window.annotationManager?.annotations?.asis || [];
+            const annotations = isCompareMode
+                ? (window.annotationManager?.annotations?.asis || [])
+                : (window.annotationManager?.annotations?.single || []);
             if (annotations.length > 0) {
-                pdf.addPage();
-                const { canvas: issueCanvas, ctx: issueCtx } = createPageCanvas();
-                issueCtx.fillStyle = '#292524';
-                issueCtx.font = 'bold 80px "Noto Serif JP", serif';
-                issueCtx.textAlign = 'center';
-                issueCtx.fillText('発見された課題', 1485, 200);
-
-                const categoryLabels = { problem: '問題点', improvement: '改善案', question: '質問', memo: 'メモ' };
+                const categoryLabels = { problem: '問題点', improvement: '改善案', question: '確認事項', memo: 'メモ' };
                 const categoryColors = { problem: '#ef4444', improvement: '#3b82f6', question: '#d97706', memo: '#6b7280' };
-
-                let y = 400;
-                const rowHeight = 120;
                 const maxRows = 12;
+                const totalPages = Math.ceil(annotations.length / maxRows);
 
-                issueCtx.font = '45px "Noto Sans JP", sans-serif';
-                issueCtx.fillStyle = '#78716c';
-                issueCtx.textAlign = 'left';
-                issueCtx.fillText('カテゴリ', 200, y);
-                issueCtx.fillText('対象', 600, y);
-                issueCtx.fillText('コメント', 1200, y);
-                y += 80;
+                for (let page = 0; page < totalPages; page++) {
+                    pdf.addPage();
+                    const { canvas: issueCanvas, ctx: issueCtx } = createPageCanvas();
+                    issueCtx.fillStyle = '#292524';
+                    issueCtx.font = 'bold 80px "Noto Serif JP", serif';
+                    issueCtx.textAlign = 'center';
+                    const pageLabel = totalPages > 1 ? `発見された課題（${page + 1}/${totalPages}）` : '発見された課題';
+                    issueCtx.fillText(pageLabel, 1485, 200);
 
-                issueCtx.strokeStyle = '#d6d3d1';
-                issueCtx.lineWidth = 3;
-                issueCtx.beginPath();
-                issueCtx.moveTo(150, y);
-                issueCtx.lineTo(2820, y);
-                issueCtx.stroke();
-                y += 40;
+                    let y = 400;
+                    const rowHeight = 120;
 
-                annotations.slice(0, maxRows).forEach(ann => {
-                    issueCtx.fillStyle = categoryColors[ann.category];
-                    issueCtx.font = 'bold 40px "Noto Sans JP", sans-serif';
-                    issueCtx.fillText(categoryLabels[ann.category], 200, y);
+                    issueCtx.font = '45px "Noto Sans JP", sans-serif';
+                    issueCtx.fillStyle = '#78716c';
+                    issueCtx.textAlign = 'left';
+                    issueCtx.fillText('カテゴリ', 200, y);
+                    issueCtx.fillText('対象', 600, y);
+                    issueCtx.fillText('コメント', 1200, y);
+                    y += 80;
 
-                    issueCtx.fillStyle = '#44403c';
-                    issueCtx.font = '38px "Noto Sans JP", sans-serif';
-                    const nodeText = ann.nodeText.length > 20 ? ann.nodeText.substring(0, 20) + '...' : ann.nodeText;
-                    issueCtx.fillText(nodeText, 600, y);
+                    issueCtx.strokeStyle = '#d6d3d1';
+                    issueCtx.lineWidth = 3;
+                    issueCtx.beginPath();
+                    issueCtx.moveTo(150, y);
+                    issueCtx.lineTo(2820, y);
+                    issueCtx.stroke();
+                    y += 40;
 
-                    const comment = ann.comment.length > 40 ? ann.comment.substring(0, 40) + '...' : ann.comment;
-                    issueCtx.fillText(comment, 1200, y);
+                    const pageAnnotations = annotations.slice(page * maxRows, (page + 1) * maxRows);
+                    pageAnnotations.forEach(ann => {
+                        issueCtx.fillStyle = categoryColors[ann.category];
+                        issueCtx.font = 'bold 40px "Noto Sans JP", sans-serif';
+                        issueCtx.fillText(categoryLabels[ann.category], 200, y);
 
-                    y += rowHeight;
-                });
+                        issueCtx.fillStyle = '#44403c';
+                        issueCtx.font = '38px "Noto Sans JP", sans-serif';
+                        const nodeText = ann.nodeText.length > 20 ? ann.nodeText.substring(0, 20) + '...' : ann.nodeText;
+                        issueCtx.fillText(nodeText, 600, y);
 
-                pdf.addImage(issueCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
+                        const comment = ann.comment.length > 40 ? ann.comment.substring(0, 40) + '...' : ann.comment;
+                        issueCtx.fillText(comment, 1200, y);
+
+                        y += rowHeight;
+                    });
+
+                    pdf.addImage(issueCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
+                }
             }
 
-            // ページ4: To-Be図
-            const tobeSvg = document.getElementById('tobe-preview').querySelector('svg');
-            if (tobeSvg) {
+            // ページ4: To-Be図（比較モードのみ）
+            if (isCompareMode && tobeSvg) {
                 pdf.addPage();
                 const { canvas: tobeHeaderCanvas, ctx: tobeHeaderCtx } = createPageCanvas();
                 tobeHeaderCtx.fillStyle = '#3a5270';
@@ -5910,7 +5929,8 @@ ${annotationSection}
                 pdf.addImage(summaryCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
             }
 
-            pdf.save(`report-${projectName}.pdf`);
+            const safeName = projectName.replace(/[<>:"/\\|?*]/g, '_');
+            pdf.save(`report-${safeName}.pdf`);
         }
 
         // === プレゼンテーションモード ===
@@ -5948,6 +5968,8 @@ ${annotationSection}
                     alert('プレゼンテーション用のコンテンツがありません。As-Is図またはTo-Be図を作成してください。');
                     return;
                 }
+                const projectName = document.getElementById('project-name').value.trim() || '無題のプロジェクト';
+                document.getElementById('pres-title').textContent = projectName;
                 this.currentSlide = 0;
                 this.isOpen = true;
                 this.overlay.classList.remove('hidden');
@@ -5981,21 +6003,31 @@ ${annotationSection}
                     `
                 });
 
-                // スライド2: As-Is
+                // 通常モードまたは比較モードの図を取得
+                const singleSvg = document.getElementById('preview-area').querySelector('svg');
                 const asisSvg = document.getElementById('asis-preview').querySelector('svg');
-                if (asisSvg) {
+                const isCompareMode = !document.getElementById('compare-mode').classList.contains('hidden');
+
+                const mainSvg = isCompareMode ? asisSvg : singleSvg;
+                const mainTitle = isCompareMode ? 'As-Is（現状フロー）' : '業務フロー';
+                const mainTitleColor = isCompareMode ? 'text-rose-700' : 'text-warm-gray-800';
+
+                // スライド2: メイン図（通常モード or As-Is）
+                if (mainSvg) {
                     this.slides.push({
                         html: `
-                            <h2 class="font-elegant text-2xl text-rose-700 mb-6 text-center">As-Is（現状フロー）</h2>
-                            <div class="flex justify-center">${asisSvg.outerHTML}</div>
+                            <h2 class="font-elegant text-2xl ${mainTitleColor} mb-6 text-center">${mainTitle}</h2>
+                            <div class="flex justify-center">${mainSvg.outerHTML}</div>
                         `
                     });
                 }
 
                 // スライド3: 課題一覧
-                const annotations = window.annotationManager?.annotations?.asis || [];
+                const annotations = isCompareMode
+                    ? (window.annotationManager?.annotations?.asis || [])
+                    : (window.annotationManager?.annotations?.single || []);
                 if (annotations.length > 0) {
-                    const categoryLabels = { problem: '問題点', improvement: '改善案', question: '質問', memo: 'メモ' };
+                    const categoryLabels = { problem: '問題点', improvement: '改善案', question: '確認事項', memo: 'メモ' };
                     const categoryColors = { problem: '#ef4444', improvement: '#3b82f6', question: '#d97706', memo: '#6b7280' };
 
                     const rows = annotations.map(a => `
@@ -6023,9 +6055,9 @@ ${annotationSection}
                     });
                 }
 
-                // スライド4: To-Be
+                // スライド4: To-Be（比較モードのみ）
                 const tobeSvg = document.getElementById('tobe-preview').querySelector('svg');
-                if (tobeSvg) {
+                if (isCompareMode && tobeSvg) {
                     this.slides.push({
                         html: `
                             <h2 class="font-elegant text-2xl text-navy-700 mb-6 text-center">To-Be（改善後フロー）</h2>
