@@ -24,6 +24,12 @@
     <!-- jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
 
+    <!-- LZ-String (URL圧縮) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+
+    <!-- QRCode.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <!-- Custom Tailwind Configuration -->
     <script>
         tailwind.config = {
@@ -617,7 +623,7 @@
                     <div class="flex flex-wrap items-center gap-4">
                         <input id="project-name" type="text" placeholder="プロジェクト名を入力" class="border border-warm-gray-300 rounded px-3 py-2 text-sm flex-1 min-w-[200px] focus:outline-none focus:ring-2 focus:ring-navy-400">
                         <button id="save-btn" class="border border-warm-gray-400 text-warm-gray-600 text-sm px-5 py-2.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">保存</button>
-                        <button id="share-url-btn" class="border border-navy-400 text-navy-600 text-sm px-5 py-2.5 tracking-wider hover:bg-navy-700 hover:text-white hover:border-navy-700 transition-all duration-300">URL共有</button>
+                        <button id="share-url-btn" class="border border-navy-400 text-navy-600 text-sm px-5 py-2.5 tracking-wider hover:bg-navy-700 hover:text-white hover:border-navy-700 transition-all duration-300">共有</button>
                     </div>
                 </div>
             </div>
@@ -763,6 +769,54 @@
             <div class="flex gap-2 justify-end">
                 <button id="annotation-cancel" class="text-xs text-warm-gray-500 px-3 py-1.5">キャンセル</button>
                 <button id="annotation-add" class="text-xs bg-navy-600 text-white px-4 py-1.5 rounded hover:bg-navy-700 transition-colors">追加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 共有モーダル -->
+    <div id="share-modal" class="fixed inset-0 z-[200] hidden" style="background: rgba(0,0,0,0.5);">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-lg w-full border-elegant overflow-hidden">
+                <div class="p-6 pb-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-elegant text-lg text-warm-gray-800">プロジェクトを共有</h3>
+                        <button id="close-share-modal" class="text-warm-gray-400 hover:text-warm-gray-600 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+
+                    <!-- URL共有 -->
+                    <div class="mb-6">
+                        <h4 class="text-sm font-medium text-warm-gray-700 mb-2">URL共有</h4>
+                        <p class="text-xs text-warm-gray-400 mb-2">このURLを共有すると、同じ図を開けます</p>
+                        <div class="flex gap-2">
+                            <input id="share-url-display" type="text" readonly class="flex-1 border border-warm-gray-300 rounded px-3 py-2 text-xs bg-warm-gray-50 text-warm-gray-600 focus:outline-none">
+                            <button id="copy-share-url" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300 whitespace-nowrap">コピー</button>
+                        </div>
+                        <p id="share-url-size" class="text-xs text-warm-gray-300 mt-1"></p>
+                    </div>
+
+                    <!-- QRコード -->
+                    <div class="mb-6">
+                        <h4 class="text-sm font-medium text-warm-gray-700 mb-2">QRコード</h4>
+                        <p class="text-xs text-warm-gray-400 mb-2">スマートフォンで読み取って共有できます</p>
+                        <div class="flex justify-center">
+                            <div id="share-qr-code" class="bg-white p-3 border border-warm-gray-200 rounded inline-block"></div>
+                        </div>
+                        <div class="flex justify-center mt-2">
+                            <button id="download-qr" class="text-xs text-navy-600 hover:text-navy-800 transition-colors">QRコードをダウンロード</button>
+                        </div>
+                    </div>
+
+                    <!-- JSON共有 -->
+                    <div>
+                        <h4 class="text-sm font-medium text-warm-gray-700 mb-2">ファイル共有</h4>
+                        <p class="text-xs text-warm-gray-400 mb-2">プロジェクト全体（アノテーション含む）をファイルで共有</p>
+                        <button id="share-json-export" class="w-full border border-navy-400 text-navy-600 text-sm px-4 py-2.5 tracking-wider hover:bg-navy-700 hover:text-white hover:border-navy-700 transition-all duration-300">
+                            JSONファイルをダウンロード
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -2922,43 +2976,78 @@
         // URL共有の生成
         function generateShareURL() {
             const data = {
-                e: editor.value,      // 通常モードエディタ
-                a: asisEditor.value,   // As-Is
-                t: tobeEditor.value    // To-Be
+                e: document.getElementById('editor').value,
+                a: document.getElementById('asis-editor').value,
+                t: document.getElementById('tobe-editor').value,
+                n: document.getElementById('project-name').value.trim()
             };
-            const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
 
-            if (encoded.length > 2000) {
-                alert('データが大きすぎます。JSON形式でエクスポートしてください。');
-                return;
+            // LZ-Stringで圧縮してbase64エンコード
+            if (typeof LZString !== 'undefined') {
+                const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(data));
+                const url = `${window.location.origin}${window.location.pathname}#s=${compressed}`;
+
+                if (url.length > 8000) {
+                    alert('データが大きすぎます（URL長: ' + url.length + '文字）。JSON形式でエクスポートしてください。');
+                    return null;
+                }
+
+                return url;
+            } else {
+                // LZ-Stringが読み込まれていない場合のフォールバック
+                const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
+                if (encoded.length > 2000) {
+                    alert('データが大きすぎます。JSON形式でエクスポートしてください。');
+                    return null;
+                }
+                const url = `${window.location.origin}${window.location.pathname}#share=${encoded}`;
+                return url;
             }
-
-            const url = `${window.location.origin}${window.location.pathname}#share=${encoded}`;
-            navigator.clipboard.writeText(url).then(() => {
-                alert('共有URLをクリップボードにコピーしました');
-            }).catch(() => {
-                // クリップボードAPIが使えない場合は表示
-                prompt('共有URLをコピーしてください:', url);
-            });
         }
 
         // ページロード時にURL復元
         function restoreFromURL() {
             const hash = window.location.hash;
-            if (hash.startsWith('#share=')) {
+
+            // 新形式 (#s=...) - LZ-String圧縮
+            if (hash.startsWith('#s=')) {
+                try {
+                    const compressed = hash.substring(3);
+                    if (typeof LZString !== 'undefined') {
+                        const data = JSON.parse(LZString.decompressFromEncodedURIComponent(compressed));
+                        if (data.e) document.getElementById('editor').value = data.e;
+                        if (data.a) document.getElementById('asis-editor').value = data.a;
+                        if (data.t) document.getElementById('tobe-editor').value = data.t;
+                        if (data.n) document.getElementById('project-name').value = data.n;
+
+                        updatePreview();
+                        renderComparePreview(asisEditor, asisPreview);
+                        renderComparePreview(tobeEditor, tobePreview);
+
+                        if (data.a || data.t) {
+                            singleMode.classList.add('hidden');
+                            compareMode.classList.remove('hidden');
+                            modeCompare.classList.add('active');
+                            modeSingle.classList.remove('active');
+                        }
+                    }
+                } catch (err) {
+                    console.warn('URL共有データの復元に失敗:', err);
+                }
+            }
+            // 旧形式 (#share=...) の後方互換性
+            else if (hash.startsWith('#share=')) {
                 try {
                     const encoded = hash.substring(7);
                     const data = JSON.parse(decodeURIComponent(atob(encoded)));
-                    if (data.e) editor.value = data.e;
-                    if (data.a) asisEditor.value = data.a;
-                    if (data.t) tobeEditor.value = data.t;
+                    if (data.e) document.getElementById('editor').value = data.e;
+                    if (data.a) document.getElementById('asis-editor').value = data.a;
+                    if (data.t) document.getElementById('tobe-editor').value = data.t;
 
-                    // プレビュー更新
                     updatePreview();
                     renderComparePreview(asisEditor, asisPreview);
                     renderComparePreview(tobeEditor, tobePreview);
 
-                    // 比較モードに自動切替（As-IsまたはTo-Beがある場合）
                     if (data.a || data.t) {
                         singleMode.classList.add('hidden');
                         compareMode.classList.remove('hidden');
@@ -2970,6 +3059,96 @@
                 }
             }
         }
+
+        // === 共有モーダル ===
+        const shareModal = document.getElementById('share-modal');
+
+        function openShareModal() {
+            const url = generateShareURL();
+            if (!url) return;
+
+            // URL表示
+            document.getElementById('share-url-display').value = url;
+            document.getElementById('share-url-size').textContent = `URL長: ${url.length}文字`;
+
+            // QRコード生成
+            const qrContainer = document.getElementById('share-qr-code');
+            qrContainer.innerHTML = '';
+
+            if (url.length <= 4000 && typeof QRCode !== 'undefined') {
+                new QRCode(qrContainer, {
+                    text: url,
+                    width: 180,
+                    height: 180,
+                    colorDark: '#292524',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.L
+                });
+            } else if (typeof QRCode === 'undefined') {
+                qrContainer.innerHTML = '<p class="text-xs text-warm-gray-400 py-8">QRコードライブラリの読み込みに<br>失敗しました</p>';
+            } else {
+                qrContainer.innerHTML = '<p class="text-xs text-warm-gray-400 py-8">URLが長すぎるためQRコードを<br>生成できません。<br>JSON共有をご利用ください。</p>';
+            }
+
+            shareModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeShareModal() {
+            shareModal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        // イベントリスナー
+        document.getElementById('close-share-modal').addEventListener('click', closeShareModal);
+        shareModal.addEventListener('click', (e) => {
+            if (e.target === shareModal) closeShareModal();
+        });
+
+        document.getElementById('copy-share-url').addEventListener('click', () => {
+            const urlInput = document.getElementById('share-url-display');
+            urlInput.select();
+            navigator.clipboard.writeText(urlInput.value).then(() => {
+                const btn = document.getElementById('copy-share-url');
+                const originalText = btn.textContent;
+                btn.textContent = 'コピー済み!';
+                setTimeout(() => btn.textContent = originalText, 2000);
+            }).catch(() => {
+                alert('クリップボードへのコピーに失敗しました');
+            });
+        });
+
+        document.getElementById('download-qr').addEventListener('click', () => {
+            const qrCanvas = document.querySelector('#share-qr-code canvas');
+            if (!qrCanvas) {
+                alert('QRコードが生成されていません');
+                return;
+            }
+            const link = document.createElement('a');
+            link.download = 'mermaid-share-qr.png';
+            link.href = qrCanvas.toDataURL('image/png');
+            link.click();
+        });
+
+        document.getElementById('share-json-export').addEventListener('click', () => {
+            const projectName = document.getElementById('project-name').value.trim() || 'project';
+            const data = {
+                name: projectName,
+                savedAt: new Date().toISOString(),
+                singleEditor: document.getElementById('editor').value,
+                asisEditor: document.getElementById('asis-editor').value,
+                tobeEditor: document.getElementById('tobe-editor').value,
+                annotations: window.annotationManager ? annotationManager.getAnnotationsForSave() : null
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = `${projectName}.json`;
+            link.href = url;
+            link.click();
+            URL.revokeObjectURL(url);
+        });
 
         // JSONインポートボタンのイベントリスナー
         document.getElementById('import-json-btn').addEventListener('click', () => {
@@ -2986,7 +3165,7 @@
 
         // URL共有ボタンのイベントリスナー
         document.getElementById('share-url-btn').addEventListener('click', () => {
-            generateShareURL();
+            openShareModal();
         });
 
         // ページ読み込み時にプロジェクト一覧を表示
