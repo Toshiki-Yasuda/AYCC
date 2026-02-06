@@ -166,6 +166,23 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
+        .filter-btn {
+            padding: 0.375rem 1rem;
+            font-size: 0.75rem;
+            border: 1px solid rgba(168, 162, 158, 0.3);
+            color: #78716c;
+            transition: all 0.3s;
+            letter-spacing: 0.05em;
+            border-radius: 0.375rem;
+            background: white;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background-color: #292524;
+            color: #fff;
+            border-color: #292524;
+        }
+
         #modal {
             display: none;
             position: fixed;
@@ -272,7 +289,15 @@
 
                 <!-- 右: プレビュー -->
                 <div class="bg-white p-6 border-elegant">
-                    <h3 class="text-sm font-medium text-warm-gray-700 mb-4">プレビュー</h3>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-medium text-warm-gray-700">プレビュー</h3>
+                        <select id="theme-select" class="border border-warm-gray-300 rounded px-2 py-1 text-xs focus:outline-none">
+                            <option value="default">テーマ: Default</option>
+                            <option value="neutral">テーマ: Neutral</option>
+                            <option value="dark">テーマ: Dark</option>
+                            <option value="forest">テーマ: Forest</option>
+                        </select>
+                    </div>
                     <div id="preview-area" class="bg-white border border-warm-gray-200 rounded p-4 flex items-center justify-center">
                         <p class="text-warm-gray-400 text-sm">図がここに表示されます</p>
                     </div>
@@ -295,6 +320,18 @@
                     </h2>
                     <p class="text-sm text-warm-gray-500 mb-4">カードをクリックしてテンプレートを適用</p>
                     <div class="divider"></div>
+                </div>
+
+                <!-- フィルタボタン -->
+                <div class="flex flex-wrap gap-2 justify-center mb-8">
+                    <button class="filter-btn active" data-filter="all">すべて</button>
+                    <button class="filter-btn" data-filter="industry">業種別</button>
+                    <button class="filter-btn" data-filter="general">汎用業務</button>
+                    <button class="filter-btn" data-filter="flowchart">フローチャート</button>
+                    <button class="filter-btn" data-filter="sequence">シーケンス図</button>
+                    <button class="filter-btn" data-filter="gantt">ガントチャート</button>
+                    <button class="filter-btn" data-filter="journey">ジャーニーマップ</button>
+                    <button class="filter-btn" data-filter="mindmap">マインドマップ</button>
                 </div>
 
                 <div id="template-cards" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
@@ -339,6 +376,8 @@
             {
                 name: '飲食業：予約→来店フロー',
                 industry: '飲食業',
+                category: 'industry',
+                diagramType: 'flowchart',
                 mermaid: `flowchart TD
     A[予約受付] --> B{予約方法}
     B -->|電話| C[電話対応]
@@ -359,6 +398,8 @@
             {
                 name: '音楽教室：入会→レッスン開始フロー',
                 industry: '音楽教室',
+                category: 'industry',
+                diagramType: 'flowchart',
                 mermaid: `flowchart TD
     A[問い合わせ] --> B[体験レッスン予約]
     B --> C[体験レッスン実施]
@@ -376,6 +417,8 @@
             {
                 name: '小売・EC：注文→配送フロー',
                 industry: '小売・EC',
+                category: 'industry',
+                diagramType: 'sequence',
                 mermaid: `sequenceDiagram
     participant C as 顧客
     participant S as ECサイト
@@ -395,6 +438,8 @@
             {
                 name: '医療・クリニック：患者受付→診察フロー',
                 industry: '医療・クリニック',
+                category: 'industry',
+                diagramType: 'flowchart',
                 mermaid: `flowchart TD
     A[来院・受付] --> B{初診/再診}
     B -->|初診| C[問診票記入]
@@ -415,6 +460,8 @@
             {
                 name: '不動産：物件問い合わせ→契約フロー',
                 industry: '不動産',
+                category: 'industry',
+                diagramType: 'flowchart',
                 mermaid: `flowchart TD
     A[物件問い合わせ] --> B[条件ヒアリング]
     B --> C[物件提案]
@@ -434,6 +481,8 @@
             {
                 name: 'IT/Web制作：システム開発フロー',
                 industry: 'IT/Web制作',
+                category: 'industry',
+                diagramType: 'flowchart',
                 mermaid: `flowchart TD
     A[要件ヒアリング] --> B[要件定義書作成]
     B --> C[見積・提案]
@@ -451,6 +500,8 @@
             {
                 name: '製造業：受注→出荷フロー',
                 industry: '製造業',
+                category: 'industry',
+                diagramType: 'flowchart',
                 mermaid: `flowchart TD
     A[受注] --> B[生産計画]
     B --> C[資材調達]
@@ -468,6 +519,8 @@
             {
                 name: '士業（税理士等）：顧問契約→月次対応フロー',
                 industry: '士業',
+                category: 'industry',
+                diagramType: 'flowchart',
                 mermaid: `flowchart TD
     A[初回相談] --> B[業務範囲確認]
     B --> C[見積提示]
@@ -485,6 +538,8 @@
             {
                 name: '美容・サロン：予約→施術→フォローフロー',
                 industry: '美容・サロン',
+                category: 'industry',
+                diagramType: 'flowchart',
                 mermaid: `flowchart TD
     A[予約] --> B{予約方法}
     B -->|電話| C[電話受付]
@@ -504,6 +559,8 @@
             {
                 name: '汎用：承認ワークフロー',
                 industry: '汎用',
+                category: 'industry',
+                diagramType: 'flowchart',
                 mermaid: `flowchart TD
     A[申請作成] --> B[上長に提出]
     B --> C{一次承認}
@@ -516,11 +573,199 @@
     G --> H[完了通知]
     H --> I[記録保存]`,
                 prompt: 'あなたは業務改善の専門家です。承認ワークフローについて以下のポイントをヒアリングし、Mermaid図を作成してください：①申請の種類 ②承認ステップ数 ③各ステップの承認者 ④差戻し時のフロー ⑤緊急時の対応 ⑥通知方法'
+            },
+            {
+                name: '採用フロー',
+                industry: '汎用（人事）',
+                category: 'general',
+                diagramType: 'flowchart',
+                mermaid: `flowchart TD
+    A[募集開始] --> B[応募受付]
+    B --> C[書類選考]
+    C --> D{書類結果}
+    D -->|通過| E[一次面接]
+    D -->|不合格| F[お祈りメール]
+    E --> G{一次結果}
+    G -->|通過| H[二次面接]
+    G -->|不合格| F
+    H --> I{最終結果}
+    I -->|内定| J[内定通知]
+    I -->|不合格| F
+    J --> K[入社手続き]
+    K --> L[オンボーディング]`,
+                prompt: 'あなたは人事採用の専門家です。採用フローについて以下のポイントをヒアリングし、Mermaid図を作成してください：①募集チャネル（求人サイト/紹介/リファラル）②書類選考の基準 ③面接の段階と各面接官 ④内定承諾率向上施策 ⑤オンボーディングプログラム ⑥試用期間の評価方法'
+            },
+            {
+                name: 'クレーム対応フロー',
+                industry: '汎用（CS）',
+                category: 'general',
+                diagramType: 'flowchart',
+                mermaid: `flowchart TD
+    A[クレーム受付] --> B[内容記録]
+    B --> C[緊急度判定]
+    C --> D{緊急度}
+    D -->|高| E[責任者即対応]
+    D -->|中| F[担当者振分]
+    D -->|低| G[通常対応]
+    E --> H[原因調査]
+    F --> H
+    G --> H
+    H --> I[対応策決定]
+    I --> J[顧客へ回答]
+    J --> K[フォロー連絡]
+    K --> L[記録・共有]`,
+                prompt: 'あなたはカスタマーサポートの専門家です。クレーム対応フローについて以下のポイントをヒアリングし、Mermaid図を作成してください：①受付チャネル（電話/メール/SNS）②緊急度の判定基準 ③エスカレーションルール ④対応期限の設定 ⑤顧客満足度の測定方法 ⑥再発防止策の仕組み'
+            },
+            {
+                name: '営業リード管理',
+                industry: '汎用（営業）',
+                category: 'general',
+                diagramType: 'flowchart',
+                mermaid: `flowchart TD
+    A[リード獲得] --> B[情報登録]
+    B --> C[スコアリング]
+    C --> D{ホット度}
+    D -->|ホット| E[即座に商談]
+    D -->|ウォーム| F[ナーチャリング]
+    D -->|コールド| G[中長期フォロー]
+    F --> H[定期接触]
+    H --> I[商談機会]
+    E --> I
+    I --> J[提案・見積]
+    J --> K{成約}
+    K -->|成約| L[受注処理]
+    K -->|失注| M[失注理由分析]
+    L --> N[アフターフォロー]`,
+                prompt: 'あなたは営業プロセス設計の専門家です。営業リード管理について以下のポイントをヒアリングし、Mermaid図を作成してください：①リード獲得方法（展示会/Web/紹介）②スコアリング基準 ③ナーチャリング手法（メルマガ/セミナー）④商談から提案までの期間 ⑤成約率の目標値 ⑥失注分析の活用方法'
+            },
+            {
+                name: '経費精算ワークフロー',
+                industry: '汎用（経理）',
+                category: 'general',
+                diagramType: 'flowchart',
+                mermaid: `flowchart TD
+    A[経費申請] --> B[領収書添付]
+    B --> C[上長承認]
+    C --> D{承認結果}
+    D -->|承認| E[経理確認]
+    D -->|差戻| F[修正・再申請]
+    F --> C
+    E --> G{確認結果}
+    G -->|OK| H[支払処理]
+    G -->|不備| F
+    H --> I[振込実行]
+    I --> J[記帳処理]
+    J --> K[完了通知]`,
+                prompt: 'あなたは経理業務の専門家です。経費精算ワークフローについて以下のポイントをヒアリングし、Mermaid図を作成してください：①経費の種類（交通費/交際費/消耗品等）②申請期限の設定 ③承認者の設定ルール ④領収書の電子化方法 ⑤支払サイクル ⑥会計システムとの連携'
+            },
+            {
+                name: 'プロジェクト計画',
+                industry: '汎用（PM）',
+                category: 'general',
+                diagramType: 'gantt',
+                mermaid: `gantt
+    title プロジェクト計画
+    dateFormat YYYY-MM-DD
+    section 企画
+    要件定義       :a1, 2026-03-01, 14d
+    仕様策定       :a2, after a1, 7d
+    section 設計
+    基本設計       :b1, after a2, 10d
+    詳細設計       :b2, after b1, 14d
+    section 開発
+    開発フェーズ1  :c1, after b2, 21d
+    開発フェーズ2  :c2, after c1, 21d
+    section テスト
+    単体テスト     :d1, after c2, 7d
+    結合テスト     :d2, after d1, 10d
+    section リリース
+    本番リリース   :e1, after d2, 3d`,
+                prompt: 'あなたはプロジェクトマネジメントの専門家です。プロジェクト計画ガントチャートについて以下のポイントをヒアリングし、Mermaid図を作成してください：①プロジェクト期間 ②各フェーズの工数 ③マイルストーン ④並行作業の有無 ⑤リスクバッファ ⑥レビュー・承認タイミング'
+            },
+            {
+                name: 'システム構成（部門間連携）',
+                industry: '汎用（IT）',
+                category: 'general',
+                diagramType: 'sequence',
+                mermaid: `sequenceDiagram
+    participant 顧客
+    participant フロントエンド
+    participant API
+    participant DB
+    participant 外部サービス
+    顧客->>フロントエンド: リクエスト
+    フロントエンド->>API: データ要求
+    API->>DB: クエリ実行
+    DB-->>API: データ返却
+    API->>外部サービス: 外部API呼出
+    外部サービス-->>API: レスポンス
+    API-->>フロントエンド: 処理結果
+    フロントエンド-->>顧客: 画面表示`,
+                prompt: 'あなたはシステムアーキテクトです。システム間連携フローについて以下のポイントをヒアリングし、Mermaid図を作成してください：①システム構成要素 ②各層の役割 ③データフロー ④外部連携先 ⑤エラーハンドリング ⑥セキュリティ要件'
+            },
+            {
+                name: '顧客体験ジャーニー',
+                industry: '汎用（マーケ）',
+                category: 'general',
+                diagramType: 'journey',
+                mermaid: `journey
+    title 顧客体験ジャーニー
+    section 認知
+      Web検索: 3: 顧客
+      SNS閲覧: 4: 顧客
+      広告接触: 3: 顧客
+    section 検討
+      資料請求: 4: 顧客
+      比較検討: 3: 顧客
+      口コミ確認: 4: 顧客
+    section 購入
+      問い合わせ: 5: 顧客
+      見積取得: 4: 顧客
+      契約: 5: 顧客
+    section 利用
+      初回利用: 4: 顧客
+      継続利用: 5: 顧客
+    section 推薦
+      満足度評価: 5: 顧客
+      口コミ投稿: 4: 顧客`,
+                prompt: 'あなたはカスタマーエクスペリエンスの専門家です。顧客体験ジャーニーについて以下のポイントをヒアリングし、Mermaid図を作成してください：①ターゲット顧客像 ②各タッチポイント ③顧客の感情変化 ④課題・ペインポイント ⑤改善施策 ⑥KPI設定'
+            },
+            {
+                name: '課題の構造化マインドマップ',
+                industry: '汎用（分析）',
+                category: 'general',
+                diagramType: 'mindmap',
+                mermaid: `mindmap
+  root((業務課題))
+    コスト
+      人件費高騰
+        残業削減
+        外注活用
+      設備投資
+        クラウド化
+        レガシー更改
+    品質
+      不良率
+        検査強化
+        工程改善
+      顧客満足
+        CS体制
+        アフターフォロー
+    スピード
+      リードタイム
+        ボトルネック特定
+        並行処理化
+      意思決定
+        権限委譲
+        データ活用`,
+                prompt: 'あなたは業務分析の専門家です。業務課題の構造化について以下のポイントをヒアリングし、Mermaid図を作成してください：①主要課題カテゴリ ②各課題の関連性 ③優先度の高い課題 ④根本原因 ⑤具体的な改善アクション ⑥効果測定指標'
             }
         ];
 
         let currentPrompt = '';
         let debounceTimer;
+        let renderCount = 0;
+        let currentTheme = 'default';
 
         mermaid.initialize({
             startOnLoad: false,
@@ -535,23 +780,43 @@
         const modal = document.getElementById('modal');
         const modalTitle = document.getElementById('modal-title');
         const modalContent = document.getElementById('modal-content');
+        const themeSelect = document.getElementById('theme-select');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+
+        const industryGroup = document.createElement('optgroup');
+        industryGroup.label = '業種別';
+        const generalGroup = document.createElement('optgroup');
+        generalGroup.label = '汎用業務';
 
         templates.forEach((template, index) => {
             const option = document.createElement('option');
             option.value = index;
             option.textContent = template.name;
-            templateSelect.appendChild(option);
+
+            if (template.category === 'industry') {
+                industryGroup.appendChild(option);
+            } else {
+                generalGroup.appendChild(option);
+            }
 
             const card = document.createElement('div');
             card.className = 'template-card bg-white p-6 border-elegant rounded-lg';
+            card.setAttribute('data-category', template.category);
+            card.setAttribute('data-diagram-type', template.diagramType);
             card.innerHTML = `
-                <div class="text-xs text-navy-500 mb-2 tracking-wider">${template.industry}</div>
+                <div class="flex gap-2 mb-2">
+                    <span class="text-xs text-navy-500 tracking-wider">${template.industry}</span>
+                    <span class="text-xs bg-navy-50 text-navy-600 px-2 py-0.5 rounded">${template.diagramType}</span>
+                </div>
                 <h3 class="font-medium text-warm-gray-800 text-sm mb-3">${template.name}</h3>
                 <p class="text-xs text-warm-gray-500">クリックして適用</p>
             `;
             card.addEventListener('click', () => loadTemplate(index));
             templateCards.appendChild(card);
         });
+
+        templateSelect.appendChild(industryGroup);
+        templateSelect.appendChild(generalGroup);
 
         function loadTemplate(index) {
             const template = templates[index];
@@ -581,7 +846,8 @@
             }
 
             try {
-                const { svg } = await mermaid.render('mermaid-preview-svg', code);
+                previewArea.innerHTML = '';
+                const { svg } = await mermaid.render('mermaid-svg-' + renderCount++, code);
                 previewArea.innerHTML = svg;
             } catch (error) {
                 previewArea.innerHTML = '<p class="text-red-500 text-sm">記法エラー: 正しいMermaid記法を入力してください</p>';
@@ -693,6 +959,36 @@
             if (e.target === modal) {
                 modal.classList.remove('modal-open');
             }
+        });
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.getAttribute('data-filter');
+                const cards = document.querySelectorAll('.template-card');
+
+                cards.forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else if (filter === 'industry' || filter === 'general') {
+                        card.style.display = card.getAttribute('data-category') === filter ? 'block' : 'none';
+                    } else {
+                        card.style.display = card.getAttribute('data-diagram-type') === filter ? 'block' : 'none';
+                    }
+                });
+            });
+        });
+
+        themeSelect.addEventListener('change', (e) => {
+            currentTheme = e.target.value;
+            mermaid.initialize({
+                startOnLoad: false,
+                theme: currentTheme,
+                securityLevel: 'loose'
+            });
+            updatePreview();
         });
 
         const menuToggle = document.getElementById('menu-toggle');
