@@ -150,9 +150,24 @@
             opacity: 1;
         }
 
-        #editor {
+        #editor, #asis-editor, #tobe-editor {
             font-family: 'Courier New', Courier, monospace;
             min-height: 400px;
+            background-color: #292524;
+            color: #e7e5e4;
+            border: 1px solid #44403c;
+            padding-left: 3rem;
+            line-height: 1.7;
+        }
+
+        #editor:focus, #asis-editor:focus, #tobe-editor:focus {
+            border-color: #5a7ea5;
+            box-shadow: 0 0 0 3px rgba(90, 126, 165, 0.15);
+            outline: none;
+        }
+
+        #editor::placeholder, #asis-editor::placeholder, #tobe-editor::placeholder {
+            color: #78716c;
         }
 
         #preview-area {
@@ -218,6 +233,9 @@
             letter-spacing: 0.05em;
             border-radius: 0.375rem;
             background: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .mode-tab:hover, .mode-tab.active {
@@ -370,6 +388,17 @@
             color: #6b7280;
             border-color: #e5e7eb;
         }
+
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body class="bg-warm-gray-50">
@@ -457,8 +486,19 @@
 
                 <!-- モード切替タブ -->
                 <div class="flex justify-center gap-4">
-                    <button id="mode-single" class="mode-tab active">通常モード</button>
-                    <button id="mode-compare" class="mode-tab">As-Is / To-Be 比較</button>
+                    <button id="mode-single" class="mode-tab active">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="18" height="18" rx="2" stroke-width="2"/>
+                        </svg>
+                        通常モード
+                    </button>
+                    <button id="mode-compare" class="mode-tab">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="8" height="18" rx="1" stroke-width="2"/>
+                            <rect x="13" y="3" width="8" height="18" rx="1" stroke-width="2"/>
+                        </svg>
+                        As-Is / To-Be 比較
+                    </button>
                 </div>
             </div>
 
@@ -534,7 +574,7 @@
             <div id="compare-mode" class="hidden mb-16">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- As-Is -->
-                    <div>
+                    <div class="bg-rose-50/50 rounded-xl p-4">
                         <h3 class="font-elegant text-lg text-rose-700 mb-4 text-center">As-Is（現状）</h3>
                         <div class="bg-white p-6 border-elegant mb-4">
                             <div class="mb-4">
@@ -543,7 +583,7 @@
                                     <option value="">選択してください</option>
                                 </select>
                             </div>
-                            <textarea id="asis-editor" class="w-full border border-warm-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-400 resize-y" style="font-family: 'Courier New', monospace; min-height: 250px;" placeholder="As-Is（現状）のMermaid記法を入力..."></textarea>
+                            <textarea id="asis-editor" class="w-full border border-warm-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-400 resize-y"  placeholder="As-Is（現状）のMermaid記法を入力..."></textarea>
                             <div class="flex gap-3 mt-3">
                                 <button id="asis-copy-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">コードコピー</button>
                                 <button id="asis-clear-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">クリア</button>
@@ -579,7 +619,7 @@
                     </div>
 
                     <!-- To-Be -->
-                    <div>
+                    <div class="bg-navy-50/50 rounded-xl p-4">
                         <h3 class="font-elegant text-lg text-navy-700 mb-4 text-center">To-Be（改善後）</h3>
                         <div class="bg-white p-6 border-elegant mb-4">
                             <div class="mb-4">
@@ -587,7 +627,7 @@
                                     ← As-Isからコピーして編集
                                 </button>
                             </div>
-                            <textarea id="tobe-editor" class="w-full border border-warm-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-400 resize-y" style="font-family: 'Courier New', monospace; min-height: 250px;" placeholder="To-Be（改善後）のMermaid記法を入力..."></textarea>
+                            <textarea id="tobe-editor" class="w-full border border-warm-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-400 resize-y"  placeholder="To-Be（改善後）のMermaid記法を入力..."></textarea>
                             <div class="flex gap-3 mt-3">
                                 <button id="tobe-copy-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">コードコピー</button>
                                 <button id="tobe-clear-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">クリア</button>
@@ -637,7 +677,7 @@
             <!-- /比較モード -->
 
             <!-- 保存セクション -->
-            <div class="mb-16">
+            <div class="mb-16 fade-in-section">
                 <div class="bg-warm-gray-50 p-6 border-elegant">
                     <div class="flex flex-wrap items-center gap-4">
                         <input id="project-name" type="text" placeholder="プロジェクト名を入力" class="border border-warm-gray-300 rounded px-3 py-2 text-sm flex-1 min-w-[200px] focus:outline-none focus:ring-2 focus:ring-navy-400">
@@ -648,7 +688,7 @@
             </div>
 
             <!-- 保存済みプロジェクト一覧 -->
-            <div id="saved-projects" class="mb-16 hidden">
+            <div id="saved-projects" class="mb-16 hidden fade-in-section">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="font-elegant text-lg text-warm-gray-800">
                         保存済みプロジェクト<span id="project-count" class="text-warm-gray-400 text-sm ml-1"></span>
@@ -664,7 +704,7 @@
             <input type="file" id="import-json-input" accept=".json" class="hidden">
 
             <!-- テンプレートセクション -->
-            <div class="mb-16">
+            <div class="mb-16 fade-in-section">
                 <div class="text-center mb-10">
                     <h2 class="font-elegant text-xl md:text-2xl text-warm-gray-800 mb-2">
                         業種別テンプレート
@@ -862,6 +902,7 @@
                 industry: '飲食業',
                 category: 'industry',
                 diagramType: 'flowchart',
+                icon: 'M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm7 4l-4 4h3v3h2v-3h3l-4-4z',
                 mermaid: `flowchart TD
     A[予約受付] --> B{予約方法}
     B -->|電話| C[電話対応]
@@ -920,6 +961,7 @@
                 industry: '音楽教室',
                 category: 'industry',
                 diagramType: 'flowchart',
+                icon: 'M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z',
                 mermaid: `flowchart TD
     A[問い合わせ] --> B[体験レッスン予約]
     B --> C[体験レッスン実施]
@@ -975,6 +1017,7 @@
                 industry: '小売・EC',
                 category: 'industry',
                 diagramType: 'sequence',
+                icon: 'M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z',
                 mermaid: `sequenceDiagram
     participant C as 顧客
     participant S as ECサイト
@@ -1032,6 +1075,7 @@
                 industry: '医療・クリニック',
                 category: 'industry',
                 diagramType: 'flowchart',
+                icon: 'M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z',
                 mermaid: `flowchart TD
     A[来院・受付] --> B{初診/再診}
     B -->|初診| C[問診票記入]
@@ -1090,6 +1134,7 @@
                 industry: '不動産',
                 category: 'industry',
                 diagramType: 'flowchart',
+                icon: 'M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z',
                 mermaid: `flowchart TD
     A[物件問い合わせ] --> B[条件ヒアリング]
     B --> C[物件提案]
@@ -1147,6 +1192,7 @@
                 industry: 'IT/Web制作',
                 category: 'industry',
                 diagramType: 'flowchart',
+                icon: 'M20 3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h3l-1 1v2h12v-2l-1-1h3c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 13H4V5h16v11z M9.5 8.5l-2 2 2 2V14l-3-3 3-3zm5 0v1.5l2 2-2 2V14l3-3-3-3z',
                 mermaid: `flowchart TD
     A[要件ヒアリング] --> B[要件定義書作成]
     B --> C[見積・提案]
@@ -1202,6 +1248,7 @@
                 industry: '製造業',
                 category: 'industry',
                 diagramType: 'flowchart',
+                icon: 'M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.87L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5 4.5-2.01 4.5-4.5-2.01-4.5-4.5-4.5zm0 7c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM3 21.5h8v-8H3v8zm2-6h4v4H5v-4z',
                 mermaid: `flowchart TD
     A[受注] --> B[生産計画]
     B --> C[資材調達]
@@ -1257,6 +1304,7 @@
                 industry: '士業',
                 category: 'industry',
                 diagramType: 'flowchart',
+                icon: 'M14 6l-4.22 5.63 1.25 1.67L14 9.33 19 16h-8.46l-4.01-5.37L1 18h22L14 6zM5 16l1.52-2.03L8.04 16H5z',
                 mermaid: `flowchart TD
     A[初回相談] --> B[業務範囲確認]
     B --> C[見積提示]
@@ -1312,6 +1360,7 @@
                 industry: '美容・サロン',
                 category: 'industry',
                 diagramType: 'flowchart',
+                icon: 'M12.87 15.07l-2.54-2.51.03-.03A6.007 6.007 0 0014 7c0-3.31-2.69-6-6-6S2 3.69 2 7s2.69 6 6 6c1.66 0 3.14-.69 4.22-1.78l.03-.03 2.51 2.54c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41l-.03-.03 3.59 3.59c.39.39.39 1.02 0 1.41-.19.19-.44.29-.71.29s-.51-.1-.71-.29l-3.59-3.59zm-8.95-4.34l-.64-.64 1.41-1.41.64.64c.39.39.39 1.02 0 1.41-.38.4-1.01.4-1.41 0z',
                 mermaid: `flowchart TD
     A[予約] --> B{予約方法}
     B -->|電話| C[電話受付]
@@ -1369,6 +1418,7 @@
                 industry: '汎用',
                 category: 'industry',
                 diagramType: 'flowchart',
+                icon: 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z',
                 mermaid: `flowchart TD
     A[申請作成] --> B[上長に提出]
     B --> C{一次承認}
@@ -1423,6 +1473,7 @@
                 industry: '汎用（人事）',
                 category: 'general',
                 diagramType: 'flowchart',
+                icon: 'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z',
                 mermaid: `flowchart TD
     A[募集開始] --> B[応募受付]
     B --> C[書類選考]
@@ -1480,6 +1531,7 @@
                 industry: '汎用（CS）',
                 category: 'general',
                 diagramType: 'flowchart',
+                icon: 'M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z',
                 mermaid: `flowchart TD
     A[クレーム受付] --> B[内容記録]
     B --> C[緊急度判定]
@@ -1537,6 +1589,7 @@
                 industry: '汎用（営業）',
                 category: 'general',
                 diagramType: 'flowchart',
+                icon: 'M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z',
                 mermaid: `flowchart TD
     A[リード獲得] --> B[情報登録]
     B --> C[スコアリング]
@@ -1595,6 +1648,7 @@
                 industry: '汎用（経理）',
                 category: 'general',
                 diagramType: 'flowchart',
+                icon: 'M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z',
                 mermaid: `flowchart TD
     A[経費申請] --> B[領収書添付]
     B --> C[上長承認]
@@ -1651,6 +1705,7 @@
                 industry: '汎用（PM）',
                 category: 'general',
                 diagramType: 'gantt',
+                icon: 'M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z',
                 mermaid: `gantt
     title プロジェクト計画
     dateFormat YYYY-MM-DD
@@ -1710,6 +1765,7 @@
                 industry: '汎用（IT）',
                 category: 'general',
                 diagramType: 'sequence',
+                icon: 'M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z',
                 mermaid: `sequenceDiagram
     participant 顧客
     participant フロントエンド
@@ -1766,6 +1822,7 @@
                 industry: '汎用（マーケ）',
                 category: 'general',
                 diagramType: 'journey',
+                icon: 'M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z',
                 mermaid: `journey
     title 顧客体験ジャーニー
     section 認知
@@ -1828,6 +1885,7 @@
                 industry: '汎用（分析）',
                 category: 'general',
                 diagramType: 'mindmap',
+                icon: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z',
                 mermaid: `mindmap
   root((業務課題))
     コスト
@@ -2298,15 +2356,24 @@
             }
 
             const card = document.createElement('div');
-            card.className = 'template-card bg-white p-6 border-elegant rounded-lg';
+            card.className = 'template-card bg-white p-5 border-elegant rounded-lg';
             card.setAttribute('data-category', template.category);
             card.setAttribute('data-diagram-type', template.diagramType);
             card.innerHTML = `
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-full bg-navy-50 flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5 text-navy-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="${template.icon}"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-warm-gray-800">${template.name}</h4>
+                        <span class="text-xs text-warm-gray-400">${template.industry}</span>
+                    </div>
+                </div>
                 <div class="flex gap-2 mb-2">
-                    <span class="text-xs text-navy-500 tracking-wider">${template.industry}</span>
                     <span class="text-xs bg-navy-50 text-navy-600 px-2 py-0.5 rounded">${template.diagramType}</span>
                 </div>
-                <h3 class="font-medium text-warm-gray-800 text-sm mb-3">${template.name}</h3>
                 <p class="text-xs text-warm-gray-500">クリックして適用</p>
             `;
             card.addEventListener('click', () => loadTemplate(index));
@@ -2341,7 +2408,15 @@
         async function updatePreview() {
             const code = editor.value.trim();
             if (!code) {
-                previewArea.innerHTML = '<p class="text-warm-gray-400 text-sm">図がここに表示されます</p>';
+                previewArea.innerHTML = `
+                    <div class="text-center py-12">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-warm-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 5h4v4H4zM16 5h4v4h-4zM10 15h4v4h-4zM6 9v2a2 2 0 002 2h2M18 9v2a2 2 0 01-2 2h-2M12 13v2"/>
+                        </svg>
+                        <p class="text-warm-gray-300 text-sm">左のエディタにMermaid記法を入力すると</p>
+                        <p class="text-warm-gray-300 text-sm">ここにフロー図が表示されます</p>
+                    </div>
+                `;
                 return;
             }
 
@@ -2577,8 +2652,16 @@
         async function renderComparePreview(editorEl, previewEl) {
             const code = editorEl.value.trim();
             if (!code) {
-                const placeholderText = editorEl === asisEditor ? 'As-Is図がここに表示されます' : 'To-Be図がここに表示されます';
-                previewEl.innerHTML = `<p class="text-warm-gray-400 text-sm">${placeholderText}</p>`;
+                const isAsis = editorEl === asisEditor;
+                const titleText = isAsis ? 'As-Is（現状）のフロー図が' : 'To-Be（改善後）のフロー図が';
+                previewEl.innerHTML = `
+                    <div class="text-center py-12">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-warm-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 5h4v4H4zM16 5h4v4h-4zM10 15h4v4h-4zM6 9v2a2 2 0 002 2h2M18 9v2a2 2 0 01-2 2h-2M12 13v2"/>
+                        </svg>
+                        <p class="text-warm-gray-300 text-sm">${titleText}ここに表示されます</p>
+                    </div>
+                `;
                 return;
             }
             try {
@@ -3646,6 +3729,18 @@
         document.getElementById('presentation-btn').addEventListener('click', () => {
             presentationMode.open();
         });
+
+        // スクロールアニメーション
+        const fadeElements = document.querySelectorAll('.fade-in-section');
+        const fadeObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        fadeElements.forEach(el => fadeObserver.observe(el));
     </script>
 
 </body>
