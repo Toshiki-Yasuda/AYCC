@@ -4140,6 +4140,13 @@
             securityLevel: 'loose'
         });
 
+        // HTML escape utility function
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
         // アノテーション管理クラス
         class AnnotationManager {
             constructor() {
@@ -4295,10 +4302,9 @@
             }
 
             detachNodeListeners(previewEl) {
-                const nodes = previewEl.querySelectorAll('g.node, g[class*="node"]');
+                const nodes = Array.from(previewEl.querySelectorAll('g.node, g[class*="node"]'));
                 nodes.forEach(node => {
                     node.style.cursor = '';
-                    node.replaceWith(node.cloneNode(true));
                 });
             }
 
@@ -4412,8 +4418,8 @@
                     <div class="flex items-start gap-3 p-3 bg-white border border-warm-gray-200 rounded-lg text-sm">
                         <span class="shrink-0 category-badge ${ann.category}">${categoryLabels[ann.category]}</span>
                         <div class="flex-1 min-w-0">
-                            <p class="font-medium text-warm-gray-800 text-xs mb-0.5">${ann.nodeText}</p>
-                            <p class="text-warm-gray-600 text-xs">${ann.comment}</p>
+                            <p class="font-medium text-warm-gray-800 text-xs mb-0.5">${escapeHTML(ann.nodeText)}</p>
+                            <p class="text-warm-gray-600 text-xs">${escapeHTML(ann.comment)}</p>
                         </div>
                         <button class="delete-annotation-btn shrink-0 text-warm-gray-400 hover:text-red-500 transition-colors" data-id="${ann.id}" data-target="${target}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -4523,6 +4529,8 @@ ${annotationSection}
                         toast.style.opacity = '0';
                         setTimeout(() => toast.remove(), 300);
                     }, 2500);
+                }).catch(() => {
+                    alert('クリップボードへのコピーに失敗しました');
                 });
             }
 
@@ -4569,6 +4577,8 @@ ${annotationSection}
                         toast.style.opacity = '0';
                         setTimeout(() => toast.remove(), 300);
                     }, 2500);
+                }).catch(() => {
+                    alert('クリップボードへのコピーに失敗しました');
                 });
             }
 
@@ -4853,6 +4863,8 @@ ${annotationSection}
                 setTimeout(() => {
                     btn.textContent = originalText;
                 }, 2000);
+            }).catch(() => {
+                alert('クリップボードへのコピーに失敗しました');
             });
         });
 
@@ -5012,6 +5024,8 @@ ${annotationSection}
                 setTimeout(() => {
                     btn.textContent = originalText;
                 }, 2000);
+            }).catch(() => {
+                alert('クリップボードへのコピーに失敗しました');
             });
         });
 
@@ -5130,6 +5144,8 @@ ${annotationSection}
                     setTimeout(() => {
                         btn.textContent = originalText;
                     }, 2000);
+                }).catch(() => {
+                    alert('クリップボードへのコピーに失敗しました');
                 });
             });
         }
@@ -5307,6 +5323,7 @@ ${annotationSection}
 
                 const card = document.createElement('div');
                 card.className = 'bg-white p-5 border-elegant rounded-lg hover:shadow-md transition-shadow';
+                card.dataset.projectId = index;
                 card.innerHTML = `
                     <h4 class="font-medium text-warm-gray-800 text-sm mb-1">${project.name}</h4>
                     <p class="text-xs text-warm-gray-400 mb-3">${formattedDate}</p>
@@ -5330,48 +5347,30 @@ ${annotationSection}
 
                     <!-- アクションボタン -->
                     <div class="flex flex-wrap gap-2">
-                        <button class="load-project-btn border border-warm-gray-400 text-warm-gray-600 text-xs px-3 py-1.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300" data-index="${index}">読み込み</button>
-                        <button class="duplicate-project-btn border border-warm-gray-400 text-warm-gray-600 text-xs px-3 py-1.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300" data-index="${index}">複製</button>
-                        <button class="export-project-btn border border-navy-300 text-navy-500 text-xs px-3 py-1.5 tracking-wider hover:bg-navy-600 hover:text-white hover:border-navy-600 transition-all duration-300" data-index="${index}">JSON</button>
-                        <button class="delete-project-btn border border-red-300 text-red-500 text-xs px-3 py-1.5 tracking-wider hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-300" data-index="${index}">削除</button>
+                        <button data-action="load" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-3 py-1.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">読み込み</button>
+                        <button data-action="duplicate" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-3 py-1.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">複製</button>
+                        <button data-action="export" class="border border-navy-300 text-navy-500 text-xs px-3 py-1.5 tracking-wider hover:bg-navy-600 hover:text-white hover:border-navy-600 transition-all duration-300">JSON</button>
+                        <button data-action="delete" class="border border-red-300 text-red-500 text-xs px-3 py-1.5 tracking-wider hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-300">削除</button>
                     </div>
                 `;
 
                 projectList.appendChild(card);
             });
-
-            // 読み込みボタンのイベント
-            document.querySelectorAll('.load-project-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const index = parseInt(e.target.getAttribute('data-index'));
-                    loadProject(index);
-                });
-            });
-
-            // 複製ボタンのイベント
-            document.querySelectorAll('.duplicate-project-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const index = parseInt(e.target.getAttribute('data-index'));
-                    duplicateProject(index);
-                });
-            });
-
-            // JSONエクスポートボタンのイベント
-            document.querySelectorAll('.export-project-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const index = parseInt(e.target.getAttribute('data-index'));
-                    exportProjectJSON(index);
-                });
-            });
-
-            // 削除ボタンのイベント
-            document.querySelectorAll('.delete-project-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const index = parseInt(e.target.getAttribute('data-index'));
-                    deleteProject(index);
-                });
-            });
         }
+
+        // Event delegation for project list
+        document.getElementById('project-list').addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-action]');
+            if (!btn) return;
+            const projectId = btn.closest('[data-project-id]')?.dataset.projectId;
+            if (!projectId) return;
+
+            const action = btn.dataset.action;
+            if (action === 'load') loadProject(parseInt(projectId));
+            if (action === 'duplicate') duplicateProject(parseInt(projectId));
+            if (action === 'export') exportProjectJSON(parseInt(projectId));
+            if (action === 'delete') deleteProject(parseInt(projectId));
+        });
 
         // プロジェクト読み込み
         function loadProject(index) {
@@ -5449,11 +5448,23 @@ ${annotationSection}
             reader.onload = (e) => {
                 try {
                     const project = JSON.parse(e.target.result);
-                    // バリデーション
-                    if (!project.name) {
+                    // Validate project structure
+                    if (!project || typeof project !== 'object') {
                         alert('無効なプロジェクトファイルです');
                         return;
                     }
+                    if (!project.name || typeof project.name !== 'string') {
+                        alert('プロジェクト名が見つかりません');
+                        return;
+                    }
+                    // Set defaults for missing properties
+                    project.singleEditor = project.singleEditor || '';
+                    project.asisEditor = project.asisEditor || '';
+                    project.tobeEditor = project.tobeEditor || '';
+                    project.annotations = project.annotations || { single: [], asis: [], tobe: [] };
+                    if (!Array.isArray(project.annotations.single)) project.annotations.single = [];
+                    if (!Array.isArray(project.annotations.asis)) project.annotations.asis = [];
+                    if (!Array.isArray(project.annotations.tobe)) project.annotations.tobe = [];
 
                     let projects = JSON.parse(localStorage.getItem('mermaid-projects') || '[]');
 
@@ -6033,8 +6044,8 @@ ${annotationSection}
                     const rows = annotations.map(a => `
                         <tr class="border-b border-warm-gray-200">
                             <td class="py-3 px-4"><span style="color:${categoryColors[a.category]}" class="font-medium text-sm">${categoryLabels[a.category]}</span></td>
-                            <td class="py-3 px-4 text-sm text-warm-gray-700">${a.nodeText}</td>
-                            <td class="py-3 px-4 text-sm text-warm-gray-600">${a.comment}</td>
+                            <td class="py-3 px-4 text-sm text-warm-gray-700">${escapeHTML(a.nodeText)}</td>
+                            <td class="py-3 px-4 text-sm text-warm-gray-600">${escapeHTML(a.comment)}</td>
                         </tr>
                     `).join('');
 
@@ -6079,7 +6090,7 @@ ${annotationSection}
                                 <div class="mb-8">
                                     <h3 class="text-lg text-rose-700 font-medium mb-3">主要な課題</h3>
                                     <ul class="space-y-2">
-                                        ${problems.map(p => `<li class="text-sm text-warm-gray-600 flex items-start gap-2"><span class="text-rose-500 mt-1">●</span><span>${p.nodeText}: ${p.comment}</span></li>`).join('')}
+                                        ${problems.map(p => `<li class="text-sm text-warm-gray-600 flex items-start gap-2"><span class="text-rose-500 mt-1">●</span><span>${escapeHTML(p.nodeText)}: ${escapeHTML(p.comment)}</span></li>`).join('')}
                                     </ul>
                                 </div>
                                 ` : ''}
@@ -6087,7 +6098,7 @@ ${annotationSection}
                                 <div class="mb-8">
                                     <h3 class="text-lg text-navy-700 font-medium mb-3">改善提案</h3>
                                     <ul class="space-y-2">
-                                        ${improvements.map(i => `<li class="text-sm text-warm-gray-600 flex items-start gap-2"><span class="text-navy-500 mt-1">●</span><span>${i.nodeText}: ${i.comment}</span></li>`).join('')}
+                                        ${improvements.map(i => `<li class="text-sm text-warm-gray-600 flex items-start gap-2"><span class="text-navy-500 mt-1">●</span><span>${escapeHTML(i.nodeText)}: ${escapeHTML(i.comment)}</span></li>`).join('')}
                                     </ul>
                                 </div>
                                 ` : ''}
