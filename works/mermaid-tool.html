@@ -336,6 +336,17 @@
             stroke-dasharray: 5 !important;
         }
 
+        .annotation-mode .node rect,
+        .annotation-mode .node polygon,
+        .annotation-mode .node circle {
+            animation: node-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes node-pulse {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.1); }
+        }
+
         .annotated-problem rect,
         .annotated-problem polygon,
         .annotated-problem circle,
@@ -584,8 +595,35 @@
                             </select>
                         </div>
                     </div>
-                    <div id="preview-area" class="bg-white border border-warm-gray-200 rounded p-4 flex items-center justify-center">
-                        <p class="text-warm-gray-400 text-sm">図がここに表示されます</p>
+                    <div id="preview-area" class="bg-white border border-warm-gray-200 rounded p-4 flex items-center justify-center min-h-[300px]">
+                        <div id="preview-empty-guide" class="text-center py-8 px-4">
+                            <p class="text-warm-gray-300 text-xs tracking-widest mb-6">GETTING STARTED</p>
+                            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10">
+                                <div class="flex flex-col items-center gap-2 max-w-[140px]">
+                                    <div class="w-10 h-10 rounded-full bg-warm-gray-100 flex items-center justify-center text-warm-gray-400">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+                                    </div>
+                                    <span class="text-warm-gray-800 text-xs font-medium">1. テンプレート選択</span>
+                                    <span class="text-warm-gray-400 text-[10px] leading-tight">左のドロップダウンまたは下のカードから選択</span>
+                                </div>
+                                <div class="hidden md:block text-warm-gray-300">→</div>
+                                <div class="flex flex-col items-center gap-2 max-w-[140px]">
+                                    <div class="w-10 h-10 rounded-full bg-warm-gray-100 flex items-center justify-center text-warm-gray-400">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+                                    </div>
+                                    <span class="text-warm-gray-800 text-xs font-medium">2. アノテーション</span>
+                                    <span class="text-warm-gray-400 text-[10px] leading-tight">図のノードをクリックして課題を記録</span>
+                                </div>
+                                <div class="hidden md:block text-warm-gray-300">→</div>
+                                <div class="flex flex-col items-center gap-2 max-w-[140px]">
+                                    <div class="w-10 h-10 rounded-full bg-warm-gray-100 flex items-center justify-center text-warm-gray-400">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                    </div>
+                                    <span class="text-warm-gray-800 text-xs font-medium">3. レポート出力</span>
+                                    <span class="text-warm-gray-400 text-[10px] leading-tight">PDF・プレゼンで成果をまとめる</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="flex gap-3 mt-4">
                         <button id="download-png-btn" class="border border-warm-gray-400 text-warm-gray-600 text-sm px-5 py-2.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
@@ -596,6 +634,15 @@
                         </button>
                     </div>
                     <div id="annotation-panel" class="mt-4 hidden">
+                        <div id="annotation-guide-banner" class="bg-rose-50 border border-rose-200 rounded-lg p-3 mb-3 flex items-center justify-between text-xs">
+                            <div class="flex items-center gap-2 text-rose-700">
+                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span>図のノード（箱）をクリックしてアノテーションを追加できます</span>
+                            </div>
+                            <button id="close-annotation-guide" class="text-rose-400 hover:text-rose-600 transition-colors ml-2 shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                        </div>
                         <div id="annotation-summary" class="flex gap-2 mb-3 flex-wrap"></div>
                         <div class="flex items-center justify-between mb-3">
                             <h4 class="text-sm font-medium text-warm-gray-700">アノテーション一覧</h4>
@@ -650,6 +697,15 @@
                                 <button id="asis-svg-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">SVG</button>
                             </div>
                             <div id="asis-annotation-panel" class="mt-4 hidden">
+                                <div id="asis-annotation-guide-banner" class="bg-rose-50 border border-rose-200 rounded-lg p-3 mb-3 flex items-center justify-between text-xs">
+                                    <div class="flex items-center gap-2 text-rose-700">
+                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        <span>図のノード（箱）をクリックしてアノテーションを追加できます</span>
+                                    </div>
+                                    <button id="close-asis-annotation-guide" class="text-rose-400 hover:text-rose-600 transition-colors ml-2 shrink-0">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    </button>
+                                </div>
                                 <div id="compare-annotation-summary" class="flex gap-2 mb-3 flex-wrap"></div>
                                 <div class="flex items-center justify-between mb-3">
                                     <h4 class="text-sm font-medium text-warm-gray-700">アノテーション一覧</h4>
@@ -692,6 +748,15 @@
                                 <button id="tobe-svg-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">SVG</button>
                             </div>
                             <div id="tobe-annotation-panel" class="mt-4 hidden">
+                                <div id="tobe-annotation-guide-banner" class="bg-rose-50 border border-rose-200 rounded-lg p-3 mb-3 flex items-center justify-between text-xs">
+                                    <div class="flex items-center gap-2 text-rose-700">
+                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        <span>図のノード（箱）をクリックしてアノテーションを追加できます</span>
+                                    </div>
+                                    <button id="close-tobe-annotation-guide" class="text-rose-400 hover:text-rose-600 transition-colors ml-2 shrink-0">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    </button>
+                                </div>
                                 <div id="tobe-annotation-summary" class="flex gap-2 mb-3 flex-wrap"></div>
                                 <div class="flex items-center justify-between mb-3">
                                     <h4 class="text-sm font-medium text-warm-gray-700">アノテーション一覧</h4>
@@ -759,6 +824,14 @@
                     </h2>
                     <p class="text-sm text-warm-gray-500 mb-4">カードをクリックしてテンプレートを適用</p>
                     <div class="divider"></div>
+                    <!-- Template search -->
+                    <div class="max-w-md mx-auto mt-6">
+                        <div class="relative">
+                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-warm-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <input type="text" id="template-search" placeholder="テンプレートを検索（業種名・図の種類...）" class="w-full pl-10 pr-4 py-2.5 border border-warm-gray-300 rounded-lg text-sm text-warm-gray-700 focus:outline-none focus:border-navy-400 focus:ring-1 focus:ring-navy-400 transition-colors">
+                        </div>
+                    </div>
+                    <p id="template-search-empty" class="text-center text-warm-gray-400 text-sm mt-6 hidden">該当するテンプレートがありません</p>
                 </div>
 
                 <div id="template-accordion" class="space-y-3"></div>
@@ -932,6 +1005,40 @@
 
     <!-- JavaScript -->
     <script>
+        // プレビュー空状態のHTML
+        const PREVIEW_EMPTY_HTML = `
+            <div id="preview-empty-guide" class="text-center py-8 px-4">
+                <p class="text-warm-gray-300 text-xs tracking-widest mb-6">GETTING STARTED</p>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10">
+                    <div class="flex flex-col items-center gap-2 max-w-[140px]">
+                        <div class="w-10 h-10 rounded-full bg-warm-gray-100 flex items-center justify-center text-warm-gray-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+                        </div>
+                        <span class="text-warm-gray-800 text-xs font-medium">1. テンプレート選択</span>
+                        <span class="text-warm-gray-400 text-[10px] leading-tight">左のドロップダウンまたは下のカードから選択</span>
+                    </div>
+                    <div class="hidden md:block text-warm-gray-300">→</div>
+                    <div class="flex flex-col items-center gap-2 max-w-[140px]">
+                        <div class="w-10 h-10 rounded-full bg-warm-gray-100 flex items-center justify-center text-warm-gray-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+                        </div>
+                        <span class="text-warm-gray-800 text-xs font-medium">2. アノテーション</span>
+                        <span class="text-warm-gray-400 text-[10px] leading-tight">図のノードをクリックして課題を記録</span>
+                    </div>
+                    <div class="hidden md:block text-warm-gray-300">→</div>
+                    <div class="flex flex-col items-center gap-2 max-w-[140px]">
+                        <div class="w-10 h-10 rounded-full bg-warm-gray-100 flex items-center justify-center text-warm-gray-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        </div>
+                        <span class="text-warm-gray-800 text-xs font-medium">3. レポート出力</span>
+                        <span class="text-warm-gray-400 text-[10px] leading-tight">PDF・プレゼンで成果をまとめる</span>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const PREVIEW_LOADING_HTML = '<div class="flex items-center justify-center py-12"><div class="animate-spin rounded-full h-8 w-8 border-2 border-warm-gray-300 border-t-rose-400"></div></div>';
+
         const templates = [
             {
                 name: '飲食業：予約→来店フロー',
@@ -4192,6 +4299,49 @@
             }, TOAST_DURATION_MS);
         }
 
+        function showAlert(message, type = 'info') {
+            const colors = {
+                error: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-800', icon: 'text-red-500', btn: 'bg-red-600 hover:bg-red-700' },
+                warning: { bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-800', icon: 'text-amber-500', btn: 'bg-amber-600 hover:bg-amber-700' },
+                info: { bg: 'bg-navy-50', border: 'border-navy-200', text: 'text-navy-800', icon: 'text-navy-500', btn: 'bg-navy-600 hover:bg-navy-700' },
+                success: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-800', icon: 'text-green-500', btn: 'bg-green-600 hover:bg-green-700' }
+            };
+            const c = colors[type] || colors.info;
+            const overlay = document.createElement('div');
+            overlay.className = 'fixed inset-0 z-[200] flex items-center justify-center bg-black/30 backdrop-blur-sm';
+            overlay.innerHTML = `
+                <div class="${c.bg} ${c.border} border rounded-lg shadow-xl max-w-sm mx-4 p-6">
+                    <p class="${c.text} text-sm leading-relaxed mb-5">${escapeHTML(message)}</p>
+                    <div class="text-right">
+                        <button class="alert-ok-btn ${c.btn} text-white text-sm px-6 py-2 rounded tracking-wider transition-colors">OK</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            const okBtn = overlay.querySelector('.alert-ok-btn');
+            okBtn.focus();
+            okBtn.addEventListener('click', () => overlay.remove());
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+        }
+
+        function showConfirm(message, onConfirm) {
+            const overlay = document.createElement('div');
+            overlay.className = 'fixed inset-0 z-[200] flex items-center justify-center bg-black/30 backdrop-blur-sm';
+            overlay.innerHTML = `
+                <div class="bg-white border border-warm-gray-200 rounded-lg shadow-xl max-w-sm mx-4 p-6">
+                    <p class="text-warm-gray-800 text-sm leading-relaxed mb-5">${escapeHTML(message)}</p>
+                    <div class="flex justify-end gap-3">
+                        <button class="confirm-cancel-btn border border-warm-gray-300 text-warm-gray-600 text-sm px-5 py-2 rounded tracking-wider hover:bg-warm-gray-100 transition-colors">キャンセル</button>
+                        <button class="confirm-ok-btn bg-warm-gray-800 text-white text-sm px-5 py-2 rounded tracking-wider hover:bg-warm-gray-900 transition-colors">OK</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            overlay.querySelector('.confirm-cancel-btn').addEventListener('click', () => overlay.remove());
+            overlay.querySelector('.confirm-ok-btn').addEventListener('click', () => { overlay.remove(); onConfirm(); });
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+        }
+
         function sanitizeFilename(name) {
             return name.replace(FILENAME_SANITIZE_REGEX, '_');
         }
@@ -4282,7 +4432,7 @@
                 document.getElementById('annotation-add').addEventListener('click', () => {
                     const comment = document.getElementById('annotation-comment').value.trim();
                     if (!comment) {
-                        alert('コメントを入力してください');
+                        showAlert('コメントを入力してください', 'warning');
                         return;
                     }
                     this.addAnnotation(this.currentNodeText, this.selectedCategory, comment, this.currentTarget);
@@ -4331,6 +4481,50 @@
                 const compareMdBtn = document.getElementById('compare-copy-annotations-md-btn');
                 if (compareMdBtn) {
                     compareMdBtn.addEventListener('click', () => this.exportToMarkdown());
+                }
+
+                // Annotation guide banner
+                const guideKey = 'annotation-guide-dismissed';
+                const guideBanner = document.getElementById('annotation-guide-banner');
+                if (guideBanner) {
+                    if (localStorage.getItem(guideKey)) {
+                        guideBanner.style.display = 'none';
+                    }
+                    const closeBtn = document.getElementById('close-annotation-guide');
+                    if (closeBtn) {
+                        closeBtn.addEventListener('click', () => {
+                            guideBanner.style.display = 'none';
+                            localStorage.setItem(guideKey, '1');
+                        });
+                    }
+                }
+
+                const asisGuideBanner = document.getElementById('asis-annotation-guide-banner');
+                if (asisGuideBanner) {
+                    if (localStorage.getItem(guideKey)) {
+                        asisGuideBanner.style.display = 'none';
+                    }
+                    const closeBtn = document.getElementById('close-asis-annotation-guide');
+                    if (closeBtn) {
+                        closeBtn.addEventListener('click', () => {
+                            asisGuideBanner.style.display = 'none';
+                            localStorage.setItem(guideKey, '1');
+                        });
+                    }
+                }
+
+                const tobeGuideBanner = document.getElementById('tobe-annotation-guide-banner');
+                if (tobeGuideBanner) {
+                    if (localStorage.getItem(guideKey)) {
+                        tobeGuideBanner.style.display = 'none';
+                    }
+                    const closeBtn = document.getElementById('close-tobe-annotation-guide');
+                    if (closeBtn) {
+                        closeBtn.addEventListener('click', () => {
+                            tobeGuideBanner.style.display = 'none';
+                            localStorage.setItem(guideKey, '1');
+                        });
+                    }
                 }
             }
 
@@ -4507,7 +4701,7 @@
                 const sourceAnns = this.getSourceAnnotations();
 
                 if (sourceAnns.length === 0) {
-                    alert('転送するアノテーションがありません');
+                    showAlert('転送するアノテーションがありません', 'warning');
                     return;
                 }
 
@@ -4521,16 +4715,16 @@
                     if (typeof updatePhase3Text === 'function') {
                         updatePhase3Text();
                     }
-                    alert('アノテーションを課題入力に転送しました');
+                    showToast('アノテーションを課題入力に転送しました');
                 } else {
-                    alert('課題入力欄が見つかりません');
+                    showAlert('課題入力欄が見つかりません', 'error');
                 }
             }
 
             generateAIPrompt() {
                 const sourceAnns = this.getSourceAnnotations();
                 if (sourceAnns.length === 0) {
-                    alert('アノテーションがありません。まず図にアノテーションを追加してください。');
+                    showAlert('アノテーションがありません。まず図にアノテーションを追加してください。', 'warning');
                     return;
                 }
 
@@ -4568,14 +4762,14 @@ ${annotationSection}
                 navigator.clipboard.writeText(prompt).then(() => {
                     showToast('AIプロンプトをコピーしました — Claudeに貼り付けてください');
                 }).catch(() => {
-                    alert('クリップボードへのコピーに失敗しました');
+                    showAlert('クリップボードへのコピーに失敗しました', 'error');
                 });
             }
 
             exportToMarkdown() {
                 const sourceAnns = this.getSourceAnnotations();
                 if (sourceAnns.length === 0) {
-                    alert('コピーするアノテーションがありません');
+                    showAlert('コピーするアノテーションがありません', 'warning');
                     return;
                 }
 
@@ -4597,7 +4791,7 @@ ${annotationSection}
                 navigator.clipboard.writeText(md).then(() => {
                     showToast('Markdownをクリップボードにコピーしました');
                 }).catch(() => {
-                    alert('クリップボードへのコピーに失敗しました');
+                    showAlert('クリップボードへのコピーに失敗しました', 'error');
                 });
             }
 
@@ -4767,6 +4961,10 @@ ${annotationSection}
             groupTemplates.forEach(template => {
                 const card = document.createElement('div');
                 card.className = 'template-card bg-white p-5 border-elegant rounded-lg';
+                // Add data attributes for search
+                card.dataset.templateName = template.name.toLowerCase();
+                card.dataset.templateIndustry = (template.industry || '').toLowerCase();
+                card.dataset.templateType = (template.diagramType || '').toLowerCase();
                 card.innerHTML = `
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-10 h-10 rounded-full bg-navy-50 flex items-center justify-center shrink-0">
@@ -4810,6 +5008,43 @@ ${annotationSection}
         asisTemplateSelect.appendChild(asisIndustryGroup);
         asisTemplateSelect.appendChild(asisGeneralGroup);
 
+        // Template search functionality
+        document.getElementById('template-search').addEventListener('input', (e) => {
+            const query = e.target.value.trim().toLowerCase();
+            const accordion = document.getElementById('template-accordion');
+            const sections = accordion.querySelectorAll('.accordion-section');
+            let totalVisible = 0;
+
+            sections.forEach(section => {
+                const cards = section.querySelectorAll('[data-template-name]');
+                let sectionVisible = 0;
+
+                cards.forEach(card => {
+                    const name = card.dataset.templateName || '';
+                    const industry = card.dataset.templateIndustry || '';
+                    const type = card.dataset.templateType || '';
+                    const match = !query || name.includes(query) || industry.includes(query) || type.includes(query);
+                    card.style.display = match ? '' : 'none';
+                    if (match) sectionVisible++;
+                });
+
+                // Show/hide entire section
+                section.style.display = sectionVisible > 0 ? '' : 'none';
+
+                // Auto-expand sections with matches when searching
+                const content = section.querySelector('.accordion-content');
+                if (query && sectionVisible > 0 && content) {
+                    content.classList.add('open');
+                } else if (!query && content) {
+                    content.classList.remove('open');
+                }
+
+                totalVisible += sectionVisible;
+            });
+
+            document.getElementById('template-search-empty').classList.toggle('hidden', totalVisible > 0 || !query);
+        });
+
         function loadTemplate(index) {
             const template = templates[index];
             editor.value = template.mermaid;
@@ -4848,7 +5083,7 @@ ${annotationSection}
             }
 
             try {
-                previewArea.innerHTML = '';
+                previewArea.innerHTML = PREVIEW_LOADING_HTML;
                 const { svg } = await mermaid.render('mermaid-svg-' + appState.renderCount++, code);
                 previewArea.innerHTML = svg;
 
@@ -4866,7 +5101,7 @@ ${annotationSection}
             document.getElementById('copy-code-btn').addEventListener('click', () => {
                 const code = editor.value;
                 if (!code.trim()) {
-                    alert('コピーするコードがありません');
+                    showAlert('コピーするコードがありません', 'warning');
                     return;
                 }
                 navigator.clipboard.writeText(code).then(() => {
@@ -4877,23 +5112,23 @@ ${annotationSection}
                         btn.textContent = originalText;
                     }, 2000);
                 }).catch(() => {
-                    alert('クリップボードへのコピーに失敗しました');
+                    showAlert('クリップボードへのコピーに失敗しました', 'error');
                 });
             });
 
             document.getElementById('clear-btn').addEventListener('click', () => {
-                if (confirm('エディタとプレビューをクリアしますか？')) {
+                showConfirm('エディタとプレビューをクリアしますか？', () => {
                     editor.value = '';
-                    previewArea.innerHTML = '<p class="text-warm-gray-400 text-sm">図がここに表示されます</p>';
+                    previewArea.innerHTML = PREVIEW_EMPTY_HTML;
                     templateSelect.value = '';
                     appState.currentPhasePrompts = null;
-                }
+                });
             });
 
             document.getElementById('download-png-btn').addEventListener('click', () => {
                 const svg = previewArea.querySelector('svg');
                 if (!svg) {
-                    alert('ダウンロードする図がありません');
+                    showAlert('ダウンロードする図がありません', 'warning');
                     return;
                 }
 
@@ -4928,7 +5163,7 @@ ${annotationSection}
             document.getElementById('download-svg-btn').addEventListener('click', () => {
                 const svg = previewArea.querySelector('svg');
                 if (!svg) {
-                    alert('ダウンロードする図がありません');
+                    showAlert('ダウンロードする図がありません', 'warning');
                     return;
                 }
 
@@ -5031,7 +5266,7 @@ ${annotationSection}
 
             document.getElementById('copy-prompt-btn').addEventListener('click', () => {
                 if (!appState.currentPhasePrompts) {
-                    alert('コピーするプロンプトがありません');
+                    showAlert('コピーするプロンプトがありません', 'warning');
                     return;
                 }
 
@@ -5048,7 +5283,7 @@ ${annotationSection}
                         btn.textContent = originalText;
                     }, 2000);
                 }).catch(() => {
-                    alert('クリップボードへのコピーに失敗しました');
+                    showAlert('クリップボードへのコピーに失敗しました', 'error');
                 });
             });
 
@@ -5096,7 +5331,7 @@ ${annotationSection}
                 return;
             }
             try {
-                previewEl.innerHTML = '';
+                previewEl.innerHTML = PREVIEW_LOADING_HTML;
                 // 比較モードのテーマを使用
                 mermaid.initialize({
                     startOnLoad: false,
@@ -5153,7 +5388,7 @@ ${annotationSection}
             document.getElementById(btnId).addEventListener('click', () => {
                 const code = editorEl.value;
                 if (!code.trim()) {
-                    alert('コピーするコードがありません');
+                    showAlert('コピーするコードがありません', 'warning');
                     return;
                 }
                 navigator.clipboard.writeText(code).then(() => {
@@ -5164,7 +5399,7 @@ ${annotationSection}
                         btn.textContent = originalText;
                     }, 2000);
                 }).catch(() => {
-                    alert('クリップボードへのコピーに失敗しました');
+                    showAlert('クリップボードへのコピーに失敗しました', 'error');
                 });
             });
         }
@@ -5172,10 +5407,11 @@ ${annotationSection}
         // ヘルパー関数: クリア
         function setupClearBtn(btnId, editorEl, previewEl, placeholderText) {
             document.getElementById(btnId).addEventListener('click', () => {
-                if (confirm('エディタとプレビューをクリアしますか？')) {
+                showConfirm('エディタとプレビューをクリアしますか？', () => {
                     editorEl.value = '';
+                    // Use simple placeholder for compare mode previews
                     previewEl.innerHTML = `<p class="text-warm-gray-400 text-sm">${placeholderText}</p>`;
-                }
+                });
             });
         }
 
@@ -5184,7 +5420,7 @@ ${annotationSection}
             document.getElementById(btnId).addEventListener('click', () => {
                 const svg = previewEl.querySelector('svg');
                 if (!svg) {
-                    alert('ダウンロードする図がありません');
+                    showAlert('ダウンロードする図がありません', 'warning');
                     return;
                 }
 
@@ -5221,7 +5457,7 @@ ${annotationSection}
             document.getElementById(btnId).addEventListener('click', () => {
                 const svg = previewEl.querySelector('svg');
                 if (!svg) {
-                    alert('ダウンロードする図がありません');
+                    showAlert('ダウンロードする図がありません', 'warning');
                     return;
                 }
 
@@ -5286,7 +5522,7 @@ ${annotationSection}
             document.getElementById('save-btn').addEventListener('click', () => {
                 const name = document.getElementById('project-name').value.trim();
                 if (!name) {
-                    alert('プロジェクト名を入力してください');
+                    showAlert('プロジェクト名を入力してください', 'warning');
                     return;
                 }
 
@@ -5301,19 +5537,27 @@ ${annotationSection}
 
                 let projects = JSON.parse(localStorage.getItem('mermaid-projects') || '[]');
                 const existingIndex = projects.findIndex(p => p.name === name);
-                if (existingIndex >= 0) {
-                    if (!confirm(`「${name}」を上書きしますか？`)) return;
-                    projects[existingIndex] = project;
-                } else {
-                    projects.push(project);
-                }
-                localStorage.setItem('mermaid-projects', JSON.stringify(projects));
-                renderProjectList();
 
-                const btn = document.getElementById('save-btn');
-                const originalText = btn.textContent;
-                btn.textContent = '保存しました!';
-                setTimeout(() => btn.textContent = originalText, 2000);
+                const saveProject = () => {
+                    if (existingIndex >= 0) {
+                        projects[existingIndex] = project;
+                    } else {
+                        projects.push(project);
+                    }
+                    localStorage.setItem('mermaid-projects', JSON.stringify(projects));
+                    renderProjectList();
+
+                    const btn = document.getElementById('save-btn');
+                    const originalText = btn.textContent;
+                    btn.textContent = '保存しました!';
+                    setTimeout(() => btn.textContent = originalText, 2000);
+                };
+
+                if (existingIndex >= 0) {
+                    showConfirm(`「${name}」を上書きしますか？`, saveProject);
+                } else {
+                    saveProject();
+                }
             });
         }
 
@@ -5433,11 +5677,11 @@ ${annotationSection}
             if (index < 0 || index >= projects.length) return;
 
             const project = projects[index];
-            if (!confirm(`「${project.name}」を削除しますか？`)) return;
-
-            projects.splice(index, 1);
-            localStorage.setItem('mermaid-projects', JSON.stringify(projects));
-            renderProjectList();
+            showConfirm(`「${project.name}」を削除しますか？`, () => {
+                projects.splice(index, 1);
+                localStorage.setItem('mermaid-projects', JSON.stringify(projects));
+                renderProjectList();
+            });
         }
 
         // プロジェクト複製
@@ -5479,11 +5723,11 @@ ${annotationSection}
                     const project = JSON.parse(e.target.result);
                     // Validate project structure
                     if (!project || typeof project !== 'object') {
-                        alert('無効なプロジェクトファイルです');
+                        showAlert('無効なプロジェクトファイルです', 'error');
                         return;
                     }
                     if (!project.name || typeof project.name !== 'string') {
-                        alert('プロジェクト名が見つかりません');
+                        showAlert('プロジェクト名が見つかりません', 'error');
                         return;
                     }
                     // Set defaults for missing properties
@@ -5507,9 +5751,9 @@ ${annotationSection}
                     projects.push(project);
                     localStorage.setItem('mermaid-projects', JSON.stringify(projects));
                     renderProjectList();
-                    alert(`「${project.name}」をインポートしました`);
+                    showToast(`「${project.name}」をインポートしました`);
                 } catch (err) {
-                    alert('JSONファイルの読み込みに失敗しました');
+                    showAlert('JSONファイルの読み込みに失敗しました', 'error');
                 }
             };
             reader.readAsText(file);
@@ -5530,7 +5774,7 @@ ${annotationSection}
                 const url = `${window.location.origin}${window.location.pathname}#s=${compressed}`;
 
                 if (url.length > 8000) {
-                    alert('データが大きすぎます（URL長: ' + url.length + '文字）。JSON形式でエクスポートしてください。');
+                    showAlert('データが大きすぎます（URL長: ' + url.length + '文字）。JSON形式でエクスポートしてください。', 'warning');
                     return null;
                 }
 
@@ -5539,7 +5783,7 @@ ${annotationSection}
                 // LZ-Stringが読み込まれていない場合のフォールバック
                 const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
                 if (encoded.length > 2000) {
-                    alert('データが大きすぎます。JSON形式でエクスポートしてください。');
+                    showAlert('データが大きすぎます。JSON形式でエクスポートしてください。', 'warning');
                     return null;
                 }
                 const url = `${window.location.origin}${window.location.pathname}#share=${encoded}`;
@@ -5621,14 +5865,14 @@ ${annotationSection}
                     btn.textContent = 'コピー済み!';
                     setTimeout(() => btn.textContent = originalText, 2000);
                 }).catch(() => {
-                    alert('クリップボードへのコピーに失敗しました');
+                    showAlert('クリップボードへのコピーに失敗しました', 'error');
                 });
             });
 
             document.getElementById('download-qr').addEventListener('click', () => {
                 const qrCanvas = document.querySelector('#share-qr-code canvas');
                 if (!qrCanvas) {
-                    alert('QRコードが生成されていません');
+                    showAlert('QRコードが生成されていません', 'warning');
                     return;
                 }
                 const link = document.createElement('a');
@@ -5921,7 +6165,7 @@ ${annotationSection}
         async function generatePDF() {
             const { jsPDF } = window.jspdf;
             if (!jsPDF) {
-                alert('jsPDFライブラリの読み込みに失敗しました');
+                showAlert('jsPDFライブラリの読み込みに失敗しました', 'error');
                 return;
             }
 
@@ -5978,7 +6222,7 @@ ${annotationSection}
             open() {
                 this.buildSlides();
                 if (this.slides.length === 0) {
-                    alert('プレゼンテーション用のコンテンツがありません。As-Is図またはTo-Be図を作成してください。');
+                    showAlert('プレゼンテーション用のコンテンツがありません。As-Is図またはTo-Be図を作成してください。', 'warning');
                     return;
                 }
                 const projectName = getProjectName('無題のプロジェクト');
@@ -6142,7 +6386,7 @@ ${annotationSection}
                     }, 2000);
                 } catch (error) {
                     console.error('PDF generation error:', error);
-                    alert('PDFの生成に失敗しました: ' + error.message);
+                    showAlert('PDFの生成に失敗しました: ' + error.message, 'error');
                     btn.textContent = originalText;
                     btn.disabled = false;
                 }
