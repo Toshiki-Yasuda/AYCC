@@ -590,9 +590,14 @@
                         </button>
                     </div>
                     <div id="annotation-panel" class="mt-4 hidden">
+                        <div id="annotation-summary" class="flex gap-2 mb-3 flex-wrap"></div>
                         <div class="flex items-center justify-between mb-3">
                             <h4 class="text-sm font-medium text-warm-gray-700">アノテーション一覧</h4>
-                            <button id="export-annotations-btn" class="text-xs text-navy-600 hover:text-navy-800 transition-colors">課題に転送 →</button>
+                            <div class="flex items-center gap-3">
+                                <button id="generate-ai-prompt-btn" class="text-xs text-rose-600 hover:text-rose-800 transition-colors font-medium">AIプロンプト生成</button>
+                                <button id="copy-annotations-md-btn" class="text-xs text-navy-600 hover:text-navy-800 transition-colors">MDコピー</button>
+                                <button id="export-annotations-btn" class="text-xs text-navy-600 hover:text-navy-800 transition-colors">課題に転送 →</button>
+                            </div>
                         </div>
                         <div id="annotation-list" class="space-y-2">
                             <p class="text-warm-gray-400 text-xs">アノテーションはまだありません</p>
@@ -639,8 +644,13 @@
                                 <button id="asis-svg-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">SVG</button>
                             </div>
                             <div id="asis-annotation-panel" class="mt-4 hidden">
+                                <div id="compare-annotation-summary" class="flex gap-2 mb-3 flex-wrap"></div>
                                 <div class="flex items-center justify-between mb-3">
                                     <h4 class="text-sm font-medium text-warm-gray-700">アノテーション一覧</h4>
+                                    <div class="flex items-center gap-3">
+                                        <button id="compare-generate-ai-prompt-btn" class="text-xs text-rose-600 hover:text-rose-800 transition-colors font-medium">AIプロンプト生成</button>
+                                        <button id="compare-copy-annotations-md-btn" class="text-xs text-navy-600 hover:text-navy-800 transition-colors">MDコピー</button>
+                                    </div>
                                 </div>
                                 <div id="asis-annotation-list" class="space-y-2">
                                     <p class="text-warm-gray-400 text-xs">アノテーションはまだありません</p>
@@ -676,6 +686,7 @@
                                 <button id="tobe-svg-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">SVG</button>
                             </div>
                             <div id="tobe-annotation-panel" class="mt-4 hidden">
+                                <div id="tobe-annotation-summary" class="flex gap-2 mb-3 flex-wrap"></div>
                                 <div class="flex items-center justify-between mb-3">
                                     <h4 class="text-sm font-medium text-warm-gray-700">アノテーション一覧</h4>
                                     <button id="export-compare-annotations-btn" class="text-xs text-navy-600 hover:text-navy-800 transition-colors">課題に転送 →</button>
@@ -4217,6 +4228,26 @@
                 if (exportCompareBtn) {
                     exportCompareBtn.addEventListener('click', () => this.exportToIssues());
                 }
+
+                // AIプロンプト生成ボタン
+                const aiPromptBtn = document.getElementById('generate-ai-prompt-btn');
+                if (aiPromptBtn) {
+                    aiPromptBtn.addEventListener('click', () => this.generateAIPrompt());
+                }
+                const compareAiPromptBtn = document.getElementById('compare-generate-ai-prompt-btn');
+                if (compareAiPromptBtn) {
+                    compareAiPromptBtn.addEventListener('click', () => this.generateAIPrompt());
+                }
+
+                // Markdownコピーボタン
+                const mdBtn = document.getElementById('copy-annotations-md-btn');
+                if (mdBtn) {
+                    mdBtn.addEventListener('click', () => this.exportToMarkdown());
+                }
+                const compareMdBtn = document.getElementById('compare-copy-annotations-md-btn');
+                if (compareMdBtn) {
+                    compareMdBtn.addEventListener('click', () => this.exportToMarkdown());
+                }
             }
 
             toggleAnnotationMode(target, enabled) {
@@ -4390,6 +4421,9 @@
                         this.deleteAnnotation(parseInt(btn.dataset.id), btn.dataset.target);
                     });
                 });
+
+                // サマリーバッジを更新
+                this.renderSummary(target);
             }
 
             exportToIssues() {
@@ -4422,6 +4456,148 @@
                 } else {
                     alert('課題入力欄が見つかりません');
                 }
+            }
+
+            generateAIPrompt() {
+                const categoryLabels = {
+                    problem: '問題点',
+                    improvement: '改善案',
+                    question: '確認事項',
+                    memo: 'メモ'
+                };
+
+                const sourceAnns = this.annotations.asis.length > 0 ? this.annotations.asis : this.annotations.single;
+                if (sourceAnns.length === 0) {
+                    alert('アノテーションがありません。まず図にアノテーションを追加してください。');
+                    return;
+                }
+
+                const mermaidCode = document.getElementById('asis-editor')?.value || document.getElementById('editor').value || '';
+
+                // カテゴリ別にグループ化
+                const grouped = {};
+                sourceAnns.forEach(ann => {
+                    if (!grouped[ann.category]) grouped[ann.category] = [];
+                    grouped[ann.category].push(ann);
+                });
+
+                let annotationSection = '';
+                for (const [cat, anns] of Object.entries(grouped)) {
+                    annotationSection += `\n### ${categoryLabels[cat]}\n`;
+                    anns.forEach(ann => {
+                        annotationSection += `- **${ann.nodeText}**: ${ann.comment}\n`;
+                    });
+                }
+
+                const prompt = `あなたは業務改善コンサルタントです。以下の業務フローとコンサルタントが発見した課題・メモを分析し、具体的な改善提案を行ってください。
+
+## 現状の業務フロー
+\`\`\`mermaid
+${mermaidCode}
+\`\`\`
+
+## コンサルタントの分析メモ
+${annotationSection}
+
+## 依頼事項
+上記の分析メモを踏まえ、以下を提示してください：
+
+1. **課題の優先順位付け**（影響度×緊急度で整理）
+2. **改善後フロー（To-Be）**をMermaid記法で作成
+3. **各改善ポイントの具体的なアクション**（担当・期間・コストの目安）
+4. **期待される効果**（定量的に示せるものは数値で）`;
+
+                navigator.clipboard.writeText(prompt).then(() => {
+                    // Show a brief toast notification
+                    const toast = document.createElement('div');
+                    toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-warm-gray-800 text-white text-sm px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity duration-300';
+                    toast.textContent = 'AIプロンプトをコピーしました — Claudeに貼り付けてください';
+                    document.body.appendChild(toast);
+                    setTimeout(() => {
+                        toast.style.opacity = '0';
+                        setTimeout(() => toast.remove(), 300);
+                    }, 2500);
+                });
+            }
+
+            exportToMarkdown() {
+                const categoryLabels = {
+                    problem: '問題点',
+                    improvement: '改善案',
+                    question: '確認事項',
+                    memo: 'メモ'
+                };
+                const categoryOrder = ['problem', 'improvement', 'question', 'memo'];
+
+                const sourceAnns = this.annotations.asis.length > 0 ? this.annotations.asis : this.annotations.single;
+                if (sourceAnns.length === 0) {
+                    alert('コピーするアノテーションがありません');
+                    return;
+                }
+
+                const grouped = {};
+                sourceAnns.forEach(ann => {
+                    if (!grouped[ann.category]) grouped[ann.category] = [];
+                    grouped[ann.category].push(ann);
+                });
+
+                let md = '## 業務フロー分析レポート\n\n';
+                md += `分析日: ${new Date().toLocaleDateString('ja-JP')}\n\n`;
+
+                categoryOrder.forEach(cat => {
+                    if (grouped[cat] && grouped[cat].length > 0) {
+                        md += `### ${categoryLabels[cat]}（${grouped[cat].length}件）\n\n`;
+                        grouped[cat].forEach(ann => {
+                            md += `- **${ann.nodeText}**: ${ann.comment}\n`;
+                        });
+                        md += '\n';
+                    }
+                });
+
+                navigator.clipboard.writeText(md).then(() => {
+                    const toast = document.createElement('div');
+                    toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-warm-gray-800 text-white text-sm px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity duration-300';
+                    toast.textContent = 'Markdownをクリップボードにコピーしました';
+                    document.body.appendChild(toast);
+                    setTimeout(() => {
+                        toast.style.opacity = '0';
+                        setTimeout(() => toast.remove(), 300);
+                    }, 2500);
+                });
+            }
+
+            renderSummary(target) {
+                const summaryEl = target === 'single'
+                    ? document.getElementById('annotation-summary')
+                    : target === 'asis'
+                    ? document.getElementById('compare-annotation-summary')
+                    : document.getElementById('tobe-annotation-summary');
+
+                if (!summaryEl) return;
+
+                const anns = this.annotations[target];
+                if (anns.length === 0) {
+                    summaryEl.innerHTML = '';
+                    return;
+                }
+
+                const categoryConfig = {
+                    problem: { label: '問題点', color: 'bg-red-50 text-red-600 border-red-200' },
+                    improvement: { label: '改善案', color: 'bg-blue-50 text-blue-600 border-blue-200' },
+                    question: { label: '確認事項', color: 'bg-amber-50 text-amber-600 border-amber-200' },
+                    memo: { label: 'メモ', color: 'bg-green-50 text-green-600 border-green-200' }
+                };
+
+                const counts = {};
+                anns.forEach(a => {
+                    counts[a.category] = (counts[a.category] || 0) + 1;
+                });
+
+                summaryEl.innerHTML = Object.entries(counts)
+                    .map(([cat, count]) => {
+                        const cfg = categoryConfig[cat];
+                        return `<span class="text-xs px-2 py-0.5 rounded-full border ${cfg.color}">${cfg.label} ${count}</span>`;
+                    }).join('');
             }
 
             getPreviewEl(target) {
@@ -4771,7 +4947,18 @@
         function updatePhase2Text() {
             if (!currentPhasePrompts) return;
             const asisCode = document.getElementById('asis-editor')?.value || document.getElementById('editor').value || '';
-            const text = currentPhasePrompts.phase2.replace('{{ASIS_CODE}}', asisCode || '（As-Isエディタにコードを入力してください）');
+            let text = currentPhasePrompts.phase2.replace('{{ASIS_CODE}}', asisCode || '（As-Isエディタにコードを入力してください）');
+
+            // アノテーションがあれば追加コンテキストとして付加
+            const anns = annotationManager.annotations.asis.length > 0 ? annotationManager.annotations.asis : annotationManager.annotations.single;
+            if (anns.length > 0) {
+                const categoryLabels = { problem: '問題点', improvement: '改善案', question: '確認事項', memo: 'メモ' };
+                const annotationContext = '\n\n【参考】コンサルタントが現場で発見したメモ：\n' +
+                    anns.map(a => `- 【${categoryLabels[a.category]}】${a.nodeText}: ${a.comment}`).join('\n') +
+                    '\n\n上記の現場メモも考慮に入れて分析してください。';
+                text += annotationContext;
+            }
+
             document.getElementById('phase2-text').textContent = text;
         }
 
