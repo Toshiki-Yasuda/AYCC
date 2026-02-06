@@ -104,8 +104,19 @@
             margin: 0 auto;
         }
 
-        .border-elegant {
-            border: 1px solid rgba(168, 162, 158, 0.3);
+        /* Elevation system */
+        .elevation-0 {
+            border: 1px solid rgba(168, 162, 158, 0.2);
+        }
+
+        .elevation-1 {
+            border: 1px solid rgba(168, 162, 158, 0.15);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+        }
+
+        .elevation-2 {
+            border: 1px solid rgba(168, 162, 158, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
         }
 
         .link-underline {
@@ -180,14 +191,17 @@
             height: auto;
         }
 
-        .template-card {
+        .template-card,
+        .project-card {
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .template-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        .template-card:hover,
+        .project-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(168, 162, 158, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
         }
 
         .accordion-header {
@@ -227,7 +241,8 @@
         .accordion-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.4s ease;
+            opacity: 0;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
             border: 1px solid rgba(168, 162, 158, 0.2);
             border-top: none;
             border-radius: 0 0 0.5rem 0.5rem;
@@ -236,6 +251,7 @@
 
         .accordion-content.open {
             max-height: 3000px;
+            opacity: 1;
         }
 
         .accordion-content .grid {
@@ -440,9 +456,128 @@
             border-color: #e5e7eb;
         }
 
+        /* Annotation category buttons */
+        .annotation-cat-problem { border-color: #fecaca; color: #ef4444; background: #fef2f2; }
+        .annotation-cat-improvement { border-color: #bfdbfe; color: #3b82f6; background: #eff6ff; }
+        .annotation-cat-question { border-color: #fde68a; color: #d97706; background: #fffbeb; }
+        .annotation-cat-memo { border-color: #e5e7eb; color: #6b7280; background: #f9fafb; }
+
+        /* Custom select */
+        .select-styled {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%2378716c' viewBox='0 0 24 24'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1rem;
+            padding-right: 2.5rem;
+        }
+
+        .select-styled:focus-visible {
+            outline: 2px solid #5a7ea5;
+            outline-offset: 2px;
+        }
+
+        /* Button system */
+        .btn {
+            font-size: 0.875rem;
+            padding: 0.625rem 1.25rem;
+            letter-spacing: 0.05em;
+            transition: all 0.25s ease;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn:focus-visible {
+            outline: 2px solid #5a7ea5;
+            outline-offset: 2px;
+        }
+
+        .btn-ghost {
+            border: 1px solid rgba(168, 162, 158, 0.4);
+            color: #57534e;
+        }
+
+        .btn-ghost:hover {
+            background: #292524;
+            color: #fff;
+            border-color: #292524;
+        }
+
+        .btn-navy {
+            border: 1px solid #7899bc;
+            color: #47658a;
+        }
+
+        .btn-navy:hover {
+            background: #3a5270;
+            color: #fff;
+            border-color: #3a5270;
+        }
+
+        .btn-rose {
+            border: 1px solid #ec7a95;
+            color: #b8848f;
+        }
+
+        .btn-rose:hover {
+            background: #9a6b75;
+            color: #fff;
+            border-color: #9a6b75;
+        }
+
+        .btn-primary {
+            background: #47658a;
+            color: #fff;
+            border: 1px solid #47658a;
+        }
+
+        .btn-primary:hover {
+            background: #3a5270;
+            border-color: #3a5270;
+        }
+
+        .btn-sm {
+            font-size: 0.75rem;
+            padding: 0.5rem 1rem;
+        }
+
+        .btn-danger {
+            border: 1px solid #fca5a5;
+            color: #ef4444;
+        }
+
+        .btn-danger:hover {
+            background: #ef4444;
+            color: #fff;
+            border-color: #ef4444;
+        }
+
+        /* Modal animation */
+        .modal-enter {
+            animation: modalIn 0.2s ease-out;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Toast animation */
+        .toast-enter {
+            animation: toastIn 0.3s ease-out;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translate(-50%, 10px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
         .fade-in-section {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(12px);
             transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
 
@@ -450,6 +585,7 @@
             opacity: 1;
             transform: translateY(0);
         }
+
     </style>
 </head>
 <body class="bg-warm-gray-50">
@@ -559,26 +695,26 @@
             <!-- メインエリア（2カラム） -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
                 <!-- 左: エディタ -->
-                <div class="bg-white p-6 border-elegant">
+                <div class="bg-white p-6 elevation-1">
                     <div class="mb-4">
                         <label for="template-select" class="block text-sm font-medium text-warm-gray-700 mb-2">テンプレート選択</label>
-                        <select id="template-select" class="w-full border border-warm-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-400">
+                        <select id="template-select" class="w-full border border-warm-gray-300 rounded px-3 py-2 text-sm select-styled focus:outline-none focus:ring-2 focus:ring-navy-400">
                             <option value="">選択してください</option>
                         </select>
                     </div>
                     <textarea id="editor" class="w-full border border-warm-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-400 resize-y" placeholder="ここにMermaid記法を入力..."></textarea>
                     <div class="flex gap-3 mt-4">
-                        <button id="copy-code-btn" class="border border-warm-gray-400 text-warm-gray-600 text-sm px-5 py-2.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                        <button id="copy-code-btn" class="btn btn-ghost">
                             コードコピー
                         </button>
-                        <button id="clear-btn" class="border border-warm-gray-400 text-warm-gray-600 text-sm px-5 py-2.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                        <button id="clear-btn" class="btn btn-ghost">
                             クリア
                         </button>
                     </div>
                 </div>
 
                 <!-- 右: プレビュー -->
-                <div class="bg-white p-6 border-elegant">
+                <div class="bg-white p-6 elevation-1">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-sm font-medium text-warm-gray-700">プレビュー</h3>
                         <div class="flex items-center gap-3">
@@ -587,7 +723,7 @@
                                 <div class="relative w-9 h-5 bg-warm-gray-200 rounded-full peer-checked:bg-rose-400 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:bg-white after:rounded-full after:transition-transform peer-checked:after:translate-x-4"></div>
                                 <span class="text-xs text-warm-gray-500">アノテーション</span>
                             </label>
-                            <select id="theme-select" class="border border-warm-gray-300 rounded px-2 py-1 text-xs focus:outline-none">
+                            <select id="theme-select" class="border border-warm-gray-300 rounded px-2 py-1 text-xs select-styled focus:outline-none">
                                 <option value="default">テーマ: Default</option>
                                 <option value="neutral">テーマ: Neutral</option>
                                 <option value="dark">テーマ: Dark</option>
@@ -626,10 +762,10 @@
                         </div>
                     </div>
                     <div class="flex gap-3 mt-4">
-                        <button id="download-png-btn" class="border border-warm-gray-400 text-warm-gray-600 text-sm px-5 py-2.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                        <button id="download-png-btn" class="btn btn-ghost">
                             PNGダウンロード
                         </button>
-                        <button id="download-svg-btn" class="border border-warm-gray-400 text-warm-gray-600 text-sm px-5 py-2.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                        <button id="download-svg-btn" class="btn btn-ghost">
                             SVGダウンロード
                         </button>
                     </div>
@@ -667,20 +803,20 @@
                     <!-- As-Is -->
                     <div class="bg-rose-50/50 rounded-xl p-4">
                         <h3 class="font-elegant text-lg text-rose-700 mb-4 text-center">As-Is（現状）</h3>
-                        <div class="bg-white p-6 border-elegant mb-4">
+                        <div class="bg-white p-6 elevation-1 mb-4">
                             <div class="mb-4">
                                 <label class="block text-sm font-medium text-warm-gray-700 mb-2">テンプレート選択</label>
-                                <select id="asis-template-select" class="w-full border border-warm-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-400">
+                                <select id="asis-template-select" class="w-full border border-warm-gray-300 rounded px-3 py-2 text-sm select-styled focus:outline-none focus:ring-2 focus:ring-navy-400">
                                     <option value="">選択してください</option>
                                 </select>
                             </div>
                             <textarea id="asis-editor" class="w-full border border-warm-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-400 resize-y"  placeholder="As-Is（現状）のMermaid記法を入力..."></textarea>
                             <div class="flex gap-3 mt-3">
-                                <button id="asis-copy-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">コードコピー</button>
-                                <button id="asis-clear-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">クリア</button>
+                                <button id="asis-copy-btn" class="btn btn-sm btn-ghost">コードコピー</button>
+                                <button id="asis-clear-btn" class="btn btn-sm btn-ghost">クリア</button>
                             </div>
                         </div>
-                        <div class="bg-white p-6 border-elegant">
+                        <div class="bg-white p-6 elevation-1">
                             <div class="flex items-center justify-between mb-3">
                                 <h4 class="text-sm font-medium text-warm-gray-700">プレビュー</h4>
                                 <label class="flex items-center gap-2 cursor-pointer">
@@ -693,8 +829,8 @@
                                 <p class="text-warm-gray-400 text-sm">As-Is図がここに表示されます</p>
                             </div>
                             <div class="flex gap-3 mt-3">
-                                <button id="asis-png-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">PNG</button>
-                                <button id="asis-svg-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">SVG</button>
+                                <button id="asis-png-btn" class="btn btn-sm btn-ghost">PNG</button>
+                                <button id="asis-svg-btn" class="btn btn-sm btn-ghost">SVG</button>
                             </div>
                             <div id="asis-annotation-panel" class="mt-4 hidden">
                                 <div id="asis-annotation-guide-banner" class="bg-rose-50 border border-rose-200 rounded-lg p-3 mb-3 flex items-center justify-between text-xs">
@@ -724,19 +860,19 @@
                     <!-- To-Be -->
                     <div class="bg-navy-50/50 rounded-xl p-4">
                         <h3 class="font-elegant text-lg text-navy-700 mb-4 text-center">To-Be（改善後）</h3>
-                        <div class="bg-white p-6 border-elegant mb-4">
+                        <div class="bg-white p-6 elevation-1 mb-4">
                             <div class="mb-4">
-                                <button id="copy-asis-to-tobe" class="w-full border border-navy-400 text-navy-600 text-sm px-4 py-2 tracking-wider hover:bg-navy-700 hover:text-white hover:border-navy-700 transition-all duration-300">
+                                <button id="copy-asis-to-tobe" class="w-full btn btn-navy">
                                     ← As-Isからコピーして編集
                                 </button>
                             </div>
                             <textarea id="tobe-editor" class="w-full border border-warm-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-400 resize-y"  placeholder="To-Be（改善後）のMermaid記法を入力..."></textarea>
                             <div class="flex gap-3 mt-3">
-                                <button id="tobe-copy-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">コードコピー</button>
-                                <button id="tobe-clear-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">クリア</button>
+                                <button id="tobe-copy-btn" class="btn btn-sm btn-ghost">コードコピー</button>
+                                <button id="tobe-clear-btn" class="btn btn-sm btn-ghost">クリア</button>
                             </div>
                         </div>
-                        <div class="bg-white p-6 border-elegant">
+                        <div class="bg-white p-6 elevation-1">
                             <div class="flex items-center justify-between mb-3">
                                 <h4 class="text-sm font-medium text-warm-gray-700">プレビュー</h4>
                             </div>
@@ -744,8 +880,8 @@
                                 <p class="text-warm-gray-400 text-sm">To-Be図がここに表示されます</p>
                             </div>
                             <div class="flex gap-3 mt-3">
-                                <button id="tobe-png-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">PNG</button>
-                                <button id="tobe-svg-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">SVG</button>
+                                <button id="tobe-png-btn" class="btn btn-sm btn-ghost">PNG</button>
+                                <button id="tobe-svg-btn" class="btn btn-sm btn-ghost">SVG</button>
                             </div>
                             <div id="tobe-annotation-panel" class="mt-4 hidden">
                                 <div id="tobe-annotation-guide-banner" class="bg-rose-50 border border-rose-200 rounded-lg p-3 mb-3 flex items-center justify-between text-xs">
@@ -772,17 +908,17 @@
 
                 <!-- テーマ選択（比較モード用、2つの図に共通適用） -->
                 <div class="flex justify-center mt-6 gap-4 flex-wrap items-center">
-                    <select id="compare-theme-select" class="border border-warm-gray-300 rounded px-3 py-1.5 text-xs focus:outline-none">
+                    <select id="compare-theme-select" class="border border-warm-gray-300 rounded px-3 py-1.5 text-xs select-styled focus:outline-none">
                         <option value="default">テーマ: Default</option>
                         <option value="neutral">テーマ: Neutral</option>
                         <option value="dark">テーマ: Dark</option>
                         <option value="forest">テーマ: Forest</option>
                     </select>
 
-                    <button id="pdf-report-btn" class="border border-rose-400 text-rose-600 text-sm px-5 py-2 tracking-wider hover:bg-rose-600 hover:text-white hover:border-rose-600 transition-all duration-300 rounded">
+                    <button id="pdf-report-btn" class="btn btn-rose rounded">
                         PDFレポート出力
                     </button>
-                    <button id="presentation-btn" class="border border-navy-400 text-navy-600 text-sm px-5 py-2 tracking-wider hover:bg-navy-700 hover:text-white hover:border-navy-700 transition-all duration-300 rounded">
+                    <button id="presentation-btn" class="btn btn-navy rounded">
                         プレゼンテーション
                     </button>
                 </div>
@@ -790,12 +926,12 @@
             <!-- /比較モード -->
 
             <!-- 保存セクション -->
-            <div class="mb-16 fade-in-section">
-                <div class="bg-warm-gray-50 p-6 border-elegant">
+            <div class="mb-16 pt-16 border-t border-warm-gray-200 fade-in-section">
+                <div class="bg-warm-gray-50 p-6 elevation-0 rounded-lg">
                     <div class="flex flex-wrap items-center gap-4">
                         <input id="project-name" type="text" placeholder="プロジェクト名を入力" class="border border-warm-gray-300 rounded px-3 py-2 text-sm flex-1 min-w-[200px] focus:outline-none focus:ring-2 focus:ring-navy-400">
-                        <button id="save-btn" class="border border-warm-gray-400 text-warm-gray-600 text-sm px-5 py-2.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">保存</button>
-                        <button id="share-url-btn" class="border border-navy-400 text-navy-600 text-sm px-5 py-2.5 tracking-wider hover:bg-navy-700 hover:text-white hover:border-navy-700 transition-all duration-300">共有</button>
+                        <button id="save-btn" class="btn btn-ghost">保存</button>
+                        <button id="share-url-btn" class="btn btn-navy">共有</button>
                     </div>
                 </div>
             </div>
@@ -806,7 +942,7 @@
                     <h3 class="font-elegant text-lg text-warm-gray-800">
                         保存済みプロジェクト<span id="project-count" class="text-warm-gray-400 text-sm ml-1"></span>
                     </h3>
-                    <button id="import-json-btn" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-3 py-1.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                    <button id="import-json-btn" class="btn btn-sm btn-ghost">
                         JSONインポート
                     </button>
                 </div>
@@ -817,7 +953,7 @@
             <input type="file" id="import-json-input" accept=".json" class="hidden">
 
             <!-- テンプレートセクション -->
-            <div class="mb-16 fade-in-section">
+            <div class="mb-16 fade-in-section -mx-6 px-6 py-16 bg-white border-t border-b border-warm-gray-100">
                 <div class="text-center mb-10">
                     <h2 class="font-elegant text-xl md:text-2xl text-warm-gray-800 mb-2">
                         業種別テンプレート
@@ -842,7 +978,7 @@
 
     <!-- ヒアリングプロンプトモーダル -->
     <div id="modal">
-        <div class="bg-white rounded-lg max-w-3xl mx-4 border-elegant max-h-[85vh] flex flex-col overflow-hidden">
+        <div class="bg-white rounded-lg max-w-3xl mx-4 elevation-2 max-h-[85vh] flex flex-col overflow-hidden">
             <!-- ヘッダー -->
             <div class="p-6 pb-0">
                 <h3 class="font-elegant text-lg text-warm-gray-800 mb-4" id="modal-title">ヒアリングプロンプト</h3>
@@ -885,10 +1021,10 @@
 
             <!-- フッター -->
             <div class="flex gap-3 p-6 pt-4 border-t border-warm-gray-200">
-                <button id="copy-prompt-btn" class="border border-warm-gray-400 text-warm-gray-600 text-sm px-5 py-2.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                <button id="copy-prompt-btn" class="btn btn-ghost">
                     プロンプトをコピー
                 </button>
-                <button id="close-modal-btn" class="bg-navy-600 text-white text-sm px-5 py-2.5 tracking-wider hover:bg-navy-700 transition-all duration-300">
+                <button id="close-modal-btn" class="btn btn-primary">
                     閉じる
                 </button>
             </div>
@@ -928,15 +1064,15 @@
             <h4 class="text-sm font-medium text-warm-gray-800 mb-3">アノテーション追加</h4>
             <p id="annotation-node-name" class="text-xs text-warm-gray-500 mb-3 bg-warm-gray-50 px-2 py-1 rounded"></p>
             <div class="flex gap-2 mb-3 flex-wrap">
-                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border" data-category="problem" style="border-color:#fecaca;color:#ef4444;background:#fef2f2;">問題点</button>
-                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border" data-category="improvement" style="border-color:#bfdbfe;color:#3b82f6;background:#eff6ff;">改善案</button>
-                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border" data-category="question" style="border-color:#fde68a;color:#d97706;background:#fffbeb;">質問</button>
-                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border" data-category="memo" style="border-color:#e5e7eb;color:#6b7280;background:#f9fafb;">メモ</button>
+                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border annotation-cat-problem" data-category="problem">問題点</button>
+                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border annotation-cat-improvement" data-category="improvement">改善案</button>
+                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border annotation-cat-question" data-category="question">質問</button>
+                <button class="annotation-category-btn text-xs px-3 py-1.5 rounded-full border annotation-cat-memo" data-category="memo">メモ</button>
             </div>
             <textarea id="annotation-comment" class="w-full border border-warm-gray-300 rounded px-3 py-2 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-navy-400 mb-3" placeholder="コメントを入力..."></textarea>
             <div class="flex gap-2 justify-end">
                 <button id="annotation-cancel" class="text-xs text-warm-gray-500 px-3 py-1.5">キャンセル</button>
-                <button id="annotation-add" class="text-xs bg-navy-600 text-white px-4 py-1.5 rounded hover:bg-navy-700 transition-colors">追加</button>
+                <button id="annotation-add" class="btn btn-sm btn-primary rounded">追加</button>
             </div>
         </div>
     </div>
@@ -944,7 +1080,7 @@
     <!-- 共有モーダル -->
     <div id="share-modal" class="fixed inset-0 z-[200] hidden" style="background: rgba(0,0,0,0.5);">
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg max-w-lg w-full border-elegant overflow-hidden">
+            <div class="bg-white rounded-lg max-w-lg w-full elevation-2 overflow-hidden">
                 <div class="p-6 pb-4">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="font-elegant text-lg text-warm-gray-800">プロジェクトを共有</h3>
@@ -959,7 +1095,7 @@
                         <p class="text-xs text-warm-gray-400 mb-2">このURLを共有すると、同じ図を開けます</p>
                         <div class="flex gap-2">
                             <input id="share-url-display" type="text" readonly class="flex-1 border border-warm-gray-300 rounded px-3 py-2 text-xs bg-warm-gray-50 text-warm-gray-600 focus:outline-none">
-                            <button id="copy-share-url" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300 whitespace-nowrap">コピー</button>
+                            <button id="copy-share-url" class="btn btn-sm btn-ghost whitespace-nowrap">コピー</button>
                         </div>
                         <p id="share-url-size" class="text-xs text-warm-gray-300 mt-1"></p>
                     </div>
@@ -980,7 +1116,7 @@
                     <div>
                         <h4 class="text-sm font-medium text-warm-gray-700 mb-2">ファイル共有</h4>
                         <p class="text-xs text-warm-gray-400 mb-2">プロジェクト全体（アノテーション含む）をファイルで共有</p>
-                        <button id="share-json-export" class="w-full border border-navy-400 text-navy-600 text-sm px-4 py-2.5 tracking-wider hover:bg-navy-700 hover:text-white hover:border-navy-700 transition-all duration-300">
+                        <button id="share-json-export" class="w-full btn btn-navy">
                             JSONファイルをダウンロード
                         </button>
                     </div>
@@ -4290,7 +4426,7 @@
         // --- ユーティリティ関数 ---
         function showToast(message) {
             const toast = document.createElement('div');
-            toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-warm-gray-800 text-white text-sm px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity duration-300';
+            toast.className = 'fixed bottom-6 left-1/2 bg-warm-gray-800 text-white text-sm px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity duration-300 toast-enter';
             toast.textContent = message;
             document.body.appendChild(toast);
             setTimeout(() => {
@@ -4310,10 +4446,10 @@
             const overlay = document.createElement('div');
             overlay.className = 'fixed inset-0 z-[200] flex items-center justify-center bg-black/30 backdrop-blur-sm';
             overlay.innerHTML = `
-                <div class="${c.bg} ${c.border} border rounded-lg shadow-xl max-w-sm mx-4 p-6">
+                <div class="${c.bg} ${c.border} border rounded-lg shadow-xl max-w-sm mx-4 p-6 modal-enter">
                     <p class="${c.text} text-sm leading-relaxed mb-5">${escapeHTML(message)}</p>
                     <div class="text-right">
-                        <button class="alert-ok-btn ${c.btn} text-white text-sm px-6 py-2 rounded tracking-wider transition-colors">OK</button>
+                        <button class="alert-ok-btn ${c.btn} text-white text-sm px-6 py-2 rounded tracking-wider transition-all">OK</button>
                     </div>
                 </div>
             `;
@@ -4328,11 +4464,11 @@
             const overlay = document.createElement('div');
             overlay.className = 'fixed inset-0 z-[200] flex items-center justify-center bg-black/30 backdrop-blur-sm';
             overlay.innerHTML = `
-                <div class="bg-white border border-warm-gray-200 rounded-lg shadow-xl max-w-sm mx-4 p-6">
+                <div class="bg-white border border-warm-gray-200 rounded-lg shadow-xl max-w-sm mx-4 p-6 modal-enter">
                     <p class="text-warm-gray-800 text-sm leading-relaxed mb-5">${escapeHTML(message)}</p>
                     <div class="flex justify-end gap-3">
-                        <button class="confirm-cancel-btn border border-warm-gray-300 text-warm-gray-600 text-sm px-5 py-2 rounded tracking-wider hover:bg-warm-gray-100 transition-colors">キャンセル</button>
-                        <button class="confirm-ok-btn bg-warm-gray-800 text-white text-sm px-5 py-2 rounded tracking-wider hover:bg-warm-gray-900 transition-colors">OK</button>
+                        <button class="confirm-cancel-btn btn btn-ghost rounded">キャンセル</button>
+                        <button class="confirm-ok-btn btn btn-primary rounded">OK</button>
                     </div>
                 </div>
             `;
@@ -4960,7 +5096,7 @@ ${annotationSection}
 
             groupTemplates.forEach(template => {
                 const card = document.createElement('div');
-                card.className = 'template-card bg-white p-5 border-elegant rounded-lg';
+                card.className = 'template-card bg-white p-5 elevation-0 rounded-lg';
                 // Add data attributes for search
                 card.dataset.templateName = template.name.toLowerCase();
                 card.dataset.templateIndustry = (template.industry || '').toLowerCase();
@@ -5208,6 +5344,12 @@ ${annotationSection}
             switchPhase(1);
 
             modal.classList.add('modal-open');
+            const modalContent = modal.querySelector(':scope > div');
+            if (modalContent) {
+                modalContent.classList.remove('modal-enter');
+                void modalContent.offsetWidth;
+                modalContent.classList.add('modal-enter');
+            }
         }
 
         function switchPhase(phase) {
@@ -5593,7 +5735,7 @@ ${annotationSection}
                 const previewCode = (project.asisEditor || project.singleEditor || '').split('\n').slice(0, 3).join('\n');
 
                 const card = document.createElement('div');
-                card.className = 'bg-white p-5 border-elegant rounded-lg hover:shadow-md transition-shadow';
+                card.className = 'bg-white p-5 elevation-0 rounded-lg project-card';
                 card.dataset.projectId = index;
                 card.innerHTML = `
                     <h4 class="font-medium text-warm-gray-800 text-sm mb-1">${project.name}</h4>
@@ -5618,10 +5760,10 @@ ${annotationSection}
 
                     <!-- アクションボタン -->
                     <div class="flex flex-wrap gap-2">
-                        <button data-action="load" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-3 py-1.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">読み込み</button>
-                        <button data-action="duplicate" class="border border-warm-gray-400 text-warm-gray-600 text-xs px-3 py-1.5 tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">複製</button>
-                        <button data-action="export" class="border border-navy-300 text-navy-500 text-xs px-3 py-1.5 tracking-wider hover:bg-navy-600 hover:text-white hover:border-navy-600 transition-all duration-300">JSON</button>
-                        <button data-action="delete" class="border border-red-300 text-red-500 text-xs px-3 py-1.5 tracking-wider hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-300">削除</button>
+                        <button data-action="load" class="btn btn-sm btn-ghost">読み込み</button>
+                        <button data-action="duplicate" class="btn btn-sm btn-ghost">複製</button>
+                        <button data-action="export" class="btn btn-sm btn-navy">JSON</button>
+                        <button data-action="delete" class="btn btn-sm btn-danger">削除</button>
                     </div>
                 `;
 
@@ -5948,6 +6090,12 @@ ${annotationSection}
             }
 
             shareModal.classList.remove('hidden');
+            const shareContent = shareModal.querySelector(':scope > div > div');
+            if (shareContent) {
+                shareContent.classList.remove('modal-enter');
+                void shareContent.offsetWidth;
+                shareContent.classList.add('modal-enter');
+            }
             document.body.style.overflow = 'hidden';
         }
 
