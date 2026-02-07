@@ -6245,22 +6245,76 @@ ${annotationSection}
             return { canvas, ctx };
         }
 
+        // PDF デザインヘルパー
+        function pdfAccentBar(ctx, cw) {
+            ctx.fillStyle = '#47658a';
+            ctx.fillRect(0, 0, cw, 14);
+        }
+
+        function pdfFooter(ctx, cw, ch) {
+            ctx.fillStyle = '#f5f5f4';
+            ctx.fillRect(0, ch - 90, cw, 90);
+            ctx.strokeStyle = '#e7e5e4';
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(0, ch - 90); ctx.lineTo(cw, ch - 90); ctx.stroke();
+            ctx.fillStyle = '#a8a29e';
+            ctx.font = '26px "Noto Sans JP", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('AYCC - AI YASUDA CREATIVE & CONSULTING', cw / 2, ch - 35);
+        }
+
+        function pdfDivider(ctx, x1, x2, y, color = '#d6d3d1') {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(x1, y); ctx.lineTo(x2, y); ctx.stroke();
+        }
+
+        function pdfRoundRect(ctx, x, y, w, h, r) {
+            ctx.beginPath(); ctx.roundRect(x, y, w, h, r); ctx.fill();
+        }
+
         function renderPDFCoverPage(pdf, projectName, pageWidth, pageHeight) {
             const { canvas, ctx } = createPDFCanvas();
+            const cw = 2970, ch = 2100;
+
+            // アクセントバー
+            pdfAccentBar(ctx, cw);
+
+            // 下部背景セクション
+            ctx.fillStyle = '#fafaf9';
+            ctx.fillRect(0, ch * 0.62, cw, ch * 0.38);
+            pdfDivider(ctx, 0, cw, ch * 0.62, '#e7e5e4');
+
+            // サブタイトル
+            ctx.fillStyle = '#78716c';
+            ctx.font = '36px "Noto Sans JP", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.letterSpacing = '8px';
+            ctx.fillText('BUSINESS FLOW IMPROVEMENT REPORT', cw / 2, 560);
+            ctx.letterSpacing = '0px';
+
+            // メインタイトル
             ctx.fillStyle = '#292524';
             ctx.font = 'bold 120px "Noto Serif JP", serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('業務フロー改善レポート', 1485, 800);
+            ctx.fillText('業務フロー改善レポート', cw / 2, 780);
 
-            ctx.fillStyle = '#78716c';
+            // 装飾ディバイダー
+            ctx.fillStyle = '#47658a';
+            ctx.fillRect(cw / 2 - 180, 840, 360, 4);
+
+            // プロジェクト名
+            ctx.fillStyle = '#57534e';
             ctx.font = '60px "Noto Sans JP", sans-serif';
-            ctx.fillText(projectName, 1485, 1000);
+            ctx.fillText(projectName, cw / 2, 970);
 
+            // 日付・社名（下部セクション）
             const today = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
-            ctx.fillStyle = '#a8a29e';
+            ctx.fillStyle = '#78716c';
             ctx.font = '40px "Noto Sans JP", sans-serif';
-            ctx.fillText(`作成日: ${today}`, 1485, 1600);
-            ctx.fillText('AYCC - AI YASUDA CREATIVE & CONSULTING', 1485, 1700);
+            ctx.fillText(today, cw / 2, ch * 0.62 + 140);
+
+            // フッター
+            pdfFooter(ctx, cw, ch);
 
             pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
         }
@@ -6298,43 +6352,50 @@ ${annotationSection}
             const scaleW = usableW / img.width;
             const fittedH = img.height * scaleW;
 
-            if (fittedH <= usableH) {
+            const footerH = 104;
+            const usableHNet = usableH - footerH;
+
+            if (fittedH <= usableHNet) {
                 // 1ページに収まる
                 pdf.addPage('a4', usePortrait ? 'portrait' : 'landscape');
                 const { canvas, ctx } = createPDFCanvas(cw, ch);
+                pdfAccentBar(ctx, cw);
                 ctx.fillStyle = titleColor;
-                ctx.font = 'bold 80px "Noto Serif JP", serif';
+                ctx.font = 'bold 70px "Noto Serif JP", serif';
                 ctx.textAlign = 'center';
-                ctx.fillText(title, cw / 2, 200);
+                ctx.fillText(title, cw / 2, 180);
+                pdfDivider(ctx, cw / 2 - 200, cw / 2 + 200, 220, titleColor);
                 const x = (cw - img.width * scaleW) / 2;
-                const y = titleH + (usableH - fittedH) / 2;
+                const y = titleH + (usableHNet - fittedH) / 2;
                 ctx.drawImage(img, x, y, img.width * scaleW, fittedH);
+                pdfFooter(ctx, cw, ch);
                 pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pw, ph);
             } else {
                 // 複数ページに分割
-                const sliceH = usableH / scaleW;
-                const firstSliceH = (ch - titleH - margin) / scaleW;
-                const laterSliceH = (ch - margin * 2) / scaleW;
+                const firstSliceH = (ch - titleH - margin - footerH) / scaleW;
+                const laterSliceH = (ch - margin * 2 - footerH) / scaleW;
                 const totalPages = 1 + Math.max(0, Math.ceil((img.height - firstSliceH) / laterSliceH));
 
                 let srcY = 0;
                 for (let p = 0; p < totalPages; p++) {
                     pdf.addPage('a4', usePortrait ? 'portrait' : 'landscape');
                     const { canvas, ctx } = createPDFCanvas(cw, ch);
+                    pdfAccentBar(ctx, cw);
                     let contentY;
 
                     if (p === 0) {
                         ctx.fillStyle = titleColor;
-                        ctx.font = 'bold 80px "Noto Serif JP", serif';
+                        ctx.font = 'bold 70px "Noto Serif JP", serif';
                         ctx.textAlign = 'center';
-                        ctx.fillText(title, cw / 2, 200);
+                        ctx.fillText(title, cw / 2, 180);
+                        pdfDivider(ctx, cw / 2 - 200, cw / 2 + 200, 220, titleColor);
                         contentY = titleH;
                     } else {
-                        ctx.fillStyle = '#a8a29e';
+                        ctx.fillStyle = '#78716c';
                         ctx.font = '30px "Noto Sans JP", sans-serif';
                         ctx.textAlign = 'right';
-                        ctx.fillText(`${title}（${p + 1}/${totalPages}）`, cw - margin, 60);
-                        contentY = margin;
+                        ctx.fillText(`${title}（${p + 1}/${totalPages}）`, cw - margin, 50);
+                        contentY = 80;
                     }
 
                     const maxSrcH = p === 0 ? firstSliceH : laterSliceH;
@@ -6344,128 +6405,192 @@ ${annotationSection}
                     ctx.drawImage(img, 0, srcY, img.width, srcH, x, contentY, img.width * scaleW, drawH);
                     srcY += srcH;
 
+                    pdfFooter(ctx, cw, ch);
                     pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pw, ph);
                 }
             }
         }
 
         function renderPDFIssuesPages(pdf, annotations, pageWidth, pageHeight) {
-            const maxRows = 12;
+            const cw = 2970, ch = 2100;
+            const maxRows = 10;
             const totalPages = Math.ceil(annotations.length / maxRows);
 
             for (let page = 0; page < totalPages; page++) {
                 pdf.addPage();
                 const { canvas, ctx } = createPDFCanvas();
+
+                pdfAccentBar(ctx, cw);
+
+                // タイトル
                 ctx.fillStyle = '#292524';
-                ctx.font = 'bold 80px "Noto Serif JP", serif';
+                ctx.font = 'bold 70px "Noto Serif JP", serif';
                 ctx.textAlign = 'center';
                 const pageLabel = totalPages > 1 ? `発見された課題（${page + 1}/${totalPages}）` : '発見された課題';
-                ctx.fillText(pageLabel, 1485, 200);
+                ctx.fillText(pageLabel, cw / 2, 170);
+                pdfDivider(ctx, 200, 2770, 210, '#47658a');
 
-                let y = 400;
-                const rowHeight = 120;
+                let y = 310;
+                const rowHeight = 135;
 
-                ctx.font = '45px "Noto Sans JP", sans-serif';
+                // テーブルヘッダー背景
+                ctx.fillStyle = '#f5f5f4';
+                ctx.fillRect(150, y - 45, 2670, 65);
+                ctx.font = 'bold 36px "Noto Sans JP", sans-serif';
                 ctx.fillStyle = '#78716c';
                 ctx.textAlign = 'left';
-                ctx.fillText('カテゴリ', 200, y);
-                ctx.fillText('対象', 600, y);
-                ctx.fillText('コメント', 1200, y);
-                y += 80;
-
-                ctx.strokeStyle = '#d6d3d1';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(150, y);
-                ctx.lineTo(2820, y);
-                ctx.stroke();
-                y += 40;
+                ctx.fillText('カテゴリ', 220, y);
+                ctx.fillText('対象ノード', 680, y);
+                ctx.fillText('コメント', 1280, y);
+                y += 50;
+                pdfDivider(ctx, 150, 2820, y, '#d6d3d1');
+                y += 35;
 
                 const pageAnnotations = annotations.slice(page * maxRows, (page + 1) * maxRows);
-                pageAnnotations.forEach(ann => {
-                    ctx.fillStyle = CATEGORY_COLORS[ann.category];
-                    ctx.font = 'bold 40px "Noto Sans JP", sans-serif';
-                    ctx.fillText(CATEGORY_LABELS[ann.category], 200, y);
+                pageAnnotations.forEach((ann, i) => {
+                    // 交互行背景
+                    if (i % 2 === 1) {
+                        ctx.fillStyle = '#fafaf9';
+                        ctx.fillRect(150, y - 40, 2670, rowHeight);
+                    }
 
-                    ctx.fillStyle = '#44403c';
-                    ctx.font = '38px "Noto Sans JP", sans-serif';
-                    const nodeText = ann.nodeText.length > 20 ? ann.nodeText.substring(0, 20) + '...' : ann.nodeText;
-                    ctx.fillText(nodeText, 600, y);
+                    // カテゴリバッジ
+                    const catColor = CATEGORY_COLORS[ann.category];
+                    ctx.save();
+                    ctx.globalAlpha = 0.15;
+                    ctx.fillStyle = catColor;
+                    pdfRoundRect(ctx, 190, y - 28, 380, 50, 8);
+                    ctx.restore();
+                    ctx.fillStyle = catColor;
+                    ctx.font = 'bold 34px "Noto Sans JP", sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(CATEGORY_LABELS[ann.category], 380, y + 5);
 
-                    const comment = ann.comment.length > 40 ? ann.comment.substring(0, 40) + '...' : ann.comment;
-                    ctx.fillText(comment, 1200, y);
+                    // 対象ノード
+                    ctx.fillStyle = '#292524';
+                    ctx.font = '34px "Noto Sans JP", sans-serif';
+                    ctx.textAlign = 'left';
+                    const nodeText = ann.nodeText.length > 22 ? ann.nodeText.substring(0, 22) + '…' : ann.nodeText;
+                    ctx.fillText(nodeText, 680, y + 5);
 
+                    // コメント
+                    ctx.fillStyle = '#57534e';
+                    const comment = ann.comment.length > 42 ? ann.comment.substring(0, 42) + '…' : ann.comment;
+                    ctx.fillText(comment, 1280, y + 5);
+
+                    // 行区切り線
+                    pdfDivider(ctx, 190, 2770, y + rowHeight - 45, '#e7e5e4');
                     y += rowHeight;
                 });
 
+                pdfFooter(ctx, cw, ch);
                 pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
             }
         }
 
         function renderPDFSummaryPage(pdf, annotations, pageWidth, pageHeight) {
+            const cw = 2970, ch = 2100;
             pdf.addPage();
             const { canvas, ctx } = createPDFCanvas();
+
+            pdfAccentBar(ctx, cw);
+
+            // タイトル
             ctx.fillStyle = '#292524';
-            ctx.font = 'bold 80px "Noto Serif JP", serif';
+            ctx.font = 'bold 70px "Noto Serif JP", serif';
             ctx.textAlign = 'center';
-            ctx.fillText('まとめ', 1485, 200);
+            ctx.fillText('まとめ', cw / 2, 170);
+            pdfDivider(ctx, cw / 2 - 120, cw / 2 + 120, 210, '#47658a');
 
             const problems = annotations.filter(a => a.category === 'problem');
             const improvements = annotations.filter(a => a.category === 'improvement');
+            const questions = annotations.filter(a => a.category === 'question');
+            const memos = annotations.filter(a => a.category === 'memo');
 
-            let y = 400;
+            // 統計カウンター
+            const stats = [
+                { label: '問題点', count: problems.length, color: '#ef4444' },
+                { label: '改善提案', count: improvements.length, color: '#3b82f6' },
+                { label: '質問', count: questions.length, color: '#d97706' },
+                { label: 'メモ', count: memos.length, color: '#6b7280' }
+            ];
+            const statW = 500, statH = 100, statGap = 60;
+            const statTotalW = stats.length * statW + (stats.length - 1) * statGap;
+            let sx = (cw - statTotalW) / 2;
+            const sy = 290;
+
+            stats.forEach(s => {
+                // カード背景
+                ctx.fillStyle = '#fafaf9';
+                pdfRoundRect(ctx, sx, sy, statW, statH, 12);
+                ctx.strokeStyle = '#e7e5e4';
+                ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.roundRect(sx, sy, statW, statH, 12); ctx.stroke();
+                // 色付きインジケーター
+                ctx.fillStyle = s.color;
+                pdfRoundRect(ctx, sx + 20, sy + 30, 8, 40, 4);
+                // カウント
+                ctx.fillStyle = '#292524';
+                ctx.font = 'bold 48px "Noto Sans JP", sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText(String(s.count), sx + 50, sy + 68);
+                // ラベル
+                ctx.fillStyle = '#78716c';
+                ctx.font = '30px "Noto Sans JP", sans-serif';
+                ctx.fillText(s.label, sx + 120, sy + 65);
+                sx += statW + statGap;
+            });
+
+            let y = 500;
             ctx.textAlign = 'left';
 
             if (problems.length > 0) {
+                // セクション背景カード
+                const cardH = 90 + Math.min(problems.length, 5) * 80;
+                ctx.fillStyle = '#fef2f2';
+                pdfRoundRect(ctx, 200, y - 20, cw - 400, cardH, 16);
+
                 ctx.fillStyle = '#be185d';
-                ctx.font = 'bold 60px "Noto Serif JP", serif';
-                ctx.fillText('主要な課題', 300, y);
+                ctx.font = 'bold 50px "Noto Serif JP", serif';
+                ctx.fillText('主要な課題', 280, y + 40);
                 y += 100;
 
-                ctx.font = '45px "Noto Sans JP", sans-serif';
-                ctx.fillStyle = '#44403c';
-                problems.slice(0, 4).forEach(p => {
+                ctx.font = '40px "Noto Sans JP", sans-serif';
+                problems.slice(0, 5).forEach(p => {
                     ctx.fillStyle = '#ef4444';
-                    ctx.fillText('●', 350, y);
+                    ctx.fillText('●', 320, y);
                     ctx.fillStyle = '#44403c';
                     const text = `${p.nodeText}: ${p.comment}`;
-                    const displayText = text.length > 60 ? text.substring(0, 60) + '...' : text;
-                    ctx.fillText(displayText, 450, y);
-                    y += 90;
+                    const displayText = text.length > 55 ? text.substring(0, 55) + '…' : text;
+                    ctx.fillText(displayText, 410, y);
+                    y += 80;
                 });
-                y += 80;
+                y += 50;
             }
 
             if (improvements.length > 0) {
+                const cardH = 90 + Math.min(improvements.length, 5) * 80;
+                ctx.fillStyle = '#eff6ff';
+                pdfRoundRect(ctx, 200, y - 20, cw - 400, cardH, 16);
+
                 ctx.fillStyle = '#3a5270';
-                ctx.font = 'bold 60px "Noto Serif JP", serif';
-                ctx.fillText('改善提案', 300, y);
+                ctx.font = 'bold 50px "Noto Serif JP", serif';
+                ctx.fillText('改善提案', 280, y + 40);
                 y += 100;
 
-                ctx.font = '45px "Noto Sans JP", sans-serif';
-                improvements.slice(0, 4).forEach(i => {
+                ctx.font = '40px "Noto Sans JP", sans-serif';
+                improvements.slice(0, 5).forEach(i => {
                     ctx.fillStyle = '#3b82f6';
-                    ctx.fillText('●', 350, y);
+                    ctx.fillText('●', 320, y);
                     ctx.fillStyle = '#44403c';
                     const text = `${i.nodeText}: ${i.comment}`;
-                    const displayText = text.length > 60 ? text.substring(0, 60) + '...' : text;
-                    ctx.fillText(displayText, 450, y);
-                    y += 90;
+                    const displayText = text.length > 55 ? text.substring(0, 55) + '…' : text;
+                    ctx.fillText(displayText, 410, y);
+                    y += 80;
                 });
             }
 
-            ctx.strokeStyle = '#d6d3d1';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(300, 1800);
-            ctx.lineTo(2670, 1800);
-            ctx.stroke();
-
-            ctx.fillStyle = '#a8a29e';
-            ctx.font = '40px "Noto Sans JP", sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('AYCC - AI YASUDA CREATIVE & CONSULTING', 1485, 1900);
-
+            pdfFooter(ctx, cw, ch);
             pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
         }
 
