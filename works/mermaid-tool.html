@@ -6622,6 +6622,8 @@ ${annotationSection}
             const pageHeight = 210;
 
             const { tobeSvg, isCompareMode, mainSvg, mainTitle, annotations } = getReportData();
+            console.log('[PDF Debug] isCompareMode:', isCompareMode, 'annotations:', annotations.length, 'mainSvg:', !!mainSvg);
+            console.log('[PDF Debug] annotationManager.annotations:', JSON.stringify(annotationManager.annotations));
             if (!mainSvg) {
                 throw new Error('レポートに含める図がありません。先に図を作成してください。');
             }
