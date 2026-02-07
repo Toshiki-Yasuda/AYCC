@@ -6371,15 +6371,60 @@ ${annotationSection}
                 pdfFooter(ctx, cw, ch);
                 pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pw, ph);
             } else {
-                // 複数ページに分割（オーバーラップ付き：ノード切れ防止）
+                // 複数ページに分割（スマート分割：ノード間の隙間で切る）
                 const firstSliceH = (ch - titleH - margin - footerH) / scaleW;
                 const laterSliceH = (ch - margin * 2 - footerH) / scaleW;
-                const overlapSrc = laterSliceH * 0.12;
-                const firstAdvance = firstSliceH - overlapSrc;
-                const laterAdvance = laterSliceH - overlapSrc;
-                const totalPages = 1 + Math.max(0, Math.ceil((img.height - firstSliceH) / laterAdvance));
+                const searchRange = laterSliceH * 0.15;
 
-                let srcY = 0;
+                // 画像をスキャンして各行のコンテンツ密度を取得
+                const scanCanvas = document.createElement('canvas');
+                scanCanvas.width = img.width;
+                scanCanvas.height = img.height;
+                const scanCtx = scanCanvas.getContext('2d');
+                scanCtx.fillStyle = '#ffffff';
+                scanCtx.fillRect(0, 0, img.width, img.height);
+                scanCtx.drawImage(img, 0, 0);
+                const scanData = scanCtx.getImageData(0, 0, img.width, img.height).data;
+                const sampleStep = Math.max(1, Math.floor(img.width / 80));
+
+                // 各行のコンテンツ密度を計算
+                const rowDensity = new Float32Array(img.height);
+                for (let y = 0; y < img.height; y++) {
+                    let content = 0;
+                    for (let x = 0; x < img.width; x += sampleStep) {
+                        const idx = (y * img.width + x) * 4;
+                        if (scanData[idx] < 240 || scanData[idx + 1] < 240 || scanData[idx + 2] < 240) content++;
+                    }
+                    rowDensity[y] = content;
+                }
+
+                // 指定位置付近で最もコンテンツが少ないバンドを探す
+                function findBestSplit(targetY) {
+                    const start = Math.max(0, Math.floor(targetY - searchRange));
+                    const end = Math.min(img.height - 1, Math.ceil(targetY + searchRange * 0.3));
+                    const bandSize = Math.min(16, end - start);
+                    if (end - start < bandSize) return Math.round(targetY);
+                    let bestPos = start, bestSum = Infinity, sum = 0;
+                    for (let i = start; i < start + bandSize; i++) sum += rowDensity[i];
+                    bestSum = sum; bestPos = start;
+                    for (let i = start + 1; i <= end - bandSize; i++) {
+                        sum += rowDensity[i + bandSize - 1] - rowDensity[i - 1];
+                        if (sum < bestSum) { bestSum = sum; bestPos = i; }
+                    }
+                    return bestPos + Math.floor(bandSize / 2);
+                }
+
+                // 分割位置を事前計算
+                const splits = [0];
+                let nextIdeal = firstSliceH;
+                while (nextIdeal < img.height - laterSliceH * 0.1) {
+                    const bestY = findBestSplit(nextIdeal);
+                    splits.push(bestY);
+                    nextIdeal = bestY + laterSliceH;
+                }
+                splits.push(img.height);
+                const totalPages = splits.length - 1;
+
                 for (let p = 0; p < totalPages; p++) {
                     pdf.addPage('a4', usePortrait ? 'portrait' : 'landscape');
                     const { canvas, ctx } = createPDFCanvas(cw, ch);
@@ -6401,23 +6446,18 @@ ${annotationSection}
                         contentY = 80;
                     }
 
-                    const maxSrcH = p === 0 ? firstSliceH : laterSliceH;
-                    const srcH = Math.min(maxSrcH, img.height - srcY);
+                    const srcY = splits[p];
+                    const srcH = splits[p + 1] - srcY;
                     const drawH = srcH * scaleW;
                     const x = (cw - img.width * scaleW) / 2;
                     ctx.drawImage(img, 0, srcY, img.width, srcH, x, contentY, img.width * scaleW, drawH);
 
-                    // ページ間の継続インジケーター
-                    const isLastPage = p === totalPages - 1;
-                    if (!isLastPage) {
+                    if (p < totalPages - 1) {
                         ctx.fillStyle = '#a8a29e';
                         ctx.font = '24px "Noto Sans JP", sans-serif';
                         ctx.textAlign = 'center';
                         ctx.fillText('▼ 次ページに続く', cw / 2, ch - footerH - 15);
                     }
-
-                    // オーバーラップ分を差し引いて前進（切れ目のノードが次ページ上部にも表示される）
-                    srcY += p === 0 ? firstAdvance : laterAdvance;
 
                     pdfFooter(ctx, cw, ch);
                     pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pw, ph);
