@@ -6266,34 +6266,87 @@ ${annotationSection}
         }
 
         async function renderPDFDiagramPage(pdf, svg, title, titleColor, pageWidth, pageHeight) {
-            pdf.addPage();
-            const { canvas, ctx } = createPDFCanvas();
-            ctx.fillStyle = titleColor;
-            ctx.font = 'bold 80px "Noto Serif JP", serif';
-            ctx.textAlign = 'center';
-            ctx.fillText(title, 1485, 200);
-
+            let img;
             try {
-                const img = await svgToImagePromise(svg);
-                if (img.width > 0 && img.height > 0) {
-                    const scale = Math.min((pageWidth * 8) / img.width, (pageHeight * 6) / img.height);
-                    const scaledWidth = img.width * scale;
-                    const scaledHeight = img.height * scale;
-                    const x = (2970 - scaledWidth) / 2;
-                    ctx.drawImage(img, x, 400, scaledWidth, scaledHeight);
-                } else {
-                    ctx.fillStyle = '#a8a29e';
-                    ctx.font = '40px "Noto Sans JP", sans-serif';
-                    ctx.fillText('（図の描画に失敗しました）', 1485, 1050);
-                }
+                img = await svgToImagePromise(svg);
+                if (!img || img.width <= 0 || img.height <= 0) throw new Error('empty');
             } catch (error) {
                 console.error('SVG rendering error:', error);
+                pdf.addPage();
+                const { canvas, ctx } = createPDFCanvas();
                 ctx.fillStyle = '#a8a29e';
                 ctx.font = '40px "Noto Sans JP", sans-serif';
+                ctx.textAlign = 'center';
                 ctx.fillText('（図の描画に失敗しました）', 1485, 1050);
+                pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
+                return;
             }
 
-            pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
+            // アスペクト比で向きを自動選択
+            const imgAspect = img.width / img.height;
+            const usePortrait = imgAspect < 0.9;
+            const pw = usePortrait ? 210 : 297;
+            const ph = usePortrait ? 297 : 210;
+            const cw = usePortrait ? 2100 : 2970;
+            const ch = usePortrait ? 2970 : 2100;
+            const titleH = 300;
+            const margin = 100;
+            const usableW = cw - margin * 2;
+            const usableH = ch - titleH - margin;
+
+            // 幅に合わせたスケールで高さを計算
+            const scaleW = usableW / img.width;
+            const fittedH = img.height * scaleW;
+
+            if (fittedH <= usableH) {
+                // 1ページに収まる
+                pdf.addPage('a4', usePortrait ? 'portrait' : 'landscape');
+                const { canvas, ctx } = createPDFCanvas(cw, ch);
+                ctx.fillStyle = titleColor;
+                ctx.font = 'bold 80px "Noto Serif JP", serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(title, cw / 2, 200);
+                const x = (cw - img.width * scaleW) / 2;
+                const y = titleH + (usableH - fittedH) / 2;
+                ctx.drawImage(img, x, y, img.width * scaleW, fittedH);
+                pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pw, ph);
+            } else {
+                // 複数ページに分割
+                const sliceH = usableH / scaleW;
+                const firstSliceH = (ch - titleH - margin) / scaleW;
+                const laterSliceH = (ch - margin * 2) / scaleW;
+                const totalPages = 1 + Math.max(0, Math.ceil((img.height - firstSliceH) / laterSliceH));
+
+                let srcY = 0;
+                for (let p = 0; p < totalPages; p++) {
+                    pdf.addPage('a4', usePortrait ? 'portrait' : 'landscape');
+                    const { canvas, ctx } = createPDFCanvas(cw, ch);
+                    let contentY;
+
+                    if (p === 0) {
+                        ctx.fillStyle = titleColor;
+                        ctx.font = 'bold 80px "Noto Serif JP", serif';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(title, cw / 2, 200);
+                        contentY = titleH;
+                    } else {
+                        ctx.fillStyle = '#a8a29e';
+                        ctx.font = '30px "Noto Sans JP", sans-serif';
+                        ctx.textAlign = 'right';
+                        ctx.fillText(`${title}（${p + 1}/${totalPages}）`, cw - margin, 60);
+                        contentY = margin;
+                    }
+
+                    const maxSrcH = p === 0 ? firstSliceH : laterSliceH;
+                    const srcH = Math.min(maxSrcH, img.height - srcY);
+                    const drawH = srcH * scaleW;
+                    const x = (cw - img.width * scaleW) / 2;
+                    ctx.drawImage(img, 0, srcY, img.width, srcH, x, contentY, img.width * scaleW, drawH);
+                    srcY += srcH;
+
+                    pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pw, ph);
+                }
+            }
         }
 
         function renderPDFIssuesPages(pdf, annotations, pageWidth, pageHeight) {
