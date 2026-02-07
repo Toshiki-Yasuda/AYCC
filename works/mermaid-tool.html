@@ -6141,7 +6141,7 @@ ${annotationSection}
                     singleEditor: document.getElementById('editor').value,
                     asisEditor: document.getElementById('asis-editor').value,
                     tobeEditor: document.getElementById('tobe-editor').value,
-                    annotations: window.annotationManager ? annotationManager.getAnnotationsForSave() : null
+                    annotations: annotationManager ? annotationManager.getAnnotationsForSave() : null
                 };
 
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -6602,8 +6602,8 @@ ${annotationSection}
             const mainSvg = isCompareMode ? asisSvg : singleSvg;
             const mainTitle = isCompareMode ? 'As-Is（現状フロー）' : '業務フロー';
             const annotations = isCompareMode
-                ? (window.annotationManager?.annotations?.asis || [])
-                : (window.annotationManager?.annotations?.single || []);
+                ? (annotationManager?.annotations?.asis || [])
+                : (annotationManager?.annotations?.single || []);
             return { singleSvg, asisSvg, tobeSvg, isCompareMode, mainSvg, mainTitle, annotations };
         }
 
