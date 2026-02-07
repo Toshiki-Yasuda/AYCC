@@ -6326,7 +6326,7 @@ ${annotationSection}
                 if (!img || img.width <= 0 || img.height <= 0) throw new Error('empty');
             } catch (error) {
                 console.error('SVG rendering error:', error);
-                pdf.addPage();
+                pdf.addPage('a4', 'landscape');
                 const { canvas, ctx } = createPDFCanvas();
                 ctx.fillStyle = '#a8a29e';
                 ctx.font = '40px "Noto Sans JP", sans-serif';
@@ -6371,10 +6371,13 @@ ${annotationSection}
                 pdfFooter(ctx, cw, ch);
                 pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pw, ph);
             } else {
-                // 複数ページに分割
+                // 複数ページに分割（オーバーラップ付き：ノード切れ防止）
                 const firstSliceH = (ch - titleH - margin - footerH) / scaleW;
                 const laterSliceH = (ch - margin * 2 - footerH) / scaleW;
-                const totalPages = 1 + Math.max(0, Math.ceil((img.height - firstSliceH) / laterSliceH));
+                const overlapSrc = laterSliceH * 0.12;
+                const firstAdvance = firstSliceH - overlapSrc;
+                const laterAdvance = laterSliceH - overlapSrc;
+                const totalPages = 1 + Math.max(0, Math.ceil((img.height - firstSliceH) / laterAdvance));
 
                 let srcY = 0;
                 for (let p = 0; p < totalPages; p++) {
@@ -6403,7 +6406,18 @@ ${annotationSection}
                     const drawH = srcH * scaleW;
                     const x = (cw - img.width * scaleW) / 2;
                     ctx.drawImage(img, 0, srcY, img.width, srcH, x, contentY, img.width * scaleW, drawH);
-                    srcY += srcH;
+
+                    // ページ間の継続インジケーター
+                    const isLastPage = p === totalPages - 1;
+                    if (!isLastPage) {
+                        ctx.fillStyle = '#a8a29e';
+                        ctx.font = '24px "Noto Sans JP", sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('▼ 次ページに続く', cw / 2, ch - footerH - 15);
+                    }
+
+                    // オーバーラップ分を差し引いて前進（切れ目のノードが次ページ上部にも表示される）
+                    srcY += p === 0 ? firstAdvance : laterAdvance;
 
                     pdfFooter(ctx, cw, ch);
                     pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pw, ph);
@@ -6417,7 +6431,7 @@ ${annotationSection}
             const totalPages = Math.ceil(annotations.length / maxRows);
 
             for (let page = 0; page < totalPages; page++) {
-                pdf.addPage();
+                pdf.addPage('a4', 'landscape');
                 const { canvas, ctx } = createPDFCanvas();
 
                 pdfAccentBar(ctx, cw);
@@ -6490,7 +6504,7 @@ ${annotationSection}
 
         function renderPDFSummaryPage(pdf, annotations, pageWidth, pageHeight) {
             const cw = 2970, ch = 2100;
-            pdf.addPage();
+            pdf.addPage('a4', 'landscape');
             const { canvas, ctx } = createPDFCanvas();
 
             pdfAccentBar(ctx, cw);
