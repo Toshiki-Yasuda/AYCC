@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4-Device Development Architecture | AYCC</title>
+<style>
+  :root {
+    --pink: #E91E8C;
+    --purple: #9C27B0;
+    --blue: #2196F3;
+    --grad: linear-gradient(135deg, #E91E8C, #9C27B0, #2196F3);
+    --grad-h: linear-gradient(90deg, #E91E8C, #9C27B0, #2196F3);
+    --light-bg: #F8F6FC;
+    --card-bg: #FFFFFF;
+    --text: #1A1A2E;
+    --text-sub: #555;
+    --radius: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+    background: var(--card-bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 28px 32px;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .header-bar {
+    height: 4px;
+    background: var(--grad-h);
+    border-radius: 2px;
+    margin-bottom: 18px;
+  }
+  .header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    background: var(--grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.02em;
+  }
+  .header .subtitle {
+    font-size: 0.95rem;
+    color: var(--text-sub);
+    margin-top: 6px;
+    font-weight: 400;
+  }
+
+  /* ===== 3-COLUMN LAYOUT ===== */
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .column {
+    background: var(--card-bg);
+    border: 1px solid #E8E0F0;
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(156, 39, 176, 0.06);
+  }
+
+  .col-label {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+  .col-label.value   { background: #FDE4F3; color: var(--pink); }
+  .col-label.tech    { background: #EDE7F6; color: var(--purple); }
+  .col-label.usecase { background: #E3F2FD; color: var(--blue); }
+
+  .col-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: var(--text);
+  }
+
+  /* Compact list */
+  .compact-list {
+    list-style: none;
+    padding: 0;
+  }
+  .compact-list li {
+    position: relative;
+    padding: 7px 0 7px 20px;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-sub);
+    border-bottom: 1px solid #F3EFF8;
+  }
+  .compact-list li:last-child { border-bottom: none; }
+  .compact-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 13px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .compact-list.pink li::before   { background: var(--pink); }
+  .compact-list.purple li::before { background: var(--purple); }
+  .compact-list.blue li::before   { background: var(--blue); }
+
+  .compact-list li strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* ===== CENTER: ARCHITECTURE DIAGRAM ===== */
+  .arch-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* Device row */
+  .device-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    width: 100%;
+  }
+  .device-card {
+    text-align: center;
+    padding: 12px 6px;
+    border-radius: 10px;
+    background: var(--light-bg);
+    border: 1px solid #E8E0F0;
+  }
+  .device-icon {
+    font-size: 1.6rem;
+    margin-bottom: 4px;
+  }
+  .device-name {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .device-app {
+    font-size: 0.65rem;
+    color: var(--text-sub);
+    margin-top: 2px;
+  }
+
+  /* Arrow */
+  .arrow-down {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .arrow-down .line {
+    width: 3px;
+    height: 18px;
+    background: var(--grad);
+    border-radius: 2px;
+  }
+  .arrow-down .label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: var(--grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    padding: 2px 0;
+  }
+  .arrow-down .head {
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 8px solid var(--purple);
+  }
+
+  /* VPS box */
+  .vps-box {
+    width: 100%;
+    border: 2px solid transparent;
+    border-image: var(--grad-h) 1;
+    border-radius: 0;
+    padding: 16px;
+    background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+                var(--grad-h) border-box;
+    border-radius: var(--radius);
+    text-align: center;
+    position: relative;
+  }
+  .vps-box-inner {
+    border: 2px solid transparent;
+    background: linear-gradient(var(--light-bg), var(--light-bg)) padding-box,
+                var(--grad-h) border-box;
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .vps-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+  .vps-ip {
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 0.75rem;
+    color: var(--text-sub);
+    margin-bottom: 10px;
+  }
+
+  .stack-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .stack-item {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: white;
+  }
+  .stack-item.mosh   { background: var(--pink); }
+  .stack-item.tmux   { background: var(--purple); }
+  .stack-item.claude  { background: var(--blue); }
+  .stack-arrow {
+    font-size: 0.9rem;
+    font-weight: 700;
+    background: var(--grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .sync-badge {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, rgba(233,30,140,0.1), rgba(33,150,243,0.1));
+    color: var(--purple);
+    border: 1px solid rgba(156,39,176,0.2);
+  }
+
+  /* ===== BOTTOM: COMMAND REFERENCE ===== */
+  .cmd-section {
+    background: #1A1A2E;
+    border-radius: var(--radius);
+    padding: 18px 24px;
+    margin-bottom: 20px;
+  }
+  .cmd-section-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 12px;
+  }
+  .cmd-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .cmd-card {
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .cmd-device {
+    font-size: 0.68rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .cmd-device.android { color: #4CAF50; }
+  .cmd-device.ipad    { color: #FF9800; }
+  .cmd-device.mac     { color: #2196F3; }
+  .cmd-device.win     { color: #00BCD4; }
+  .cmd-line {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.62rem;
+    color: #B0BEC5;
+    line-height: 1.6;
+    word-break: break-all;
+  }
+  .cmd-line .prompt { color: var(--pink); }
+  .cmd-line .cmd    { color: #80CBC4; }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    text-align: center;
+    padding-top: 8px;
+  }
+  .footer-bar {
+    height: 3px;
+    background: var(--grad-h);
+    border-radius: 2px;
+    margin-bottom: 10px;
+  }
+  .footer-text {
+    font-size: 0.7rem;
+    color: #AAA;
+  }
+  .footer-text strong {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ===== PROJECTOR MODE: high contrast ===== */
+  @media (min-width: 1200px) {
+    body { padding: 36px 48px; }
+    .header h1 { font-size: 2.4rem; }
+    .columns { gap: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-bar"></div>
+  <h1>4-Device Development Architecture</h1>
+  <p class="subtitle">どのデバイスからでも、同じ開発環境に即アクセス。場所を選ばない開発体制。</p>
+</div>
+
+<!-- 3 COLUMNS -->
+<div class="columns">
+
+  <!-- LEFT: VALUE -->
+  <div class="column">
+    <span class="col-label value">Value</span>
+    <div class="col-title">なぜこの構成なのか</div>
+    <ul class="compact-list pink">
+      <li><strong>場所を問わない</strong><br>移動中・外出先・自宅、どこでも開発が中断しない</li>
+      <li><strong>デバイス故障に強い</strong><br>1台壊れても別デバイスから即復帰</li>
+      <li><strong>完全同期</strong><br>全デバイスが同一セッション — 差分ゼロ</li>
+      <li><strong>セットアップ不要</strong><br>各端末はターミナルアプリだけ。環境構築ゼロ</li>
+      <li><strong>AI常駐</strong><br>Claude Codeが常にVPS上で稼働、即応答</li>
+      <li><strong>コスト最小</strong><br>VPS 1台 + 手持ちデバイスで完結</li>
+    </ul>
+  </div>
+
+  <!-- CENTER: ARCHITECTURE -->
+  <div class="column" style="border-color: rgba(156,39,176,0.25);">
+    <span class="col-label tech">Architecture</span>
+    <div class="col-title">技術構成図</div>
+
+    <div class="arch-diagram">
+      <!-- Devices -->
+      <div class="device-row">
+        <div class="device-card">
+          <div class="device-icon">📱</div>
+          <div class="device-name">Android</div>
+          <div class="device-app">Termux</div>
+        </div>
+        <div class="device-card">
+          <div class="device-icon">📱</div>
+          <div class="device-name">iPad</div>
+          <div class="device-app">Blink Shell</div>
+        </div>
+        <div class="device-card">
+          <div class="device-icon">💻</div>
+          <div class="device-name">Mac</div>
+          <div class="device-app">Terminal</div>
+        </div>
+        <div class="device-card">
+          <div class="device-icon">💻</div>
+          <div class="device-name">Windows</div>
+          <div class="device-app">Terminal</div>
+        </div>
+      </div>
+
+      <!-- Arrow: Mosh -->
+      <div class="arrow-down">
+        <div class="line"></div>
+        <div class="label">Mosh (UDP / 回線切替に強い)</div>
+        <div class="head"></div>
+      </div>
+
+      <!-- VPS -->
+      <div class="vps-box">
+        <div class="vps-title">VPS (さくらVPS)</div>
+        <div class="vps-ip">153.126.199.231</div>
+        <div class="vps-box-inner">
+          <div class="stack-flow">
+            <span class="stack-item mosh">Mosh</span>
+            <span class="stack-arrow">→</span>
+            <span class="stack-item tmux">tmux dev</span>
+            <span class="stack-arrow">→</span>
+            <span class="stack-item claude">Claude Code</span>
+          </div>
+          <div class="sync-badge">全デバイス → 同一セッション → 完全同期</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: USE CASES -->
+  <div class="column">
+    <span class="col-label usecase">Use Cases</span>
+    <div class="col-title">実用シーン</div>
+    <ul class="compact-list blue">
+      <li><strong>通勤電車で</strong><br>Androidでコードレビュー、Claudeに修正指示</li>
+      <li><strong>カフェで</strong><br>iPadでデザイン調整しながらAIペアプロ</li>
+      <li><strong>デスクで</strong><br>Mac/PCでフル開発、大画面で集中コーディング</li>
+      <li><strong>緊急対応</strong><br>手元のどの端末からでも即座にサーバー復旧</li>
+      <li><strong>外出先の打合せ</strong><br>iPadでライブデモ — 開発環境そのまま提示</li>
+      <li><strong>深夜メンテ</strong><br>ベッドからAndroidで確認・対応完了</li>
+    </ul>
+  </div>
+</div>
+
+<!-- COMMAND REFERENCE -->
+<div class="cmd-section">
+  <div class="cmd-section-title">Quick Reference — 各デバイスの接続コマンド（全デバイス共通フロー）</div>
+  <div class="cmd-grid">
+    <div class="cmd-card">
+      <div class="cmd-device android">Android (Termux)</div>
+      <div class="cmd-line">
+        <span class="prompt">$</span> <span class="cmd">mosh rocky@153.126.199.231</span><br>
+        <span class="prompt">$</span> <span class="cmd">tmux attach -t dev</span><br>
+        <span class="prompt">$</span> <span class="cmd">claude</span>
+      </div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-device ipad">iPad (Blink Shell)</div>
+      <div class="cmd-line">
+        <span class="prompt">blink&gt;</span> <span class="cmd">mosh rocky@153.126.199.231</span><br>
+        <span class="prompt">$</span> <span class="cmd">tmux attach -t dev</span><br>
+        <span class="prompt">$</span> <span class="cmd">claude</span>
+      </div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-device mac">Mac (Terminal)</div>
+      <div class="cmd-line">
+        <span class="prompt">$</span> <span class="cmd">mosh rocky@153.126.199.231</span><br>
+        <span class="prompt">$</span> <span class="cmd">tmux attach -t dev</span><br>
+        <span class="prompt">$</span> <span class="cmd">claude</span>
+      </div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-device win">Windows (Terminal)</div>
+      <div class="cmd-line">
+        <span class="prompt">&gt;</span> <span class="cmd">mosh rocky@153.126.199.231</span><br>
+        <span class="prompt">$</span> <span class="cmd">tmux attach -t dev</span><br>
+        <span class="prompt">$</span> <span class="cmd">claude</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-bar"></div>
+  <p class="footer-text"><strong>AYCC</strong> — Anytime, Anywhere Claude Coding &nbsp;|&nbsp; 4-Device Seamless Development Architecture</p>
+</div>
+
+</body>
+</html>
