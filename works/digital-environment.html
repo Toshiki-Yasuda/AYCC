@@ -318,35 +318,26 @@
                             クラウド上の環境を活かすには、場所や状況を問わず安定して接続できる仕組みが必要です。AYCCでは、一般的なリモート接続よりも中断に強い技術を組み合わせています。
                         </p>
 
-                        <details class="bg-navy-50 rounded-lg mb-4 border-l-4 border-navy-400 group">
-                            <summary class="p-6 cursor-pointer list-none flex items-center justify-between hover:bg-navy-100/50 transition-colors rounded-lg">
+                        <details class="bg-navy-50 rounded-lg mb-3 border-l-4 border-navy-400">
+                            <summary class="px-4 py-3 cursor-pointer list-none flex items-center justify-between hover:bg-navy-100/50 transition-colors rounded-lg text-sm">
                                 <span class="font-medium text-navy-700">Mosh（Mobile Shell）：中断に強いリモート接続</span>
-                                <svg class="w-5 h-5 text-navy-400 transition-transform duration-200 group-open:rotate-180 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                <svg class="w-4 h-4 text-navy-400 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </summary>
-                            <div class="px-6 pb-6 -mt-2">
-                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
-                                    一般的なSSH接続は、通信が途切れるとセッションが切断されます。Moshは、UDPベースの独自プロトコル（AES-OCB暗号化）により、<span class="font-medium text-warm-gray-700">ネットワークの切断・再接続を自動でハンドリング</span>します。
-                                </p>
-                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
-                                    地下鉄での通信途絶、Wi-Fiからモバイル回線への切り替え、端末のスリープといった場面でも、接続状態を維持します。端末を開けば、前回の作業状態がそのまま表示されます。
-                                </p>
-                                <p class="text-warm-gray-500 text-xs leading-relaxed">
-                                    技術的には、SSHが「電話」のように常時接続を前提とするのに対し、Moshは「メッセージアプリ」のように断続的な通信でも成立する仕組みです。インフラコストはVPS（Virtual Private Server）（月額約3,227円）+ Blink Shell年額$19.99（月約250円）= 月額約3,480円で完結しています。
+                            <div class="px-4 pb-3">
+                                <p class="text-warm-gray-600 text-xs leading-relaxed">
+                                    UDPベースの独自プロトコル（AES-OCB暗号化）により、通信途絶・Wi-Fi切替・スリープ後も自動再接続。SSHが「電話」なら、Moshは「メッセージアプリ」のような断続通信で成立する仕組みです。
                                 </p>
                             </div>
                         </details>
 
-                        <details class="bg-navy-50 rounded-lg border-l-4 border-navy-400 group">
-                            <summary class="p-6 cursor-pointer list-none flex items-center justify-between hover:bg-navy-100/50 transition-colors rounded-lg">
+                        <details class="bg-navy-50 rounded-lg border-l-4 border-navy-400">
+                            <summary class="px-4 py-3 cursor-pointer list-none flex items-center justify-between hover:bg-navy-100/50 transition-colors rounded-lg text-sm">
                                 <span class="font-medium text-navy-700">tmux：セッション永続化と複数作業の並行管理</span>
-                                <svg class="w-5 h-5 text-navy-400 transition-transform duration-200 group-open:rotate-180 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                <svg class="w-4 h-4 text-navy-400 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </summary>
-                            <div class="px-6 pb-6 -mt-2">
-                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
-                                    VPS上ではtmux（ターミナルマルチプレクサ）を使用し、複数の作業画面を常時維持しています。コーディング・テスト実行・AI連携・ログ監視などを個別のウィンドウで並行管理できます。
-                                </p>
-                                <p class="text-warm-gray-500 text-xs leading-relaxed mb-3">
-                                    tmuxのセッションはサーバー側で保持されるため、接続元のデバイスが変わっても、すべてのウィンドウ配置と作業状態がそのまま引き継がれます。全デバイスが同一の <code class="bg-white/60 px-1.5 py-0.5 rounded text-navy-600 font-medium">tmux dev</code> セッションに接続することで、完全同期を実現しています。
+                            <div class="px-4 pb-3">
+                                <p class="text-warm-gray-600 text-xs leading-relaxed">
+                                    サーバー側でセッションを保持し、コーディング・テスト・AI連携・ログ監視を並行管理。デバイスが変わっても全ウィンドウがそのまま引き継がれ、全端末が同一の <code class="bg-white/60 px-1 py-0.5 rounded text-navy-600 text-xs font-medium">tmux dev</code> セッションで完全同期します。
                                 </p>
                             </div>
                         </details>
