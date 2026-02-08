@@ -226,38 +226,75 @@
     margin-bottom: 10px;
   }
 
-  .stack-flow {
+  /* VPS inner layer stack */
+  .layer-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+  }
+  .layer {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
+    gap: 12px;
+    padding: 10px 14px;
+    border-bottom: 1px dashed rgba(156,39,176,0.15);
   }
-  .stack-item {
-    padding: 6px 14px;
+  .layer:last-child { border-bottom: none; }
+
+  .layer-badge {
+    flex-shrink: 0;
+    width: 90px;
+    padding: 7px 0;
     border-radius: 8px;
     font-size: 0.78rem;
-    font-weight: 700;
+    font-weight: 800;
     color: white;
+    text-align: center;
+    letter-spacing: 0.02em;
   }
-  .stack-item.mosh   { background: var(--pink); }
-  .stack-item.tmux   { background: var(--purple); }
-  .stack-item.claude  { background: var(--blue); }
-  .stack-arrow {
-    font-size: 0.9rem;
+  .layer-badge.mosh   { background: var(--pink); }
+  .layer-badge.tmux   { background: var(--purple); }
+  .layer-badge.claude  { background: var(--blue); }
+
+  .layer-detail {
+    flex: 1;
+    min-width: 0;
+  }
+  .layer-role {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .layer-desc {
+    font-size: 0.66rem;
+    color: var(--text-sub);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+
+  .layer-connector {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+  }
+  .layer-connector .chevron {
+    font-size: 0.85rem;
     font-weight: 700;
     background: var(--grad);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    line-height: 1;
   }
 
   .sync-badge {
     display: inline-block;
-    margin-top: 10px;
-    padding: 4px 14px;
+    margin-top: 12px;
+    padding: 5px 16px;
     border-radius: 20px;
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     font-weight: 700;
     background: linear-gradient(135deg, rgba(233,30,140,0.1), rgba(33,150,243,0.1));
     color: var(--purple);
@@ -407,14 +444,34 @@
         <div class="vps-title">VPS (さくらVPS)</div>
         <div class="vps-ip">153.126.199.231</div>
         <div class="vps-box-inner">
-          <div class="stack-flow">
-            <span class="stack-item mosh">Mosh</span>
-            <span class="stack-arrow">→</span>
-            <span class="stack-item tmux">tmux dev</span>
-            <span class="stack-arrow">→</span>
-            <span class="stack-item claude">Claude Code</span>
+          <div class="layer-stack">
+            <div class="layer">
+              <span class="layer-badge mosh">Mosh</span>
+              <div class="layer-detail">
+                <div class="layer-role">接続レイヤー</div>
+                <div class="layer-desc">UDP通信で回線切替・Wi-Fi変更でも切断しない</div>
+              </div>
+            </div>
+            <div class="layer-connector"><span class="chevron">▼</span></div>
+            <div class="layer">
+              <span class="layer-badge tmux">tmux dev</span>
+              <div class="layer-detail">
+                <div class="layer-role">セッション永続化</div>
+                <div class="layer-desc">端末を閉じても作業状態が保持される。全デバイスが同一セッションに接続</div>
+              </div>
+            </div>
+            <div class="layer-connector"><span class="chevron">▼</span></div>
+            <div class="layer">
+              <span class="layer-badge claude">Claude Code</span>
+              <div class="layer-detail">
+                <div class="layer-role">AI開発パートナー</div>
+                <div class="layer-desc">VPS上で常時稼働。コード生成・レビュー・デバッグを対話型で実行</div>
+              </div>
+            </div>
           </div>
-          <div class="sync-badge">全デバイス → 同一セッション → 完全同期</div>
+          <div style="text-align:center;">
+            <div class="sync-badge">全デバイス → 同一セッション → 完全同期</div>
+          </div>
         </div>
       </div>
     </div>
