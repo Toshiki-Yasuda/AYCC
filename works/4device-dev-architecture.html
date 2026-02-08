@@ -666,9 +666,9 @@
 <!-- PERSPECTIVE TABS -->
 <div class="tab-bar">
   <button class="tab-btn active" data-tab="all" onclick="switchTab('all')">ALL</button>
-  <button class="tab-btn" data-tab="engineer" onclick="switchTab('engineer')">エンジニア向け</button>
-  <button class="tab-btn" data-tab="business" onclick="switchTab('business')">非技術者向け</button>
-  <button class="tab-btn" data-tab="client" onclick="switchTab('client')">顧客向け</button>
+  <button class="tab-btn" data-tab="engineer" onclick="switchTab('engineer')">エンジニア視点</button>
+  <button class="tab-btn" data-tab="business" onclick="switchTab('business')">非技術者視点</button>
+  <button class="tab-btn" data-tab="client" onclick="switchTab('client')">顧客視点</button>
 </div>
 <div class="tab-desc" id="tabDesc">すべてのセクションを表示しています</div>
 
@@ -931,7 +931,7 @@ const tabDescs = {
   all:      'すべてのセクションを表示しています',
   engineer: 'エンジニア視点 — 技術構成とコマンドリファレンスにフォーカス',
   business: '非技術者視点 — 価値とメリットにフォーカス',
-  client:   '顧客向け視点 — 実用シーンと導入効果にフォーカス'
+  client:   '顧客視点視点 — 実用シーンと導入効果にフォーカス'
 };
 const tabHighlight = {
   all:      ['col-value', 'col-arch', 'col-usecase'],
