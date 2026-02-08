@@ -243,21 +243,24 @@
                             <div class="flex flex-col items-center gap-3">
                                 <div class="flex flex-col items-center gap-2">
                                     <div class="flex flex-col md:flex-row items-center gap-2 md:gap-4">
-                                        <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-sm text-warm-gray-600 text-center w-44">Windows（自宅）</span>
-                                        <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-sm text-warm-gray-600 text-center w-44">MacBook（外出先）</span>
+                                        <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-sm text-warm-gray-600 text-center w-44">Android（Termux）</span>
+                                        <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-sm text-warm-gray-600 text-center w-44">iPad（Blink Shell）</span>
                                     </div>
                                     <div class="flex flex-col md:flex-row items-center gap-2 md:gap-4">
-                                        <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-sm text-warm-gray-600 text-center w-44">iPad mini（病院など）</span>
-                                        <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-sm text-warm-gray-600 text-center w-44">Android（空き時間）</span>
+                                        <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-sm text-warm-gray-600 text-center w-44">Mac（Terminal）</span>
+                                        <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-sm text-warm-gray-600 text-center w-44">Windows（Terminal）</span>
                                     </div>
                                 </div>
                                 <div class="flex flex-col items-center my-1">
-                                    <p class="text-xs text-warm-gray-400 mb-1">すべて同一サーバーに接続</p>
+                                    <p class="text-xs text-warm-gray-400 mb-1">Mosh → tmux dev → Claude Code</p>
                                     <svg class="w-5 h-5 text-navy-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
                                     </svg>
                                 </div>
-                                <span class="bg-navy-50 px-6 py-2.5 rounded border border-navy-200 text-sm font-medium text-navy-700 text-center">VPS（クラウド上の開発環境）</span>
+                                <span class="bg-navy-50 px-6 py-2.5 rounded border border-navy-200 text-sm font-medium text-navy-700 text-center">さくらVPS 4GB（全デバイス同一セッションに完全同期）</span>
+                            </div>
+                            <div class="mt-4 text-center">
+                                <a href="4device-dev-architecture.html" class="text-navy-600 text-xs font-medium hover:text-navy-800 transition-colors">→ 4-Device Architecture 詳細図解を見る</a>
                             </div>
                         </div>
 
@@ -272,8 +275,8 @@
                                     </svg>
                                 </span>
                                 <div>
-                                    <span class="font-medium text-warm-gray-700">Windows デスクトップ（自宅）</span>
-                                    <p class="text-sm text-warm-gray-500 mt-1">大画面で複数ウィンドウを並べた設計作業や、負荷の高い処理に適しています。</p>
+                                    <span class="font-medium text-warm-gray-700">Mac / Windows（自宅・デスク）</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">大画面で複数ウィンドウを並べた設計作業や集中コーディングに。Terminalから直接Mosh接続します。</p>
                                 </div>
                             </li>
                             <li class="flex items-start">
@@ -283,8 +286,8 @@
                                     </svg>
                                 </span>
                                 <div>
-                                    <span class="font-medium text-warm-gray-700">MacBook Pro（外出先）</span>
-                                    <p class="text-sm text-warm-gray-500 mt-1">カフェなど腰を据えて作業できる場面で使用。コーディングやコードレビューに活用しています。</p>
+                                    <span class="font-medium text-warm-gray-700">iPad（Blink Shell）</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">病院の待合室や電車内など、PCを広げにくい場面でも使用可能。Blink Shellからの Mosh接続で、短時間の作業やお客様とのやり取り、ライブデモにも活用しています。</p>
                                 </div>
                             </li>
                             <li class="flex items-start">
@@ -294,19 +297,8 @@
                                     </svg>
                                 </span>
                                 <div>
-                                    <span class="font-medium text-warm-gray-700">iPad mini（病院など身軽な外出時）</span>
-                                    <p class="text-sm text-warm-gray-500 mt-1">文庫本とほぼ同じサイズ。病院の待合室や電車内など、PCを広げにくい場面でも周囲に圧迫感を与えず、短時間の作業やお客様とのやり取りに使用しています。</p>
-                                </div>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-navy-500 mr-3 mt-0.5">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                </span>
-                                <div>
-                                    <span class="font-medium text-warm-gray-700">Android端末（空き時間）</span>
-                                    <p class="text-sm text-warm-gray-500 mt-1">Termux + Moshにより、スマートフォンからもVPSに直接接続。空き時間にコーディングの進捗チェックや軽微な修正を行えます。</p>
+                                    <span class="font-medium text-warm-gray-700">Android（Termux）</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">Termux + Moshにより、スマートフォンからもVPSに直接接続。移動中や空き時間にコードレビューやClaude Codeへの指示出しが可能です。</p>
                                 </div>
                             </li>
                         </ul>
@@ -325,24 +317,25 @@
                         <div class="bg-navy-50 p-6 rounded-lg mb-4 border-l-4 border-navy-400">
                             <p class="font-medium text-navy-700 mb-2">Mosh（Mobile Shell）：中断に強いリモート接続</p>
                             <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
-                                一般的なSSH接続は、通信が途切れるとセッションが切断されます。Moshは、UDPベースの独自プロトコルにより、<span class="font-medium text-warm-gray-700">ネットワークの切断・再接続を自動でハンドリング</span>します。
+                                一般的なSSH接続は、通信が途切れるとセッションが切断されます。Moshは、UDPベースの独自プロトコル（AES-OCB暗号化）により、<span class="font-medium text-warm-gray-700">ネットワークの切断・再接続を自動でハンドリング</span>します。
                             </p>
                             <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
                                 地下鉄での通信途絶、Wi-Fiからモバイル回線への切り替え、端末のスリープといった場面でも、接続状態を維持します。端末を開けば、前回の作業状態がそのまま表示されます。
                             </p>
                             <p class="text-warm-gray-500 text-xs leading-relaxed">
-                                技術的には、SSHが「電話」のように常時接続を前提とするのに対し、Moshは「メッセージアプリ」のように断続的な通信でも成立する仕組みです。
+                                技術的には、SSHが「電話」のように常時接続を前提とするのに対し、Moshは「メッセージアプリ」のように断続的な通信でも成立する仕組みです。インフラコストはさくらVPS 4GB（月額約3,227円）+ Blink Shell年額$19.99（月約250円）= 月額約3,480円で完結しています。
                             </p>
                         </div>
 
                         <div class="bg-navy-50 p-6 rounded-lg border-l-4 border-navy-400">
-                            <p class="font-medium text-navy-700 mb-2">tmux：複数作業の並行管理</p>
+                            <p class="font-medium text-navy-700 mb-2">tmux：セッション永続化と複数作業の並行管理</p>
                             <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
                                 VPS上ではtmux（ターミナルマルチプレクサ）を使用し、複数の作業画面を常時維持しています。コーディング・テスト実行・AI連携・ログ監視などを個別のウィンドウで並行管理できます。
                             </p>
-                            <p class="text-warm-gray-500 text-xs leading-relaxed">
-                                tmuxのセッションはサーバー側で保持されるため、接続元のデバイスが変わっても、すべてのウィンドウ配置と作業状態がそのまま引き継がれます。
+                            <p class="text-warm-gray-500 text-xs leading-relaxed mb-3">
+                                tmuxのセッションはサーバー側で保持されるため、接続元のデバイスが変わっても、すべてのウィンドウ配置と作業状態がそのまま引き継がれます。全デバイスが同一の <code class="bg-white/60 px-1.5 py-0.5 rounded text-navy-600 font-medium">tmux dev</code> セッションに接続することで、完全同期を実現しています。
                             </p>
+                            <a href="tmux-cheatsheet.html" class="text-navy-600 text-xs font-medium hover:text-navy-800 transition-colors">→ tmux チートシートを見る</a>
                         </div>
                     </div>
 
@@ -352,25 +345,31 @@
                             最新AIモデルに最適化した開発体制
                         </h2>
                         <p class="text-warm-gray-600 leading-relaxed mb-4">
-                            AYCCでは当初、特性の異なる複数のAI CLIツールを使い分ける「マルチCLI」体制で開発を行っていました。しかし2026年2月6日、Anthropic社の最新モデル<span class="font-medium text-warm-gray-800">Claude Opus 4.6</span>のリリースを機に、開発環境を根本から刷新しました。
+                            AYCCでは、Anthropic社の<span class="font-medium text-warm-gray-800">Claude Code</span>を開発の中核に据えています。最深部の推論を担う<span class="font-medium text-warm-gray-800">Claude Opus 4.6</span>と、高速かつ高精度なコーディングを担う<span class="font-medium text-warm-gray-800">Claude Sonnet 5</span>を用途に応じて使い分けています。
                         </p>
                         <p class="text-warm-gray-600 leading-relaxed mb-6">
-                            Opus 4.6は、従来は複数のAIに分担させていた設計・実装・レビューを<span class="font-medium text-warm-gray-800">単一モデルの中で並行処理</span>できるサブエージェント機能を備えています。これにより、モデル間のコンテキスト受け渡しロスがなくなり、品質と速度の両方が向上しました。
+                            Claude Codeのサブエージェント機能（Agent Teams）により、従来は複数のAIに分担させていた設計・実装・レビューを<span class="font-medium text-warm-gray-800">単一環境の中で並行処理</span>できるようになりました。モデル間のコンテキスト受け渡しロスがなく、品質と速度の両方が向上しています。
                         </p>
 
                         <!-- Claude Code 中心の構成 -->
                         <div class="bg-warm-gray-50 p-6 rounded-lg border-elegant mb-6">
                             <p class="text-xs font-medium text-warm-gray-700 tracking-wider mb-4 text-center">現在の開発体制</p>
                             <div class="flex flex-col items-center gap-3">
-                                <span class="bg-navy-50 px-6 py-3 rounded border border-navy-200 text-center">
-                                    <span class="text-xs font-medium text-navy-600 tracking-wider block mb-1">Anthropic Claude Code</span>
-                                    <span class="font-elegant text-lg font-medium text-navy-800">Opus 4.6</span>
-                                </span>
+                                <div class="flex flex-col md:flex-row items-center gap-2 md:gap-4">
+                                    <span class="bg-navy-50 px-5 py-3 rounded border border-navy-200 text-center">
+                                        <span class="text-xs font-medium text-navy-600 tracking-wider block mb-1">深い推論・設計</span>
+                                        <span class="font-elegant text-base font-medium text-navy-800">Opus 4.6</span>
+                                    </span>
+                                    <span class="bg-navy-50 px-5 py-3 rounded border border-navy-200 text-center">
+                                        <span class="text-xs font-medium text-navy-600 tracking-wider block mb-1">高速コーディング</span>
+                                        <span class="font-elegant text-base font-medium text-navy-800">Sonnet 5</span>
+                                    </span>
+                                </div>
                                 <div class="flex flex-col items-center my-1">
                                     <svg class="w-5 h-5 text-navy-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
                                     </svg>
-                                    <p class="text-xs text-warm-gray-400 mt-1">サブエージェントによる並行処理</p>
+                                    <p class="text-xs text-warm-gray-400 mt-1">Agent Teamsによる並行処理</p>
                                 </div>
                                 <div class="flex flex-col md:flex-row items-center gap-2 md:gap-4">
                                     <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-sm text-warm-gray-600 text-center w-36">設計・計画</span>
@@ -432,7 +431,7 @@
                                 <span class="bg-white px-3 py-1.5 rounded border border-warm-gray-200 text-center">エンジニアが承認</span>
                             </div>
                             <p class="text-warm-gray-500 text-xs leading-relaxed">
-                                従来の独自フレームワーク（ADS）は廃止し、Claude Code自体が持つサブエージェント機能とCLAUDE.mdの組み合わせに移行しました。ツール側の進化に合わせて常に最適な体制を追求しています。
+                                Claude CodeのAgent Teams機能とCLAUDE.mdの組み合わせにより、従来の独自フレームワークは不要になりました。ツール側の進化に合わせて常に最適な体制を追求しています。
                             </p>
                         </div>
 
@@ -485,7 +484,7 @@
                                 </span>
                                 <div>
                                     <span class="font-medium text-warm-gray-700">AI活用による開発効率</span>
-                                    <p class="text-sm text-warm-gray-500 mt-1">複数AIの連携により、個人事業主でありながらチーム開発に近い生産性と品質チェック体制を実現しています。</p>
+                                    <p class="text-sm text-warm-gray-500 mt-1">Claude CodeのAgent Teams機能により、個人事業主でありながらチーム開発に近い生産性と品質チェック体制を実現しています。</p>
                                 </div>
                             </li>
                         </ul>
