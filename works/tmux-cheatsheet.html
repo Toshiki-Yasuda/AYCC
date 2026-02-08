@@ -1,524 +1,656 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="tmuxの最低限の操作をまとめたリファレンスページ。セッション管理・ウィンドウ操作・ペイン分割など、実務で使う基本コマンドを掲載。">
-    <title>tmux チートシート | AYCC</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tmux チートシート | AYCC</title>
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="../images/favicon.png">
-    <link rel="apple-touch-icon" href="../images/favicon.png">
+<!-- OGP -->
+<meta property="og:title" content="tmux チートシート | AYCC">
+<meta property="og:description" content="tmuxの必須操作を1ページに凝縮。セッション管理・ウィンドウ・ペイン・1日の利用フローまで。">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #E91E8C;
+    --purple: #9C27B0;
+    --blue: #2196F3;
+    --green: #4CAF50;
+    --grad: linear-gradient(135deg, #E91E8C, #9C27B0, #2196F3);
+    --grad-h: linear-gradient(90deg, #E91E8C, #9C27B0, #2196F3);
+    --light-bg: #F8F6FC;
+    --card-bg: #FFFFFF;
+    --text: #1A1A2E;
+    --text-sub: #555;
+    --radius: 14px;
+    --dark: #1A1A2E;
+  }
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    <!-- Custom Tailwind Configuration -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'rose': {
-                            50: '#fdf2f4',
-                            100: '#fce7eb',
-                            200: '#f9d0d9',
-                            300: '#f4a9ba',
-                            400: '#ec7a95',
-                            500: '#d4a5a5',
-                            600: '#b8848f',
-                            700: '#9a6b75',
-                            800: '#7d5660',
-                            900: '#5c4048',
-                        },
-                        'navy': {
-                            50: '#f5f7fa',
-                            100: '#eaeef4',
-                            200: '#d0dbe8',
-                            300: '#a7bdd4',
-                            400: '#7899bc',
-                            500: '#5a7ea5',
-                            600: '#47658a',
-                            700: '#3a5270',
-                            800: '#2d3e54',
-                            900: '#1e2a3a',
-                        },
-                        'warm-gray': {
-                            50: '#fafaf9',
-                            100: '#f5f5f4',
-                            200: '#e7e5e4',
-                            300: '#d6d3d1',
-                            400: '#a8a29e',
-                            500: '#78716c',
-                            600: '#57534e',
-                            700: '#44403c',
-                            800: '#292524',
-                            900: '#1c1917',
-                        }
-                    },
-                    fontFamily: {
-                        'serif': ['Noto Serif JP', 'serif'],
-                        'sans': ['Noto Sans JP', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+  body {
+    font-family: "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+    background: var(--card-bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 28px 32px;
+  }
 
-    <style>
-        html {
-            scroll-behavior: smooth;
-        }
+  /* ===== HEADER ===== */
+  .header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .header-bar {
+    height: 4px;
+    background: var(--grad-h);
+    border-radius: 2px;
+    margin-bottom: 18px;
+  }
+  .header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    background: var(--grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header .subtitle {
+    font-size: 0.9rem;
+    color: var(--text-sub);
+    margin-top: 6px;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+    font-size: 0.75rem;
+    color: var(--purple);
+    text-decoration: none;
+    border: 1px solid rgba(156,39,176,0.25);
+    padding: 4px 12px;
+    border-radius: 20px;
+    transition: all 0.2s;
+  }
+  .back-link:hover {
+    background: rgba(156,39,176,0.08);
+  }
 
-        body {
-            font-family: 'Noto Sans JP', sans-serif;
-            color: #44403c;
-            letter-spacing: 0.02em;
-        }
+  /* ===== QUICK NAV ===== */
+  .quick-nav {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .quick-nav a {
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid #E8E0F0;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-sub);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .quick-nav a:hover {
+    border-color: var(--purple);
+    color: var(--purple);
+    background: rgba(156,39,176,0.04);
+  }
+  .quick-nav a.active {
+    background: var(--grad);
+    color: white;
+    border-color: transparent;
+  }
 
-        .font-elegant {
-            font-family: 'Noto Serif JP', serif;
-        }
+  /* ===== SECTION ===== */
+  .section {
+    margin-bottom: 24px;
+    scroll-margin-top: 20px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .section-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: white;
+    flex-shrink: 0;
+  }
+  .section-icon.pink   { background: var(--pink); }
+  .section-icon.purple { background: var(--purple); }
+  .section-icon.blue   { background: var(--blue); }
+  .section-icon.green  { background: var(--green); }
 
-        .divider {
-            width: 60px;
-            height: 1px;
-            background: linear-gradient(90deg, #d4a5a5, #a7bdd4);
-            margin: 0 auto;
-        }
+  .section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section-subtitle {
+    font-size: 0.7rem;
+    color: var(--text-sub);
+  }
 
-        .border-elegant {
-            border: 1px solid rgba(168, 162, 158, 0.3);
-        }
+  /* ===== TABLE ===== */
+  .cmd-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #E8E0F0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(156,39,176,0.04);
+  }
+  .cmd-table thead th {
+    background: var(--light-bg);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 2px solid #E8E0F0;
+  }
+  .cmd-table tbody td {
+    padding: 10px 16px;
+    font-size: 0.82rem;
+    border-bottom: 1px solid #F3EFF8;
+    color: var(--text-sub);
+  }
+  .cmd-table tbody tr:last-child td { border-bottom: none; }
+  .cmd-table tbody tr {
+    transition: background 0.15s;
+  }
+  .cmd-table tbody tr:hover {
+    background: rgba(156,39,176,0.03);
+  }
+  .cmd-table td:first-child {
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+  }
 
-        .link-underline {
-            position: relative;
-        }
+  kbd {
+    display: inline-block;
+    background: var(--dark);
+    color: #80CBC4;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.3);
+    line-height: 1.6;
+  }
+  .then {
+    font-size: 0.7rem;
+    color: var(--purple);
+    font-weight: 700;
+    margin: 0 3px;
+  }
 
-        .link-underline::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: currentColor;
-            transition: width 0.3s ease;
-        }
+  /* ===== CODE BLOCK ===== */
+  .code-block {
+    background: var(--dark);
+    border-radius: 10px;
+    padding: 16px 20px;
+    position: relative;
+    margin-top: 12px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .code-block pre {
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 0.76rem;
+    color: #B0BEC5;
+    line-height: 1.7;
+    margin: 0;
+    overflow-x: auto;
+  }
+  .code-block .comment { color: #546E7A; }
+  .code-block .cmd     { color: #80CBC4; }
+  .code-block .prompt  { color: var(--pink); }
+  .code-block .copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.45);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .code-block .copy-btn:hover {
+    background: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7);
+  }
+  .code-block .copy-btn.copied {
+    background: rgba(76,175,80,0.3);
+    color: var(--green);
+    border-color: rgba(76,175,80,0.4);
+  }
 
-        .link-underline:hover::after {
-            width: 100%;
-        }
+  /* ===== DAILY FLOW ===== */
+  .flow-timeline {
+    position: relative;
+    padding-left: 28px;
+  }
+  .flow-timeline::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--grad);
+    border-radius: 2px;
+  }
+  .flow-step {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  .flow-step:last-child { margin-bottom: 0; }
+  .flow-dot {
+    position: absolute;
+    left: -22px;
+    top: 4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.55rem;
+    font-weight: 800;
+    color: white;
+    z-index: 1;
+  }
+  .flow-dot.morning  { background: var(--pink); }
+  .flow-dot.daytime  { background: var(--purple); }
+  .flow-dot.evening  { background: var(--blue); }
 
-        code {
-            background-color: #f5f5f4;
-            border: 1px solid #e7e5e4;
-            padding: 0.2em 0.4em;
-            border-radius: 3px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.9em;
-            color: #2d3e54;
-        }
+  .flow-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .flow-time {
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 2px 10px;
+    border-radius: 12px;
+  }
+  .flow-time.morning  { background: #FDE4F3; color: var(--pink); }
+  .flow-time.daytime  { background: #EDE7F6; color: var(--purple); }
+  .flow-time.evening  { background: #E3F2FD; color: var(--blue); }
+  .flow-device {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .flow-card {
+    background: var(--light-bg);
+    border: 1px solid #E8E0F0;
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
 
-        pre {
-            background-color: #1e2a3a;
-            color: #eaeef4;
-            padding: 1rem;
-            border-radius: 6px;
-            overflow-x: auto;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.9em;
-            line-height: 1.6;
-        }
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 0 8px 20px;
+    gap: 6px;
+  }
+  .flow-arrow-text {
+    font-size: 0.68rem;
+    color: var(--text-sub);
+  }
+  .flow-arrow-key {
+    font-size: 0.68rem;
+  }
 
-        pre code {
-            background-color: transparent;
-            border: none;
-            padding: 0;
-            color: inherit;
-        }
+  /* ===== TIP BOX ===== */
+  .tip-box {
+    background: linear-gradient(135deg, rgba(233,30,140,0.05), rgba(33,150,243,0.05));
+    border: 1px solid rgba(156,39,176,0.15);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .tip-icon {
+    flex-shrink: 0;
+    font-size: 0.9rem;
+    margin-top: 1px;
+  }
+  .tip-text {
+    font-size: 0.76rem;
+    color: var(--text-sub);
+    line-height: 1.5;
+  }
+  .tip-text strong {
+    color: var(--purple);
+    font-weight: 700;
+  }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+  /* ===== PREFIX BADGE ===== */
+  .prefix-explainer {
+    background: var(--light-bg);
+    border: 1px solid #E8E0F0;
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .prefix-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .prefix-demo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .prefix-note {
+    font-size: 0.7rem;
+    color: var(--text-sub);
+    flex: 1;
+    min-width: 200px;
+  }
 
-        th {
-            background-color: #f5f7fa;
-            color: #2d3e54;
-            font-weight: 500;
-            padding: 0.75rem 1rem;
-            text-align: left;
-            border: 1px solid #d0dbe8;
-        }
+  /* ===== FOOTER ===== */
+  .footer {
+    text-align: center;
+    padding-top: 8px;
+    margin-top: 8px;
+  }
+  .footer-bar {
+    height: 3px;
+    background: var(--grad-h);
+    border-radius: 2px;
+    margin-bottom: 10px;
+  }
+  .footer-text {
+    font-size: 0.7rem;
+    color: #AAA;
+  }
+  .footer-text strong {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
-        td {
-            padding: 0.75rem 1rem;
-            border: 1px solid #e7e5e4;
-        }
-
-        tr:hover {
-            background-color: #fafaf9;
-        }
-
-        /* モバイルメニューアニメーション */
-        #mobile-menu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            transition: max-height 0.6s ease-out, opacity 0.6s ease-out;
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
-            margin-top: 0;
-        }
-
-        #mobile-menu.menu-open {
-            max-height: 400px;
-            opacity: 1;
-        }
-    </style>
+  /* ===== RESPONSIVE ===== */
+  @media (min-width: 1200px) {
+    body { padding: 36px 48px; }
+    .header h1 { font-size: 2.4rem; }
+  }
+  @media (max-width: 700px) {
+    body { padding: 16px; }
+    .header h1 { font-size: 1.5rem; }
+    .cmd-table td, .cmd-table th { padding: 8px 10px; font-size: 0.76rem; }
+    .prefix-explainer { flex-direction: column; gap: 8px; }
+    kbd { font-size: 0.72rem; padding: 2px 6px; }
+  }
+</style>
 </head>
-<body class="bg-warm-gray-50">
+<body>
 
-    <!-- ヘッダー -->
-    <header class="bg-white/90 backdrop-blur-sm border-b border-warm-gray-200 sticky top-0 z-50">
-        <nav class="container mx-auto pl-2 pr-6 py-5 relative">
-            <div class="flex justify-between items-center">
-                <!-- ロゴ -->
-                <a href="../index.html" class="flex items-center space-x-4">
-                    <img src="../images/logo.png" alt="AYCC Logo" class="h-10">
-                </a>
+<!-- HEADER -->
+<div class="header">
+  <div class="header-bar"></div>
+  <h1>tmux チートシート</h1>
+  <p class="subtitle">セッション永続化の要 — 必須操作を1ページに凝縮</p>
+  <a href="4device-dev-architecture.html" class="back-link">← 4-Device Architecture に戻る</a>
+</div>
 
-                <!-- ナビゲーション -->
-                <div class="hidden md:flex space-x-10">
-                    <a href="../index.html#home" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">ホーム</a>
-                    <a href="../index.html#services" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">サービス</a>
-                    <a href="../index.html#works" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">実績</a>
-                    <a href="../index.html#about" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">会社概要</a>
-                    <a href="digital-environment.html" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">開発体制</a>
-                    <a href="claude-opus-4-6.html" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">Opus 4.6</a>
-                    <a href="../index.html#contact" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">お問い合わせ</a>
-                </div>
+<!-- PREFIX EXPLAINER -->
+<div class="prefix-explainer">
+  <span class="prefix-label">tmuxの基本操作:</span>
+  <div class="prefix-demo">
+    <kbd>Ctrl+b</kbd>
+    <span class="then">→</span>
+    <kbd>キー</kbd>
+  </div>
+  <span class="prefix-note">まず <kbd>Ctrl+b</kbd>（プレフィックスキー）を押してから、続けてコマンドキーを押す</span>
+</div>
 
-                <!-- ハンバーガーメニュー(モバイル) -->
-                <button class="md:hidden" id="menu-toggle">
-                    <svg class="w-6 h-6 text-warm-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-            </div>
+<!-- QUICK NAV -->
+<div class="quick-nav">
+  <a href="#session">セッション</a>
+  <a href="#window">ウィンドウ</a>
+  <a href="#pane">ペイン</a>
+  <a href="#flow">1日のフロー</a>
+</div>
 
-            <!-- モバイルメニュー -->
-            <div id="mobile-menu" class="md:hidden py-4 space-y-4">
-                <a href="../index.html#home" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">ホーム</a>
-                <a href="../index.html#services" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">サービス</a>
-                <a href="../index.html#works" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">実績</a>
-                <a href="../index.html#about" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">会社概要</a>
-                <a href="digital-environment.html" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">開発体制</a>
-                <a href="claude-opus-4-6.html" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">Opus 4.6</a>
-                <a href="../index.html#contact" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">お問い合わせ</a>
-            </div>
-        </nav>
-    </header>
+<!-- SESSION -->
+<div class="section" id="session">
+  <div class="section-header">
+    <div class="section-icon pink">1</div>
+    <div>
+      <div class="section-title">セッション管理</div>
+      <div class="section-subtitle">作業環境の起動・復帰・切り離し</div>
+    </div>
+  </div>
+  <table class="cmd-table">
+    <thead>
+      <tr><th style="width:35%">操作</th><th>コマンド / キー</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>新規セッション作成</td><td><kbd>tmux new -s dev</kbd></td></tr>
+      <tr><td>セッション一覧</td><td><kbd>tmux ls</kbd></td></tr>
+      <tr><td>セッションに復帰</td><td><kbd>tmux a -t dev</kbd></td></tr>
+      <tr><td>セッションを抜ける（維持）</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>d</kbd></td></tr>
+      <tr><td>セッション名を変更</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>$</kbd></td></tr>
+    </tbody>
+  </table>
+  <div class="tip-box">
+    <span class="tip-icon">&#x1F4A1;</span>
+    <div class="tip-text"><strong>detach（Ctrl+b → d）</strong>はセッションを「切り離す」だけ。VPS上でセッションは動き続けるので、別のデバイスから <kbd>tmux a -t dev</kbd> で即復帰できます。</div>
+  </div>
+</div>
 
-    <!-- メインコンテンツ -->
-    <main class="py-16 md:py-24">
-        <div class="container mx-auto px-6">
+<!-- WINDOW -->
+<div class="section" id="window">
+  <div class="section-header">
+    <div class="section-icon purple">2</div>
+    <div>
+      <div class="section-title">ウィンドウ操作</div>
+      <div class="section-subtitle">タブのように切り替える作業スペース</div>
+    </div>
+  </div>
+  <table class="cmd-table">
+    <thead>
+      <tr><th style="width:35%">操作</th><th>キー</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>新規ウィンドウ</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>c</kbd></td></tr>
+      <tr><td>次のウィンドウ</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>n</kbd></td></tr>
+      <tr><td>前のウィンドウ</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>p</kbd></td></tr>
+      <tr><td>番号で移動</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>0</kbd>〜<kbd>9</kbd></td></tr>
+      <tr><td>ウィンドウ名変更</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>,</kbd></td></tr>
+      <tr><td>ウィンドウ一覧</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>w</kbd></td></tr>
+    </tbody>
+  </table>
+</div>
 
-            <!-- タイトル -->
-            <div class="text-center mb-16">
-                <h1 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-2">
-                    tmux チートシート
-                </h1>
-                <p class="text-sm text-warm-gray-400 tracking-wider mb-4">最低限の操作リファレンス</p>
-                <div class="divider"></div>
-            </div>
+<!-- PANE -->
+<div class="section" id="pane">
+  <div class="section-header">
+    <div class="section-icon blue">3</div>
+    <div>
+      <div class="section-title">ペイン（画面分割）</div>
+      <div class="section-subtitle">1つのウィンドウを分割して並行作業</div>
+    </div>
+  </div>
+  <table class="cmd-table">
+    <thead>
+      <tr><th style="width:35%">操作</th><th>キー</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>左右に分割</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>%</kbd></td></tr>
+      <tr><td>上下に分割</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>"</kbd></td></tr>
+      <tr><td>ペイン間移動</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>矢印キー</kbd></td></tr>
+      <tr><td>ペインサイズ変更</td><td><kbd>Ctrl+b</kbd> 長押し + <kbd>矢印キー</kbd></td></tr>
+      <tr><td>ペインを閉じる</td><td><kbd>exit</kbd> または <kbd>Ctrl+d</kbd></td></tr>
+      <tr><td>ペインの全画面切替</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>z</kbd></td></tr>
+    </tbody>
+  </table>
+  <div class="tip-box">
+    <span class="tip-icon">&#x1F4A1;</span>
+    <div class="tip-text"><strong>zoom（Ctrl+b → z）</strong>で1ペインを全画面表示。もう一度押すと元のレイアウトに戻ります。Claude Codeの出力を広く見たいときに便利。</div>
+  </div>
+</div>
 
-            <!-- コンテンツ -->
-            <div class="max-w-4xl mx-auto">
-                <div class="bg-white p-8 md:p-12 border-elegant">
+<!-- DAILY FLOW -->
+<div class="section" id="flow">
+  <div class="section-header">
+    <div class="section-icon green">&#x21BB;</div>
+    <div>
+      <div class="section-title">1日の利用フロー</div>
+      <div class="section-subtitle">デバイスをまたいでセッションが維持される様子</div>
+    </div>
+  </div>
 
-                    <!-- セッション管理 -->
-                    <div class="mb-10">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
-                            セッション管理
-                        </h2>
-                        <div class="overflow-x-auto">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th style="width: 40%">操作</th>
-                                        <th style="width: 60%">コマンド</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>新規セッション作成</td>
-                                        <td><code>tmux new -s 作業名</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td>セッション一覧</td>
-                                        <td><code>tmux ls</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td>セッションに再接続</td>
-                                        <td><code>tmux a -t 作業名</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td>セッションを抜ける（維持）</td>
-                                        <td><code>Ctrl+b</code> → <code>d</code></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+  <div class="flow-timeline">
+    <!-- Morning -->
+    <div class="flow-step">
+      <div class="flow-dot morning">AM</div>
+      <div class="flow-label">
+        <span class="flow-time morning">朝</span>
+        <span class="flow-device">自宅 — Windows / Mac</span>
+      </div>
+      <div class="flow-card">
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this, 'mosh rocky@153.126.199.231\ntmux new -s dev\nclaude')">Copy</button>
+          <pre><span class="comment"># Mosh で VPS に接続</span>
+<span class="prompt">$</span> <span class="cmd">mosh rocky@153.126.199.231</span>
 
-                    <!-- ウィンドウ -->
-                    <div class="mb-10">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
-                            ウィンドウ（タブのようなもの）
-                        </h2>
-                        <div class="overflow-x-auto">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th style="width: 40%">操作</th>
-                                        <th style="width: 60%">キー</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>新規ウィンドウ</td>
-                                        <td><code>Ctrl+b</code> → <code>c</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td>次のウィンドウ</td>
-                                        <td><code>Ctrl+b</code> → <code>n</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td>前のウィンドウ</td>
-                                        <td><code>Ctrl+b</code> → <code>p</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td>番号で移動</td>
-                                        <td><code>Ctrl+b</code> → <code>0</code>〜<code>9</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td>ウィンドウ名変更</td>
-                                        <td><code>Ctrl+b</code> → <code>,</code></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+<span class="comment"># tmux セッションを作成して作業開始</span>
+<span class="prompt">$</span> <span class="cmd">tmux new -s dev</span>
 
-                    <!-- ペイン -->
-                    <div class="mb-10">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
-                            ペイン（画面分割）
-                        </h2>
-                        <div class="overflow-x-auto">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th style="width: 40%">操作</th>
-                                        <th style="width: 60%">キー</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>左右に分割</td>
-                                        <td><code>Ctrl+b</code> → <code>%</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td>上下に分割</td>
-                                        <td><code>Ctrl+b</code> → <code>"</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td>ペイン間移動</td>
-                                        <td><code>Ctrl+b</code> → <code>矢印キー</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td>ペインを閉じる</td>
-                                        <td><code>exit</code> または <code>Ctrl+d</code></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- よく使う流れ -->
-                    <div class="mb-10">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
-                            よく使う流れ
-                        </h2>
-                        <pre><code># VPSにMoshで接続後、セッションに復帰
-tmux a -t dev
-
-# セッションがなければ新規作成
-tmux new -s dev</code></pre>
-                        <p class="text-warm-gray-600 leading-relaxed mt-4">
-                            <code>tmux a</code> でデタッチしたセッションに戻れるのが、Moshとの組み合わせで「切れない環境」を実現しているポイントです。端末を閉じても <code>tmux a</code> で全部元通りになります。
-                        </p>
-                    </div>
-
-                    <!-- 1日の利用フロー -->
-                    <div class="mb-10">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
-                            1日の利用フロー
-                        </h2>
-                        <p class="text-warm-gray-600 leading-relaxed mb-6">
-                            自宅 → 外出 → 自宅の流れで、tmuxセッションがデバイスをまたいで維持される様子。
-                        </p>
-
-                        <!-- 朝：自宅 -->
-                        <div class="mb-6">
-                            <div class="flex items-center mb-3">
-                                <span class="bg-navy-50 text-navy-700 text-xs font-medium px-3 py-1 rounded mr-3">朝</span>
-                                <span class="font-medium text-warm-gray-700">自宅 — Windows デスクトップ</span>
-                            </div>
-                            <div class="bg-warm-gray-50 p-4 rounded-lg border-elegant">
-                                <pre class="mb-0"><code># Mosh で VPS に接続
-mosh user@vps-server
-
-# tmux セッションを作成して作業開始
-tmux new -s dev
-
-# ウィンドウを分けて作業
-#   0: コーディング（Claude Code）
-#   1: テスト実行
-#   2: git 操作</code></pre>
-                            </div>
-                        </div>
-
-                        <!-- 矢印 -->
-                        <div class="flex justify-center my-4">
-                            <div class="flex flex-col items-center">
-                                <p class="text-xs text-warm-gray-400 mb-1">外出前にデタッチ</p>
-                                <code class="text-sm">Ctrl+b → d</code>
-                                <svg class="w-5 h-5 text-navy-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                                </svg>
-                            </div>
-                        </div>
-
-                        <!-- 日中：外出先 -->
-                        <div class="mb-6">
-                            <div class="flex items-center mb-3">
-                                <span class="bg-navy-50 text-navy-700 text-xs font-medium px-3 py-1 rounded mr-3">日中</span>
-                                <span class="font-medium text-warm-gray-700">外出先 — MacBook / iPad mini / Android</span>
-                            </div>
-                            <div class="bg-warm-gray-50 p-4 rounded-lg border-elegant">
-                                <pre class="mb-0"><code># どのデバイスからでも同じ操作
-mosh user@vps-server
-
-# 朝のセッションにそのまま復帰
-tmux a -t dev
-
-# → ウィンドウ 0, 1, 2 がすべてそのまま残っている
-# → カーソル位置も、実行中の処理もそのまま</code></pre>
-                                <p class="text-warm-gray-500 text-xs mt-3">
-                                    iPad mini / Android の場合は Termux + Mosh で同様に接続。病院の待合室や移動中でも <code>tmux a</code> で即復帰。
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- 矢印 -->
-                        <div class="flex justify-center my-4">
-                            <div class="flex flex-col items-center">
-                                <p class="text-xs text-warm-gray-400 mb-1">帰宅前にデタッチ</p>
-                                <code class="text-sm">Ctrl+b → d</code>
-                                <svg class="w-5 h-5 text-navy-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                                </svg>
-                            </div>
-                        </div>
-
-                        <!-- 夜：自宅 -->
-                        <div class="mb-4">
-                            <div class="flex items-center mb-3">
-                                <span class="bg-navy-50 text-navy-700 text-xs font-medium px-3 py-1 rounded mr-3">夜</span>
-                                <span class="font-medium text-warm-gray-700">自宅 — Windows デスクトップ</span>
-                            </div>
-                            <div class="bg-warm-gray-50 p-4 rounded-lg border-elegant">
-                                <pre class="mb-0"><code># 再び同じセッションに復帰
-mosh user@vps-server
-tmux a -t dev
-
-# → 1日を通してセッションが途切れていない
-# → 朝の続きからそのまま再開</code></pre>
-                            </div>
-                        </div>
-
-                        <p class="text-warm-gray-500 text-xs leading-relaxed mt-4">
-                            ポイント: tmux セッションは VPS 上で動き続けているため、手元のデバイスが変わっても <code>tmux a</code> だけで全ての作業状態に復帰できます。Mosh の自動再接続と組み合わせることで、通信の切断すら意識せずに作業を継続できます。
-                        </p>
-                    </div>
-
-                    <!-- 注記 -->
-                    <div class="text-center pt-8 mt-10 border-t border-warm-gray-200">
-                        <p class="text-xs text-warm-gray-400">
-                            このページはリファレンス用の非公開ページです
-                        </p>
-                    </div>
-
-                </div>
-
-                <!-- 戻るリンク -->
-                <div class="mt-10 text-center">
-                    <a href="../index.html" class="text-warm-gray-500 hover:text-warm-gray-700 text-sm inline-flex items-center">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                        トップに戻る
-                    </a>
-                </div>
-
-            </div>
+<span class="comment"># Claude Code を起動</span>
+<span class="prompt">$</span> <span class="cmd">claude</span></pre>
         </div>
-    </main>
+      </div>
+    </div>
 
-    <!-- フッター -->
-    <footer class="bg-warm-gray-800 text-warm-gray-300 py-12">
-        <div class="container mx-auto px-6">
-            <div class="text-center">
-                <p class="text-sm tracking-wider mb-2">
-                    &copy; 2026 AYCC
-                </p>
-                <p class="text-xs text-warm-gray-500">
-                    AI YASUDA CREATIVE & CONSULTING
-                </p>
-            </div>
+    <!-- Detach arrow -->
+    <div class="flow-arrow">
+      <span class="flow-arrow-text">外出前にデタッチ</span>
+      <kbd style="font-size:0.68rem;">Ctrl+b → d</kbd>
+    </div>
+
+    <!-- Daytime -->
+    <div class="flow-step">
+      <div class="flow-dot daytime">PM</div>
+      <div class="flow-label">
+        <span class="flow-time daytime">日中</span>
+        <span class="flow-device">外出先 — iPad / Android</span>
+      </div>
+      <div class="flow-card">
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this, 'mosh rocky@153.126.199.231\ntmux a -t dev')">Copy</button>
+          <pre><span class="comment"># どのデバイスからでも同じ操作</span>
+<span class="prompt">$</span> <span class="cmd">mosh rocky@153.126.199.231</span>
+
+<span class="comment"># 朝のセッションにそのまま復帰</span>
+<span class="prompt">$</span> <span class="cmd">tmux a -t dev</span>
+
+<span class="comment"># → ウィンドウ・カーソル位置・実行中の処理がすべてそのまま</span></pre>
         </div>
-    </footer>
+      </div>
+    </div>
 
-    <!-- JavaScript -->
-    <script>
-        const menuToggle = document.getElementById('menu-toggle');
-        const mobileMenu = document.getElementById('mobile-menu');
-        menuToggle.addEventListener('click', () => {
-            mobileMenu.classList.toggle('menu-open');
-        });
-        const mobileLinks = mobileMenu.querySelectorAll('a');
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('menu-open');
-            });
-        });
-    </script>
+    <!-- Detach arrow -->
+    <div class="flow-arrow">
+      <span class="flow-arrow-text">帰宅前にデタッチ</span>
+      <kbd style="font-size:0.68rem;">Ctrl+b → d</kbd>
+    </div>
+
+    <!-- Evening -->
+    <div class="flow-step">
+      <div class="flow-dot evening">PM</div>
+      <div class="flow-label">
+        <span class="flow-time evening">夜</span>
+        <span class="flow-device">自宅 — Windows / Mac</span>
+      </div>
+      <div class="flow-card">
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this, 'mosh rocky@153.126.199.231\ntmux a -t dev')">Copy</button>
+          <pre><span class="comment"># 再び同じセッションに復帰</span>
+<span class="prompt">$</span> <span class="cmd">mosh rocky@153.126.199.231</span>
+<span class="prompt">$</span> <span class="cmd">tmux a -t dev</span>
+
+<span class="comment"># → 1日を通してセッションが途切れていない</span>
+<span class="comment"># → 朝の続きからそのまま再開</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-box" style="margin-top:20px;">
+    <span class="tip-icon">&#x1F512;</span>
+    <div class="tip-text"><strong>なぜ途切れないのか?</strong> tmuxセッションはVPS上で動き続けています。手元のデバイスが変わっても <kbd>tmux a</kbd> だけで全作業状態に復帰。Moshの自動再接続と組み合わせることで、通信の切断すら意識せずに作業を継続できます。</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-bar"></div>
+  <p class="footer-text"><strong>AYCC</strong> — Anytime, Anywhere Claude Coding &nbsp;|&nbsp; tmux Cheatsheet</p>
+</div>
+
+<script>
+function copyCode(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 1500);
+  });
+}
+
+// Highlight active nav on scroll
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.quick-nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 80) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+</script>
 
 </body>
 </html>
