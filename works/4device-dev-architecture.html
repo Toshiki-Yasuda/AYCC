@@ -366,8 +366,8 @@
   /* ===== COMPARISON SECTION ===== */
   .compare-section {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
     margin-bottom: 24px;
     align-items: start;
   }
@@ -416,6 +416,38 @@
   }
   .compare-list.bad li::before  { content: "\2717"; color: #C62828; }
   .compare-list.good li::before { content: "\2713"; color: #2E7D32; }
+  .compare-col.steps {
+    background: #F3F0FF;
+    border-color: rgba(156, 39, 176, 0.15);
+  }
+  .compare-title.steps { color: var(--purple); }
+  .step-list {
+    list-style: none;
+    padding: 0;
+  }
+  .step-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    padding: 4px 0;
+    color: var(--text-sub);
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--grad);
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
 
   .cost-badge {
     font-size: 0.65rem;
@@ -517,7 +549,7 @@
     #col-usecase { order: 3; }
     .compare-section {
       grid-template-columns: 1fr;
-      gap: 12px;
+      gap: 10px;
     }
     .faq-grid {
       grid-template-columns: repeat(2, 1fr);
@@ -691,6 +723,17 @@
       <li>Mosh接続のみ — 設定はワンライナー</li>
       <li>tmuxセッションで常に最新状態</li>
       <li>スマホからでもフル開発環境にアクセス</li>
+    </ul>
+  </div>
+  <div class="compare-col steps">
+    <div class="compare-header">
+      <div class="compare-title steps">&#x1F680; 導入ステップ</div>
+      <span class="cost-badge" style="background:rgba(156,39,176,0.1);color:var(--purple);">約30分</span>
+    </div>
+    <ul class="step-list">
+      <li><span class="step-num">1</span>VPSを契約し、Mosh・tmux・Claude Codeをインストール</li>
+      <li><span class="step-num">2</span>各デバイスにターミナルアプリを入れ、SSH鍵を設定</li>
+      <li><span class="step-num">3</span>どの端末からでも <code style="font-size:0.7rem;background:rgba(156,39,176,0.08);padding:1px 4px;border-radius:3px;">mosh → tmux a</code> で接続開始</li>
     </ul>
   </div>
 </div>
