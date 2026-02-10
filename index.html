@@ -125,17 +125,6 @@
             transition: none;
         }
 
-        .scroll-progress-bottom {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            top: auto;
-            height: 3px;
-            width: 0%;
-            background: linear-gradient(90deg, #d4a5a5, #a7bdd4);
-            z-index: 60;
-            transition: none;
-        }
 
         /* 控えめなホバーエフェクト */
         .hover-lift {
@@ -468,10 +457,8 @@
 </head>
 <body class="bg-warm-gray-50">
 
-    <!-- スクロール進捗バー（上） -->
+    <!-- スクロール進捗バー -->
     <div id="scroll-progress" class="scroll-progress"></div>
-    <!-- スクロール進捗バー（下） -->
-    <div id="scroll-progress-bottom" class="scroll-progress-bottom"></div>
 
     <!-- ヘッダー -->
     <header class="bg-white/90 backdrop-blur-sm border-b border-warm-gray-200 sticky top-0 z-50">
@@ -1007,7 +994,6 @@
         // ページトップボタン & スクロール進捗バー
         const pageTopBtn = document.getElementById('page-top-btn');
         const scrollProgress = document.getElementById('scroll-progress');
-        const scrollProgressBottom = document.getElementById('scroll-progress-bottom');
 
         window.addEventListener('scroll', () => {
             if (window.scrollY > 300) {
@@ -1020,7 +1006,6 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (window.scrollY / docHeight) * 100;
             scrollProgress.style.width = progress + '%';
-            scrollProgressBottom.style.width = progress + '%';
         });
 
         pageTopBtn.addEventListener('click', () => {
