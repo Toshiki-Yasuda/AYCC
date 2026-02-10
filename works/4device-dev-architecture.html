@@ -862,52 +862,6 @@
   </div>
 </div>
 
-<!-- COMMAND REFERENCE -->
-<div class="cmd-section">
-  <div class="cmd-section-title" style="display:flex;justify-content:space-between;align-items:center;">
-    <span>Quick Reference — 各デバイスの接続コマンド（全デバイス共通フロー）</span>
-    <a href="tmux-cheatsheet.html" style="font-size:0.68rem;color:#80CBC4;text-decoration:none;border:1px solid rgba(128,203,196,0.3);padding:3px 10px;border-radius:6px;transition:all 0.2s;" onmouseover="this.style.background='rgba(128,203,196,0.15)'" onmouseout="this.style.background='transparent'">tmux チートシート →</a>
-  </div>
-  <div class="cmd-grid">
-    <div class="cmd-card">
-      <button class="copy-btn" onclick="copyCmd(this, 'mosh rocky@153.126.199.231\ntmux attach -t dev\nclaude')">Copy</button>
-      <div class="cmd-device android">Android (Termux)</div>
-      <div class="cmd-line">
-        <span class="prompt">$</span> <span class="cmd">mosh rocky@153.126.199.231</span><br>
-        <span class="prompt">$</span> <span class="cmd">tmux attach -t dev</span><br>
-        <span class="prompt">$</span> <span class="cmd">claude</span>
-      </div>
-    </div>
-    <div class="cmd-card">
-      <button class="copy-btn" onclick="copyCmd(this, 'mosh rocky@153.126.199.231\ntmux attach -t dev\nclaude')">Copy</button>
-      <div class="cmd-device ipad">iPad (Blink Shell)</div>
-      <div class="cmd-line">
-        <span class="prompt">blink&gt;</span> <span class="cmd">mosh rocky@153.126.199.231</span><br>
-        <span class="prompt">$</span> <span class="cmd">tmux attach -t dev</span><br>
-        <span class="prompt">$</span> <span class="cmd">claude</span>
-      </div>
-    </div>
-    <div class="cmd-card">
-      <button class="copy-btn" onclick="copyCmd(this, 'mosh rocky@153.126.199.231\ntmux attach -t dev\nclaude')">Copy</button>
-      <div class="cmd-device mac">Mac (Terminal)</div>
-      <div class="cmd-line">
-        <span class="prompt">$</span> <span class="cmd">mosh rocky@153.126.199.231</span><br>
-        <span class="prompt">$</span> <span class="cmd">tmux attach -t dev</span><br>
-        <span class="prompt">$</span> <span class="cmd">claude</span>
-      </div>
-    </div>
-    <div class="cmd-card">
-      <button class="copy-btn" onclick="copyCmd(this, 'mosh rocky@153.126.199.231\ntmux attach -t dev\nclaude')">Copy</button>
-      <div class="cmd-device win">Windows (PowerShell)</div>
-      <div class="cmd-line">
-        <span class="prompt">&gt;</span> <span class="cmd">mosh rocky@153.126.199.231</span><br>
-        <span class="prompt">$</span> <span class="cmd">tmux attach -t dev</span><br>
-        <span class="prompt">$</span> <span class="cmd">claude</span>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- FAQ -->
 <div class="faq-section">
   <div class="faq-title">よくある質問</div>
@@ -940,7 +894,8 @@
 </div>
 
 <!-- BACK LINK -->
-<div style="text-align:right;margin-bottom:12px;">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+  <a href="tmux-cheatsheet.html" style="font-size:0.68rem;color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#80CBC4'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">tmux チートシート</a>
   <a href="digital-environment.html" style="font-size:0.78rem;color:var(--purple);text-decoration:none;font-weight:600;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">← 開発体制へ戻る</a>
 </div>
 
