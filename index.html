@@ -481,8 +481,10 @@
 </head>
 <body class="bg-warm-gray-50">
 
-    <!-- スクロール進捗バー -->
+    <!-- スクロール進捗バー（上） -->
     <div id="scroll-progress" class="scroll-progress"></div>
+    <!-- スクロール進捗バー（下） -->
+    <div id="scroll-progress-bottom" class="scroll-progress" style="top:auto;bottom:0"></div>
 
     <!-- ヘッダー -->
     <header class="bg-white/90 backdrop-blur-sm border-b border-warm-gray-200 sticky top-0 z-50">
@@ -1025,6 +1027,7 @@
         // ページトップボタン & スクロール進捗バー
         const pageTopBtn = document.getElementById('page-top-btn');
         const scrollProgress = document.getElementById('scroll-progress');
+        const scrollProgressBottom = document.getElementById('scroll-progress-bottom');
 
         window.addEventListener('scroll', () => {
             if (window.scrollY > 300) {
@@ -1037,6 +1040,7 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (window.scrollY / docHeight) * 100;
             scrollProgress.style.width = progress + '%';
+            scrollProgressBottom.style.width = progress + '%';
         });
 
         pageTopBtn.addEventListener('click', () => {
