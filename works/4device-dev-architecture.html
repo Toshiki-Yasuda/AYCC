@@ -9,7 +9,7 @@
 <meta property="og:title" content="4-Device Development Architecture | AYCC">
 <meta property="og:description" content="Android・iPad・Mac・Windows — どのデバイスからでも同じ開発環境に即アクセス。場所を選ばないAI開発体制。">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://toshiki-yasuda.github.io/AYCC/works/4device-dev-architecture.html">
+<meta property="og:url" content="https://aycc.pages.dev/works/4device-dev-architecture.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="4-Device Development Architecture | AYCC">
 <meta name="twitter:description" content="どのデバイスからでも同じ開発環境に即アクセス。場所を選ばないAI開発体制。">
@@ -453,77 +453,6 @@
   .cost-badge.expensive { background: #FFEBEE; color: #C62828; }
   .cost-badge.cheap     { background: #E8F5E9; color: #2E7D32; }
 
-  /* ===== COMMAND REFERENCE ===== */
-  .cmd-section {
-    background: #1A1A2E;
-    border-radius: var(--radius);
-    padding: 18px 24px;
-    margin-bottom: 24px;
-  }
-  .cmd-section-title {
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: rgba(255,255,255,0.5);
-    margin-bottom: 12px;
-  }
-  .cmd-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-  }
-  .cmd-card {
-    background: rgba(255,255,255,0.06);
-    border-radius: 10px;
-    padding: 10px 12px;
-    border: 1px solid rgba(255,255,255,0.08);
-    position: relative;
-    transition: border-color 0.2s;
-  }
-  .cmd-card:hover { border-color: rgba(255,255,255,0.2); }
-  .cmd-device {
-    font-size: 0.68rem;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-  .cmd-device.android { color: #4CAF50; }
-  .cmd-device.ipad    { color: #FF9800; }
-  .cmd-device.mac     { color: #2196F3; }
-  .cmd-device.win     { color: #00BCD4; }
-  .cmd-line {
-    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
-    font-size: 0.62rem;
-    color: #B0BEC5;
-    line-height: 1.6;
-    word-break: break-all;
-  }
-  .cmd-line .prompt { color: var(--pink); }
-  .cmd-line .cmd    { color: #80CBC4; }
-
-  .copy-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 6px;
-    padding: 3px 8px;
-    font-size: 0.58rem;
-    color: rgba(255,255,255,0.5);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .copy-btn:hover {
-    background: rgba(255,255,255,0.2);
-    color: rgba(255,255,255,0.8);
-  }
-  .copy-btn.copied {
-    background: rgba(76,175,80,0.3);
-    color: var(--green);
-    border-color: rgba(76,175,80,0.4);
-  }
-
   /* ===== FAQ ===== */
   .faq-section {
     margin-bottom: 24px;
@@ -616,15 +545,16 @@
       grid-template-columns: 1fr;
       gap: 16px;
     }
+    /* モバイル: Architecture → Value → Use Cases の順 */
+    #col-value   { order: 2; }
+    #col-arch    { order: 1; }
+    #col-usecase { order: 3; }
     .compare-section {
       grid-template-columns: 1fr;
       gap: 12px;
     }
-    .cmd-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
     .faq-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, 1fr);
     }
     .device-row {
       grid-template-columns: repeat(2, 1fr);
@@ -635,11 +565,11 @@
   @media (max-width: 600px) {
     body { padding: 16px; }
     .header h1 { font-size: 1.4rem; }
-    .cmd-grid {
+    .tab-bar { flex-wrap: wrap; gap: 6px; }
+    .tab-btn { font-size: 0.75rem; padding: 10px 18px; min-height: 44px; }
+    .faq-grid {
       grid-template-columns: 1fr;
     }
-    .tab-bar { flex-wrap: wrap; }
-    .tab-btn { font-size: 0.72rem; padding: 6px 14px; }
   }
 </style>
 </head>
@@ -704,7 +634,7 @@
         <div class="device-card">
           <div class="device-icon">💻</div>
           <div class="device-name">Windows</div>
-          <div class="device-app">Terminal</div>
+          <div class="device-app">PowerShell</div>
         </div>
       </div>
 
@@ -883,7 +813,7 @@
 
 <!-- BACK LINK -->
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-  <a href="tmux-cheatsheet.html" style="font-size:0.68rem;color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#80CBC4'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">tmux チートシート</a>
+  <a href="tmux-cheatsheet.html" style="font-size:0.68rem;color:rgba(0,0,0,0.25);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--purple)'" onmouseout="this.style.color='rgba(0,0,0,0.25)'">tmux チートシート</a>
   <a href="digital-environment.html" style="font-size:0.78rem;color:var(--purple);text-decoration:none;font-weight:600;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">← 開発体制へ戻る</a>
 </div>
 
@@ -899,7 +829,7 @@ const tabDescs = {
   all:      'すべてのセクションを表示しています',
   engineer: 'エンジニア視点 — 技術構成とコマンドリファレンスにフォーカス',
   business: '非技術者視点 — 価値とメリットにフォーカス',
-  client:   '顧客視点視点 — 実用シーンと導入効果にフォーカス'
+  client:   '顧客視点 — 実用シーンと導入効果にフォーカス'
 };
 const tabHighlight = {
   all:      ['col-value', 'col-arch', 'col-usecase'],
@@ -931,17 +861,6 @@ function switchTab(tab) {
   });
 }
 
-// === Copy command ===
-function copyCmd(btn, text) {
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = 'Copied!';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = 'Copy';
-      btn.classList.remove('copied');
-    }, 1500);
-  });
-}
 </script>
 
 </body>
