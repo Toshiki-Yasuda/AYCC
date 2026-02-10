@@ -7,7 +7,7 @@
 
 <!-- OGP -->
 <meta property="og:title" content="tmux チートシート | AYCC">
-<meta property="og:description" content="tmuxの必須操作を1ページに凝縮。セッション管理・ウィンドウ・ペイン操作まで。">
+<meta property="og:description" content="tmuxの必須操作を1ページに凝縮。セッション管理・ウィンドウ・ペイン・便利な操作まで。">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -185,65 +185,27 @@
 
   kbd {
     display: inline-block;
-    background: var(--dark);
-    color: #80CBC4;
+    background: #F3EFF8;
+    color: var(--text);
     padding: 2px 8px;
     border-radius: 5px;
     font-family: "SF Mono", "Fira Code", monospace;
     font-size: 0.78rem;
     font-weight: 600;
-    border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 2px 0 rgba(0,0,0,0.3);
+    border: 1px solid #DDD5E8;
+    box-shadow: 0 1px 0 rgba(156,39,176,0.1);
     line-height: 1.6;
+  }
+  kbd.cmd {
+    background: var(--light-bg);
+    color: var(--purple);
+    border-color: rgba(156,39,176,0.2);
   }
   .then {
     font-size: 0.7rem;
     color: var(--purple);
     font-weight: 700;
     margin: 0 3px;
-  }
-
-  /* ===== CODE BLOCK ===== */
-  .code-block {
-    background: var(--dark);
-    border-radius: 10px;
-    padding: 16px 20px;
-    position: relative;
-    margin-top: 12px;
-    border: 1px solid rgba(255,255,255,0.06);
-  }
-  .code-block pre {
-    font-family: "SF Mono", "Fira Code", monospace;
-    font-size: 0.76rem;
-    color: #B0BEC5;
-    line-height: 1.7;
-    margin: 0;
-    overflow-x: auto;
-  }
-  .code-block .comment { color: #546E7A; }
-  .code-block .cmd     { color: #80CBC4; }
-  .code-block .prompt  { color: var(--pink); }
-  .code-block .copy-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 6px;
-    padding: 3px 10px;
-    font-size: 0.6rem;
-    color: rgba(255,255,255,0.45);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .code-block .copy-btn:hover {
-    background: rgba(255,255,255,0.15);
-    color: rgba(255,255,255,0.7);
-  }
-  .code-block .copy-btn.copied {
-    background: rgba(76,175,80,0.3);
-    color: var(--green);
-    border-color: rgba(76,175,80,0.4);
   }
 
   /* ===== TIP BOX ===== */
@@ -364,6 +326,7 @@
   <a href="#session">セッション</a>
   <a href="#window">ウィンドウ</a>
   <a href="#pane">ペイン</a>
+  <a href="#extra">便利な操作</a>
 </div>
 
 <!-- SESSION -->
@@ -377,19 +340,21 @@
   </div>
   <table class="cmd-table">
     <thead>
-      <tr><th style="width:35%">操作</th><th>コマンド / キー</th></tr>
+      <tr><th style="width:40%">操作</th><th>コマンド / キー</th></tr>
     </thead>
     <tbody>
-      <tr><td>新規セッション作成</td><td><kbd>tmux new -s dev</kbd></td></tr>
-      <tr><td>セッション一覧</td><td><kbd>tmux ls</kbd></td></tr>
-      <tr><td>セッションに復帰</td><td><kbd>tmux a -t dev</kbd></td></tr>
+      <tr><td>新規セッション作成</td><td><kbd class="cmd">tmux new -s dev</kbd></td></tr>
+      <tr><td>セッション一覧</td><td><kbd class="cmd">tmux ls</kbd></td></tr>
+      <tr><td>セッションに復帰</td><td><kbd class="cmd">tmux a -t dev</kbd></td></tr>
       <tr><td>セッションを抜ける（維持）</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>d</kbd></td></tr>
+      <tr><td>セッション切替メニュー</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>s</kbd></td></tr>
       <tr><td>セッション名を変更</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>$</kbd></td></tr>
+      <tr><td>セッションを終了</td><td><kbd class="cmd">tmux kill-session -t dev</kbd></td></tr>
     </tbody>
   </table>
   <div class="tip-box">
     <span class="tip-icon">&#x1F4A1;</span>
-    <div class="tip-text"><strong>detach（Ctrl+b → d）</strong>はセッションを「切り離す」だけ。VPS上でセッションは動き続けるので、別のデバイスから <kbd>tmux a -t dev</kbd> で即復帰できます。</div>
+    <div class="tip-text"><strong>detach（Ctrl+b → d）</strong>はセッションを「切り離す」だけ。VPS上でセッションは動き続けるので、別のデバイスから <kbd class="cmd">tmux a -t dev</kbd> で即復帰できます。</div>
   </div>
 </div>
 
@@ -404,17 +369,23 @@
   </div>
   <table class="cmd-table">
     <thead>
-      <tr><th style="width:35%">操作</th><th>キー</th></tr>
+      <tr><th style="width:40%">操作</th><th>キー</th></tr>
     </thead>
     <tbody>
       <tr><td>新規ウィンドウ</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>c</kbd></td></tr>
       <tr><td>次のウィンドウ</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>n</kbd></td></tr>
       <tr><td>前のウィンドウ</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>p</kbd></td></tr>
+      <tr><td>直前のウィンドウに戻る</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>l</kbd></td></tr>
       <tr><td>番号で移動</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>0</kbd>〜<kbd>9</kbd></td></tr>
       <tr><td>ウィンドウ名変更</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>,</kbd></td></tr>
-      <tr><td>ウィンドウ一覧</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>w</kbd></td></tr>
+      <tr><td>ウィンドウ一覧（ツリー表示）</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>w</kbd></td></tr>
+      <tr><td>ウィンドウを閉じる</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>&amp;</kbd></td></tr>
     </tbody>
   </table>
+  <div class="tip-box">
+    <span class="tip-icon">&#x1F4A1;</span>
+    <div class="tip-text"><strong>Ctrl+b → w</strong> でウィンドウ一覧がツリー形式で表示されます。矢印キーで選択してEnterで移動。複数セッション間の移動にも使えます。</div>
+  </div>
 </div>
 
 <!-- PANE -->
@@ -428,20 +399,51 @@
   </div>
   <table class="cmd-table">
     <thead>
-      <tr><th style="width:35%">操作</th><th>キー</th></tr>
+      <tr><th style="width:40%">操作</th><th>キー</th></tr>
     </thead>
     <tbody>
       <tr><td>左右に分割</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>%</kbd></td></tr>
       <tr><td>上下に分割</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>"</kbd></td></tr>
       <tr><td>ペイン間移動</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>矢印キー</kbd></td></tr>
+      <tr><td>次のペインへ移動</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>o</kbd></td></tr>
       <tr><td>ペインサイズ変更</td><td><kbd>Ctrl+b</kbd> 長押し + <kbd>矢印キー</kbd></td></tr>
-      <tr><td>ペインを閉じる</td><td><kbd>exit</kbd> または <kbd>Ctrl+d</kbd></td></tr>
+      <tr><td>レイアウトを順に切替</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>Space</kbd></td></tr>
+      <tr><td>ペイン番号を表示</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>q</kbd></td></tr>
       <tr><td>ペインの全画面切替</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>z</kbd></td></tr>
+      <tr><td>ペインを閉じる</td><td><kbd>exit</kbd> または <kbd>Ctrl+d</kbd></td></tr>
     </tbody>
   </table>
   <div class="tip-box">
     <span class="tip-icon">&#x1F4A1;</span>
     <div class="tip-text"><strong>zoom（Ctrl+b → z）</strong>で1ペインを全画面表示。もう一度押すと元のレイアウトに戻ります。Claude Codeの出力を広く見たいときに便利。</div>
+  </div>
+</div>
+
+<!-- EXTRA -->
+<div class="section" id="extra">
+  <div class="section-header">
+    <div class="section-icon green">+</div>
+    <div>
+      <div class="section-title">便利な操作</div>
+      <div class="section-subtitle">スクロール・コピー・コマンドモード</div>
+    </div>
+  </div>
+  <table class="cmd-table">
+    <thead>
+      <tr><th style="width:40%">操作</th><th>キー</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>スクロールモード開始</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>[</kbd></td></tr>
+      <tr><td>スクロール中の移動</td><td><kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd></td></tr>
+      <tr><td>スクロールモード終了</td><td><kbd>q</kbd> または <kbd>Esc</kbd></td></tr>
+      <tr><td>コマンドモード</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>:</kbd></td></tr>
+      <tr><td>時計を表示</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>t</kbd></td></tr>
+      <tr><td>キーバインド一覧</td><td><kbd>Ctrl+b</kbd> <span class="then">→</span> <kbd>?</kbd></td></tr>
+    </tbody>
+  </table>
+  <div class="tip-box">
+    <span class="tip-icon">&#x1F4A1;</span>
+    <div class="tip-text"><strong>スクロールモード（Ctrl+b → [）</strong>はClaude Codeの長い出力を遡りたいときに必須。矢印キーやPgUp/PgDnで自由にスクロールできます。</div>
   </div>
 </div>
 
@@ -452,17 +454,6 @@
 </div>
 
 <script>
-function copyCode(btn, text) {
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = 'Copied!';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = 'Copy';
-      btn.classList.remove('copied');
-    }, 1500);
-  });
-}
-
 // Highlight active nav on scroll
 const sections = document.querySelectorAll('.section');
 const navLinks = document.querySelectorAll('.quick-nav a');
