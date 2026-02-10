@@ -125,6 +125,18 @@
             transition: none;
         }
 
+        .scroll-progress-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            top: auto;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, #d4a5a5, #a7bdd4);
+            z-index: 60;
+            transition: none;
+        }
+
         /* 控えめなホバーエフェクト */
         .hover-lift {
             transition: transform 0.4s ease, box-shadow 0.4s ease;
@@ -284,26 +296,6 @@
             }
         }
 
-        /* 固定CTAバー（スマホのみ） */
-        .fixed-cta-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 90;
-            padding: 10px 16px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-        }
-
-        .fixed-cta-bar.visible {
-            transform: translateY(0);
-        }
-
         /* ページトップボタン */
         .page-top-btn {
             position: fixed;
@@ -334,11 +326,6 @@
             transform: translateY(-3px);
         }
 
-        @media (max-width: 767px) {
-            .page-top-btn {
-                bottom: 80px;
-            }
-        }
 
         .page-top-btn svg {
             width: 20px;
@@ -484,7 +471,7 @@
     <!-- スクロール進捗バー（上） -->
     <div id="scroll-progress" class="scroll-progress"></div>
     <!-- スクロール進捗バー（下） -->
-    <div id="scroll-progress-bottom" class="scroll-progress" style="top:auto;bottom:0"></div>
+    <div id="scroll-progress-bottom" class="scroll-progress-bottom"></div>
 
     <!-- ヘッダー -->
     <header class="bg-white/90 backdrop-blur-sm border-b border-warm-gray-200 sticky top-0 z-50">
@@ -945,13 +932,6 @@
         </div>
     </section>
 
-    <!-- 固定CTAバー（スマホのみ） -->
-    <div id="fixed-cta-bar" class="fixed-cta-bar md:hidden">
-        <a href="#contact" class="cta-button block w-full text-center text-white text-sm tracking-wider py-3 gradient-elegant">
-            お問い合わせ
-        </a>
-    </div>
-
     <!-- ページトップボタン -->
     <button class="page-top-btn" id="page-top-btn" aria-label="ページトップへ戻る">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1048,27 +1028,6 @@
                 top: 0,
                 behavior: 'smooth'
             });
-        });
-
-        // 固定CTAバーの表示制御（ヒーローセクションが画面外になったら表示）
-        const fixedCtaBar = document.getElementById('fixed-cta-bar');
-        const heroSection = document.getElementById('home');
-
-        const ctaObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    fixedCtaBar.classList.remove('visible');
-                } else {
-                    fixedCtaBar.classList.add('visible');
-                }
-            });
-        }, { threshold: 0 });
-
-        ctaObserver.observe(heroSection);
-
-        // 固定CTAバーのリンククリック時にバーを非表示
-        fixedCtaBar.querySelector('a').addEventListener('click', () => {
-            fixedCtaBar.classList.remove('visible');
         });
 
         // セクションタイトル スライドインアニメーション
