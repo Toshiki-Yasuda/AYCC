@@ -372,7 +372,7 @@
     align-items: start;
   }
   .compare-col {
-    padding: 24px;
+    padding: 14px 16px;
     border-radius: var(--radius);
     border: 1px solid #E8E0F0;
     box-shadow: 0 2px 12px rgba(156,39,176,0.06);
@@ -385,13 +385,18 @@
     background: #F0FFF4;
     border-color: rgba(46, 125, 50, 0.15);
   }
-  .compare-title {
-    font-size: 0.85rem;
-    font-weight: 800;
-    margin-bottom: 12px;
+  .compare-header {
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .compare-title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 5px;
   }
   .compare-title.bad  { color: #C62828; }
   .compare-title.good { color: #2E7D32; }
@@ -400,25 +405,24 @@
     padding: 0;
   }
   .compare-list li {
-    font-size: 0.8rem;
-    line-height: 1.5;
-    padding: 4px 0;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    padding: 2px 0;
     color: var(--text-sub);
   }
   .compare-list li::before {
-    margin-right: 6px;
+    margin-right: 5px;
     font-weight: 700;
   }
   .compare-list.bad li::before  { content: "\2717"; color: #C62828; }
   .compare-list.good li::before { content: "\2713"; color: #2E7D32; }
 
   .cost-badge {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 4px 12px;
-    border-radius: 8px;
-    font-size: 0.72rem;
+    font-size: 0.65rem;
     font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
   }
   .cost-badge.expensive { background: #FFEBEE; color: #C62828; }
   .cost-badge.cheap     { background: #E8F5E9; color: #2E7D32; }
@@ -664,7 +668,10 @@
 <!-- COMPARISON: BEFORE vs AFTER -->
 <div class="compare-section">
   <div class="compare-col before">
-    <div class="compare-title bad">&#x26A0; 従来の開発環境</div>
+    <div class="compare-header">
+      <div class="compare-title bad">&#x26A0; 従来の開発環境</div>
+      <span class="cost-badge expensive">毎回コスト</span>
+    </div>
     <ul class="compare-list bad">
       <li>ノートPC 1台に依存 — 故障で作業停止</li>
       <li>場所が変わるたびに環境差異が発生</li>
@@ -672,10 +679,12 @@
       <li>Git push/pullで常に同期作業が必要</li>
       <li>外出先ではコードの確認すら困難</li>
     </ul>
-    <span class="cost-badge expensive">PC買替・環境構築に毎回コスト</span>
   </div>
   <div class="compare-col after">
-    <div class="compare-title good">&#x2714; 4デバイス構成</div>
+    <div class="compare-header">
+      <div class="compare-title good">&#x2714; 4デバイス構成</div>
+      <span class="cost-badge cheap">約3,480円/月</span>
+    </div>
     <ul class="compare-list good">
       <li>4台どれからでもアクセス — 冗長性確保</li>
       <li>環境はVPS上で一元管理 — 差異ゼロ</li>
@@ -683,7 +692,6 @@
       <li>tmuxセッションで常に最新状態</li>
       <li>スマホからでもフル開発環境にアクセス</li>
     </ul>
-    <span class="cost-badge cheap">VPS 約3,227円/月 + Blink Shell 約250円/月 = 約3,480円/月</span>
   </div>
 </div>
 
