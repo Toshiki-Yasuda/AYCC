@@ -21,7 +21,7 @@
 <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 
 <!-- Tailwind CSS CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -87,31 +87,44 @@ tailwind.config = {
     padding: 28px 32px;
   }
 
-  /* ===== HEADER ===== */
-  .header {
+  /* ===== PAGE TITLE (common style) ===== */
+  .page-title-area {
     text-align: center;
-    margin-bottom: 28px;
+    padding: 48px 0 32px;
   }
-  .header-bar {
-    height: 4px;
-    background: var(--grad-h);
-    border-radius: 2px;
-    margin-bottom: 18px;
-  }
-  .header h1 {
-    font-size: 2rem;
-    font-weight: 800;
-    background: var(--grad);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .page-title-area h1 {
+    font-family: 'Noto Serif JP', 'Noto Sans JP', serif;
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: #44403c;
+    margin-bottom: 8px;
     letter-spacing: 0.02em;
   }
-  .header .subtitle {
-    font-size: 0.95rem;
-    color: var(--text-sub);
-    margin-top: 6px;
-    font-weight: 400;
+  .page-title-area .page-subtitle {
+    font-size: 0.85rem;
+    color: #a8a29e;
+    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+  }
+  .page-title-area .divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, #d4a5a5, #a7bdd4);
+    margin: 0 auto;
+  }
+  .page-breadcrumb {
+    font-size: 0.85rem;
+    color: #a8a29e;
+    padding: 24px 0 0;
+  }
+  .page-breadcrumb a {
+    color: #a8a29e;
+    text-decoration: none;
+  }
+  .page-breadcrumb a:hover { color: #44403c; }
+  @media (max-width: 600px) {
+    .page-title-area h1 { font-size: 1.3rem; }
+    .page-title-area { padding: 32px 0 24px; }
   }
 
   /* ===== 3-COLUMN LAYOUT ===== */
@@ -568,7 +581,6 @@ tailwind.config = {
   /* ===== RESPONSIVE ===== */
   @media (min-width: 1200px) {
     body { padding: 36px 48px; }
-    .header h1 { font-size: 2.4rem; }
     .columns { gap: 28px; }
   }
 
@@ -596,7 +608,6 @@ tailwind.config = {
 
   @media (max-width: 600px) {
     body { padding: 16px; }
-    .header h1 { font-size: 1.4rem; }
     .faq-grid {
       grid-template-columns: 1fr;
     }
@@ -639,11 +650,20 @@ tailwind.config = {
   </nav>
 </header>
 
-<!-- PAGE HEADER -->
-<div class="header">
-  <div class="header-bar"></div>
+<!-- パンくずリスト -->
+<nav class="page-breadcrumb">
+  <a href="../index.html">ホーム</a>
+  <span style="margin:0 8px;">/</span>
+  <a href="digital-environment.html">開発体制</a>
+  <span style="margin:0 8px;">/</span>
+  <span style="color:#44403c;">Multi-Device Architecture</span>
+</nav>
+
+<!-- ページタイトル -->
+<div class="page-title-area">
   <h1>Multi-Device Development Architecture</h1>
-  <p class="subtitle">AYCCが実践する開発体制 — どのデバイスからでも、同じ環境に即アクセス。</p>
+  <p class="page-subtitle">AYCCが実践する開発体制 — どのデバイスからでも、同じ環境に即アクセス</p>
+  <div class="divider"></div>
 </div>
 
 <!-- 3 COLUMNS -->
