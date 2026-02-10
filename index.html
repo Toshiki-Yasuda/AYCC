@@ -113,6 +113,18 @@
             background-clip: text;
         }
 
+        /* スクロール進捗バー */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            width: 0%;
+            background: linear-gradient(90deg, #d4a5a5, #a7bdd4);
+            z-index: 60;
+            transition: none;
+        }
+
         /* 控えめなホバーエフェクト */
         .hover-lift {
             transition: transform 0.4s ease, box-shadow 0.4s ease;
@@ -121,6 +133,15 @@
         .hover-lift:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        /* タッチフィードバック（スマホ時） */
+        @media (max-width: 767px) {
+            .hover-lift:active {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(0,0,0,0.06), 0 0 0 2px rgba(167, 189, 212, 0.4);
+                transition: transform 0.15s ease, box-shadow 0.15s ease;
+            }
         }
 
         /* 上品なボーダー */
@@ -459,6 +480,9 @@
     </style>
 </head>
 <body class="bg-warm-gray-50">
+
+    <!-- スクロール進捗バー -->
+    <div id="scroll-progress" class="scroll-progress"></div>
 
     <!-- ヘッダー -->
     <header class="bg-white/90 backdrop-blur-sm border-b border-warm-gray-200 sticky top-0 z-50">
@@ -998,8 +1022,9 @@
             catchcopy.classList.add('revealed');
         }, 400);
 
-        // ページトップボタン
+        // ページトップボタン & スクロール進捗バー
         const pageTopBtn = document.getElementById('page-top-btn');
+        const scrollProgress = document.getElementById('scroll-progress');
 
         window.addEventListener('scroll', () => {
             if (window.scrollY > 300) {
@@ -1007,6 +1032,11 @@
             } else {
                 pageTopBtn.classList.remove('visible');
             }
+
+            // スクロール進捗バー
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (window.scrollY / docHeight) * 100;
+            scrollProgress.style.width = progress + '%';
         });
 
         pageTopBtn.addEventListener('click', () => {
