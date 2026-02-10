@@ -338,6 +338,40 @@
             transform: translateY(0);
         }
 
+        /* セクションタイトル スライドインアニメーション */
+        .slide-in-title {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .slide-in-divider {
+            opacity: 0;
+            transform: scaleX(0);
+            transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
+        }
+
+        .slide-in-subtitle {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.7s ease 0.35s, transform 0.7s ease 0.35s;
+        }
+
+        .slide-in-title.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide-in-divider.visible {
+            opacity: 1;
+            transform: scaleX(1);
+        }
+
+        .slide-in-subtitle.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
         /* フェードインアニメーション */
         .fade-in-section {
             opacity: 0;
@@ -468,13 +502,13 @@
     </header>
 
     <!-- ヒーローセクション -->
-    <section id="home" class="py-24 md:py-32 hero-gradient hero-shimmer relative">
+    <section id="home" class="py-24 md:py-32 hero-gradient hero-shimmer relative overflow-hidden">
         <div class="container mx-auto px-6 text-center">
             <!-- ロゴ -->
-            <img src="images/logo.png" alt="AYCC" class="mx-auto w-64 md:w-80 mb-10">
+            <img src="images/logo.png" alt="AYCC" class="mx-auto w-64 md:w-80 mb-10" data-parallax="0.3">
 
             <!-- サブタイトル -->
-            <p class="text-sm md:text-base text-warm-gray-500 tracking-[0.2em] mb-6">
+            <p class="text-sm md:text-base text-warm-gray-500 tracking-[0.2em] mb-6" data-parallax="0.15">
                 AI YASUDA CREATIVE & CONSULTING
             </p>
 
@@ -518,12 +552,12 @@
     <section id="services" class="py-16 md:py-32 fade-in-section">
         <div class="container mx-auto px-6">
             <!-- セクションタイトル -->
-            <div class="text-center mb-20">
-                <h2 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-4">
+            <div class="text-center mb-20 section-title-group">
+                <h2 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-4 slide-in-title">
                     Services
                 </h2>
-                <div class="divider mb-6"></div>
-                <p class="text-sm text-warm-gray-500 tracking-wider">
+                <div class="divider mb-6 slide-in-divider"></div>
+                <p class="text-sm text-warm-gray-500 tracking-wider slide-in-subtitle">
                     Creative と Consulting の融合
                 </p>
             </div>
@@ -663,12 +697,12 @@
     <!-- 実績紹介セクション -->
     <section id="works" class="py-16 md:py-32 bg-white fade-in-section">
         <div class="container mx-auto px-6">
-            <div class="text-center mb-20">
-                <h2 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-4">
+            <div class="text-center mb-20 section-title-group">
+                <h2 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-4 slide-in-title">
                     Works
                 </h2>
-                <div class="divider mb-6"></div>
-                <p class="text-sm text-warm-gray-500 tracking-wider">
+                <div class="divider mb-6 slide-in-divider"></div>
+                <p class="text-sm text-warm-gray-500 tracking-wider slide-in-subtitle">
                     実績紹介
                 </p>
             </div>
@@ -743,12 +777,12 @@
     <!-- 会社概要セクション -->
     <section id="about" class="py-16 md:py-32 fade-in-section">
         <div class="container mx-auto px-6">
-            <div class="text-center mb-20">
-                <h2 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-4">
+            <div class="text-center mb-20 section-title-group">
+                <h2 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-4 slide-in-title">
                     About
                 </h2>
-                <div class="divider mb-6"></div>
-                <p class="text-sm text-warm-gray-500 tracking-wider">
+                <div class="divider mb-6 slide-in-divider"></div>
+                <p class="text-sm text-warm-gray-500 tracking-wider slide-in-subtitle">
                     会社概要
                 </p>
             </div>
@@ -854,12 +888,12 @@
     <!-- お問い合わせセクション -->
     <section id="contact" class="py-16 md:py-32 bg-white fade-in-section">
         <div class="container mx-auto px-6">
-            <div class="text-center mb-20">
-                <h2 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-4">
+            <div class="text-center mb-20 section-title-group">
+                <h2 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-4 slide-in-title">
                     Contact
                 </h2>
-                <div class="divider mb-6"></div>
-                <p class="text-sm text-warm-gray-500 tracking-wider">
+                <div class="divider mb-6 slide-in-divider"></div>
+                <p class="text-sm text-warm-gray-500 tracking-wider slide-in-subtitle">
                     お問い合わせ
                 </p>
             </div>
@@ -1002,6 +1036,35 @@
         fixedCtaBar.querySelector('a').addEventListener('click', () => {
             fixedCtaBar.classList.remove('visible');
         });
+
+        // セクションタイトル スライドインアニメーション
+        const titleGroups = document.querySelectorAll('.section-title-group');
+
+        const titleObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.querySelectorAll('.slide-in-title, .slide-in-divider, .slide-in-subtitle').forEach(el => {
+                        el.classList.add('visible');
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        titleGroups.forEach(group => {
+            titleObserver.observe(group);
+        });
+
+        // ヒーロー パララックス効果
+        const parallaxElements = document.querySelectorAll('[data-parallax]');
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            parallaxElements.forEach(el => {
+                const speed = parseFloat(el.dataset.parallax);
+                el.style.transform = `translateY(${scrollY * speed}px)`;
+            });
+        }, { passive: true });
 
         // フェードインアニメーション（Intersection Observer）
         const fadeInSections = document.querySelectorAll('.fade-in-section');
