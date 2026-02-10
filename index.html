@@ -263,6 +263,26 @@
             }
         }
 
+        /* 固定CTAバー（スマホのみ） */
+        .fixed-cta-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 90;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .fixed-cta-bar.visible {
+            transform: translateY(0);
+        }
+
         /* ページトップボタン */
         .page-top-btn {
             position: fixed;
@@ -291,6 +311,12 @@
         .page-top-btn:hover {
             background: rgba(68, 64, 60, 1);
             transform: translateY(-3px);
+        }
+
+        @media (max-width: 767px) {
+            .page-top-btn {
+                bottom: 80px;
+            }
         }
 
         .page-top-btn svg {
@@ -476,7 +502,7 @@
     </a>
 
     <!-- 事業内容セクション -->
-    <section id="services" class="py-24 md:py-32 fade-in-section">
+    <section id="services" class="py-16 md:py-32 fade-in-section">
         <div class="container mx-auto px-6">
             <!-- セクションタイトル -->
             <div class="text-center mb-20">
@@ -614,7 +640,7 @@
 
             <!-- CTA -->
             <div class="text-center mt-16">
-                <a href="#contact" class="cta-button inline-block border border-warm-gray-400 text-warm-gray-700 px-10 py-4 text-sm tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                <a href="#contact" class="cta-button block md:inline-block w-full md:w-auto border border-warm-gray-400 text-warm-gray-700 px-10 py-4 text-sm tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
                     お問い合わせはこちら
                 </a>
             </div>
@@ -622,7 +648,7 @@
     </section>
 
     <!-- 実績紹介セクション -->
-    <section id="works" class="py-24 md:py-32 bg-white fade-in-section">
+    <section id="works" class="py-16 md:py-32 bg-white fade-in-section">
         <div class="container mx-auto px-6">
             <div class="text-center mb-20">
                 <h2 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-4">
@@ -694,7 +720,7 @@
 
             <!-- CTA -->
             <div class="text-center mt-16">
-                <a href="#contact" class="cta-button inline-block border border-warm-gray-400 text-warm-gray-700 px-10 py-4 text-sm tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                <a href="#contact" class="cta-button block md:inline-block w-full md:w-auto border border-warm-gray-400 text-warm-gray-700 px-10 py-4 text-sm tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
                     お問い合わせはこちら
                 </a>
             </div>
@@ -702,7 +728,7 @@
     </section>
 
     <!-- 会社概要セクション -->
-    <section id="about" class="py-24 md:py-32 fade-in-section">
+    <section id="about" class="py-16 md:py-32 fade-in-section">
         <div class="container mx-auto px-6">
             <div class="text-center mb-20">
                 <h2 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-4">
@@ -805,7 +831,7 @@
 
             <!-- CTA -->
             <div class="text-center mt-16">
-                <a href="#contact" class="cta-button inline-block border border-warm-gray-400 text-warm-gray-700 px-10 py-4 text-sm tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                <a href="#contact" class="cta-button block md:inline-block w-full md:w-auto border border-warm-gray-400 text-warm-gray-700 px-10 py-4 text-sm tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
                     お問い合わせはこちら
                 </a>
             </div>
@@ -813,7 +839,7 @@
     </section>
 
     <!-- お問い合わせセクション -->
-    <section id="contact" class="py-24 md:py-32 bg-white fade-in-section">
+    <section id="contact" class="py-16 md:py-32 bg-white fade-in-section">
         <div class="container mx-auto px-6">
             <div class="text-center mb-20">
                 <h2 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-4">
@@ -845,6 +871,13 @@
             </div>
         </div>
     </section>
+
+    <!-- 固定CTAバー（スマホのみ） -->
+    <div id="fixed-cta-bar" class="fixed-cta-bar md:hidden">
+        <a href="#contact" class="cta-button block w-full text-center text-white text-sm tracking-wider py-3 gradient-elegant">
+            お問い合わせ
+        </a>
+    </div>
 
     <!-- ページトップボタン -->
     <button class="page-top-btn" id="page-top-btn" aria-label="ページトップへ戻る">
@@ -918,6 +951,27 @@
                 top: 0,
                 behavior: 'smooth'
             });
+        });
+
+        // 固定CTAバーの表示制御（ヒーローセクションが画面外になったら表示）
+        const fixedCtaBar = document.getElementById('fixed-cta-bar');
+        const heroSection = document.getElementById('home');
+
+        const ctaObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    fixedCtaBar.classList.remove('visible');
+                } else {
+                    fixedCtaBar.classList.add('visible');
+                }
+            });
+        }, { threshold: 0 });
+
+        ctaObserver.observe(heroSection);
+
+        // 固定CTAバーのリンククリック時にバーを非表示
+        fixedCtaBar.querySelector('a').addEventListener('click', () => {
+            fixedCtaBar.classList.remove('visible');
         });
 
         // フェードインアニメーション（Intersection Observer）
