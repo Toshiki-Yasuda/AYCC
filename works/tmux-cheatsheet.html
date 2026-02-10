@@ -7,7 +7,7 @@
 
 <!-- OGP -->
 <meta property="og:title" content="tmux チートシート | AYCC">
-<meta property="og:description" content="tmuxの必須操作を1ページに凝縮。セッション管理・ウィンドウ・ペイン・1日の利用フローまで。">
+<meta property="og:description" content="tmuxの必須操作を1ページに凝縮。セッション管理・ウィンドウ・ペイン操作まで。">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -246,87 +246,6 @@
     border-color: rgba(76,175,80,0.4);
   }
 
-  /* ===== DAILY FLOW ===== */
-  .flow-timeline {
-    position: relative;
-    padding-left: 28px;
-  }
-  .flow-timeline::before {
-    content: '';
-    position: absolute;
-    left: 12px;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: var(--grad);
-    border-radius: 2px;
-  }
-  .flow-step {
-    position: relative;
-    margin-bottom: 20px;
-  }
-  .flow-step:last-child { margin-bottom: 0; }
-  .flow-dot {
-    position: absolute;
-    left: -22px;
-    top: 4px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.55rem;
-    font-weight: 800;
-    color: white;
-    z-index: 1;
-  }
-  .flow-dot.morning  { background: var(--pink); }
-  .flow-dot.daytime  { background: var(--purple); }
-  .flow-dot.evening  { background: var(--blue); }
-
-  .flow-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-  }
-  .flow-time {
-    font-size: 0.72rem;
-    font-weight: 800;
-    padding: 2px 10px;
-    border-radius: 12px;
-  }
-  .flow-time.morning  { background: #FDE4F3; color: var(--pink); }
-  .flow-time.daytime  { background: #EDE7F6; color: var(--purple); }
-  .flow-time.evening  { background: #E3F2FD; color: var(--blue); }
-  .flow-device {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--text);
-  }
-  .flow-card {
-    background: var(--light-bg);
-    border: 1px solid #E8E0F0;
-    border-radius: 10px;
-    padding: 14px 16px;
-  }
-
-  .flow-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 8px 0 8px 20px;
-    gap: 6px;
-  }
-  .flow-arrow-text {
-    font-size: 0.68rem;
-    color: var(--text-sub);
-  }
-  .flow-arrow-key {
-    font-size: 0.68rem;
-  }
-
   /* ===== TIP BOX ===== */
   .tip-box {
     background: linear-gradient(135deg, rgba(233,30,140,0.05), rgba(33,150,243,0.05));
@@ -445,7 +364,6 @@
   <a href="#session">セッション</a>
   <a href="#window">ウィンドウ</a>
   <a href="#pane">ペイン</a>
-  <a href="#flow">1日のフロー</a>
 </div>
 
 <!-- SESSION -->
@@ -524,99 +442,6 @@
   <div class="tip-box">
     <span class="tip-icon">&#x1F4A1;</span>
     <div class="tip-text"><strong>zoom（Ctrl+b → z）</strong>で1ペインを全画面表示。もう一度押すと元のレイアウトに戻ります。Claude Codeの出力を広く見たいときに便利。</div>
-  </div>
-</div>
-
-<!-- DAILY FLOW -->
-<div class="section" id="flow">
-  <div class="section-header">
-    <div class="section-icon green">&#x21BB;</div>
-    <div>
-      <div class="section-title">1日の利用フロー</div>
-      <div class="section-subtitle">デバイスをまたいでセッションが維持される様子</div>
-    </div>
-  </div>
-
-  <div class="flow-timeline">
-    <!-- Morning -->
-    <div class="flow-step">
-      <div class="flow-dot morning">AM</div>
-      <div class="flow-label">
-        <span class="flow-time morning">朝</span>
-        <span class="flow-device">自宅 — Windows / Mac</span>
-      </div>
-      <div class="flow-card">
-        <div class="code-block">
-          <button class="copy-btn" onclick="copyCode(this, 'mosh rocky@153.126.199.231\ntmux new -s dev\nclaude')">Copy</button>
-          <pre><span class="comment"># Mosh で VPS に接続</span>
-<span class="prompt">$</span> <span class="cmd">mosh rocky@153.126.199.231</span>
-
-<span class="comment"># tmux セッションを作成して作業開始</span>
-<span class="prompt">$</span> <span class="cmd">tmux new -s dev</span>
-
-<span class="comment"># Claude Code を起動</span>
-<span class="prompt">$</span> <span class="cmd">claude</span></pre>
-        </div>
-      </div>
-    </div>
-
-    <!-- Detach arrow -->
-    <div class="flow-arrow">
-      <span class="flow-arrow-text">外出前にデタッチ</span>
-      <kbd style="font-size:0.68rem;">Ctrl+b → d</kbd>
-    </div>
-
-    <!-- Daytime -->
-    <div class="flow-step">
-      <div class="flow-dot daytime">PM</div>
-      <div class="flow-label">
-        <span class="flow-time daytime">日中</span>
-        <span class="flow-device">外出先 — iPad / Android</span>
-      </div>
-      <div class="flow-card">
-        <div class="code-block">
-          <button class="copy-btn" onclick="copyCode(this, 'mosh rocky@153.126.199.231\ntmux a -t dev')">Copy</button>
-          <pre><span class="comment"># どのデバイスからでも同じ操作</span>
-<span class="prompt">$</span> <span class="cmd">mosh rocky@153.126.199.231</span>
-
-<span class="comment"># 朝のセッションにそのまま復帰</span>
-<span class="prompt">$</span> <span class="cmd">tmux a -t dev</span>
-
-<span class="comment"># → ウィンドウ・カーソル位置・実行中の処理がすべてそのまま</span></pre>
-        </div>
-      </div>
-    </div>
-
-    <!-- Detach arrow -->
-    <div class="flow-arrow">
-      <span class="flow-arrow-text">帰宅前にデタッチ</span>
-      <kbd style="font-size:0.68rem;">Ctrl+b → d</kbd>
-    </div>
-
-    <!-- Evening -->
-    <div class="flow-step">
-      <div class="flow-dot evening">PM</div>
-      <div class="flow-label">
-        <span class="flow-time evening">夜</span>
-        <span class="flow-device">自宅 — Windows / Mac</span>
-      </div>
-      <div class="flow-card">
-        <div class="code-block">
-          <button class="copy-btn" onclick="copyCode(this, 'mosh rocky@153.126.199.231\ntmux a -t dev')">Copy</button>
-          <pre><span class="comment"># 再び同じセッションに復帰</span>
-<span class="prompt">$</span> <span class="cmd">mosh rocky@153.126.199.231</span>
-<span class="prompt">$</span> <span class="cmd">tmux a -t dev</span>
-
-<span class="comment"># → 1日を通してセッションが途切れていない</span>
-<span class="comment"># → 朝の続きからそのまま再開</span></pre>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="tip-box" style="margin-top:20px;">
-    <span class="tip-icon">&#x1F512;</span>
-    <div class="tip-text"><strong>なぜ途切れないのか?</strong> tmuxセッションはVPS上で動き続けています。手元のデバイスが変わっても <kbd>tmux a</kbd> だけで全作業状態に復帰。Moshの自動再接続と組み合わせることで、通信の切断すら意識せずに作業を継続できます。</div>
   </div>
 </div>
 
