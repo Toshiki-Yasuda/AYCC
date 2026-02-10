@@ -14,6 +14,54 @@
 <meta name="twitter:title" content="Multi-Device Development Architecture | AYCC">
 <meta name="twitter:description" content="どのデバイスからでも同じ開発環境に即アクセス。場所を選ばないAI開発体制。">
 
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="../images/favicon.png">
+<link rel="apple-touch-icon" href="../images/favicon.png">
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        'warm-gray': {
+          50: '#fafaf9', 100: '#f5f5f4', 200: '#e7e5e4', 300: '#d6d3d1',
+          400: '#a8a29e', 500: '#78716c', 600: '#57534e', 700: '#44403c',
+          800: '#292524', 900: '#1c1917',
+        },
+        'navy': {
+          600: '#47658a', 800: '#2d3e54',
+        }
+      }
+    }
+  }
+}
+</script>
+
+<style>
+  /* ===== SITE HEADER (Tailwind supplement) ===== */
+  .site-header .link-underline { position: relative; }
+  .site-header .link-underline::after {
+    content: ''; position: absolute; bottom: -2px; left: 0;
+    width: 0; height: 1px; background: currentColor; transition: width 0.3s ease;
+  }
+  .site-header .link-underline:hover::after { width: 100%; }
+  #site-mobile-menu {
+    position: absolute; top: 100%; left: 0; right: 0;
+    max-height: 0; opacity: 0; overflow: hidden;
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: max-height 0.6s ease-out, opacity 0.6s ease-out;
+    padding-left: 1.5rem; padding-right: 1.5rem;
+  }
+  #site-mobile-menu.menu-open { max-height: 400px; opacity: 1; }
+</style>
+
 <style>
   :root {
     --pink: #E91E8C;
@@ -557,7 +605,41 @@
 </head>
 <body>
 
-<!-- HEADER -->
+<!-- SITE HEADER -->
+<header class="site-header bg-white/90 backdrop-blur-sm border-b border-warm-gray-200 sticky top-0" style="z-index:100;">
+  <nav class="mx-auto pl-2 pr-6 py-5 relative" style="max-width:1280px;">
+    <div class="flex justify-between items-center">
+      <a href="../index.html" class="flex items-center space-x-4">
+        <img src="../images/logo.png" alt="AYCC Logo" class="h-10">
+      </a>
+      <div class="hidden md:flex space-x-10">
+        <a href="../index.html#home" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">ホーム</a>
+        <a href="../index.html#services" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">サービス</a>
+        <a href="../index.html#works" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">実績</a>
+        <a href="../index.html#about" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">会社概要</a>
+        <a href="digital-environment.html" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">開発体制</a>
+        <a href="claude-opus-4-6.html" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">Claude Opus 4.6</a>
+        <a href="../index.html#contact" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">お問い合わせ</a>
+      </div>
+      <button class="md:hidden" id="site-menu-toggle">
+        <svg class="w-6 h-6 text-warm-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+    <div id="site-mobile-menu" class="md:hidden py-4 space-y-4">
+      <a href="../index.html#home" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">ホーム</a>
+      <a href="../index.html#services" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">サービス</a>
+      <a href="../index.html#works" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">実績</a>
+      <a href="../index.html#about" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">会社概要</a>
+      <a href="digital-environment.html" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">開発体制</a>
+      <a href="claude-opus-4-6.html" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">Claude Opus 4.6</a>
+      <a href="../index.html#contact" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">お問い合わせ</a>
+    </div>
+  </nav>
+</header>
+
+<!-- PAGE HEADER -->
 <div class="header">
   <div class="header-bar"></div>
   <h1>Multi-Device Development Architecture</h1>
@@ -767,6 +849,11 @@
   <p class="footer-text"><strong>AYCC</strong> — Anytime, Anywhere Claude Coding &nbsp;|&nbsp; Multi-Device Seamless Development Architecture</p>
 </div>
 
+<script>
+document.getElementById('site-menu-toggle').addEventListener('click', function() {
+  document.getElementById('site-mobile-menu').classList.toggle('menu-open');
+});
+</script>
 
 </body>
 </html>
