@@ -216,29 +216,24 @@
     margin-top: 2px;
   }
 
-  /* Connection indicator */
-  .connection-indicator {
+  /* Connection arrows (per device) */
+  .connection-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    width: 100%;
+    padding: 4px 0 2px;
+  }
+  .connection-cell {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 6px 0;
-  }
-  .connection-line {
-    width: 2px;
-    height: 14px;
-    background: var(--grad);
-    border-radius: 1px;
+    justify-content: center;
     opacity: 0.35;
-  }
-  .connection-arrow {
-    font-size: 0.65rem;
-    font-weight: 700;
+    font-size: 0.7rem;
     background: var(--grad);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     line-height: 1;
-    opacity: 0.5;
   }
 
   /* VPS box */
@@ -554,6 +549,7 @@
       gap: 16px;
     }
     .tab-bar, .tab-desc { display: none; }
+    .connection-row { display: none; }
     /* モバイル: Architecture → Value → Use Cases の順 */
     #col-value   { order: 2; }
     #col-arch    { order: 1; }
@@ -646,10 +642,12 @@
         </div>
       </div>
 
-      <!-- Connection indicator -->
-      <div class="connection-indicator">
-        <div class="connection-line"></div>
-        <span class="connection-arrow">▼</span>
+      <!-- Connection arrows -->
+      <div class="connection-row">
+        <div class="connection-cell">▼</div>
+        <div class="connection-cell">▼</div>
+        <div class="connection-cell">▼</div>
+        <div class="connection-cell">▼</div>
       </div>
 
       <!-- VPS -->
