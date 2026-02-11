@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>サイト内リンク取得ツール</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Kaku Gothic ProN', sans-serif;
+      background: linear-gradient(135deg, #fce4ec 0%, #e1bee7 30%, #bbdefb 100%);
+      min-height: 100vh;
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      padding: 24px 16px 8px;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      background: linear-gradient(135deg, #e91e8a, #9c27b0, #2196f3);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .app {
+      display: flex;
+      gap: 24px;
+      max-width: 1100px;
+      margin: 16px auto;
+      padding: 0 16px 32px;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .settings-panel {
+      flex: 0 0 340px;
+      position: sticky;
+      top: 16px;
+      align-self: flex-start;
+    }
+
+    .results-panel {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .section-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #9c27b0;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #f3e5f5;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #555;
+    }
+
+    .form-group input[type="url"],
+    .form-group input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+      background: #fff;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #9c27b0;
+      box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.1);
+    }
+
+    .range-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .range-row input[type="range"] {
+      flex: 1;
+      accent-color: #9c27b0;
+    }
+
+    .range-row .range-value {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #7b1fa2;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #e0e0e0, transparent);
+      margin: 20px 0;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #e91e8a, #9c27b0);
+      color: #fff;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(156, 39, 176, 0.3);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-stop {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ef5350, #e53935);
+      color: #fff;
+      transition: all 0.2s;
+      display: none;
+    }
+
+    .btn-stop:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3);
+    }
+
+    /* 進捗 */
+    .progress-area {
+      display: none;
+      margin-top: 16px;
+    }
+
+    .progress-bar-bg {
+      height: 6px;
+      background: #f3e5f5;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #e91e8a, #9c27b0, #2196f3);
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .progress-text {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    /* 結果エリア */
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .result-count {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .result-count strong {
+      color: #9c27b0;
+      font-size: 1.1rem;
+    }
+
+    .export-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .export-btn {
+      padding: 6px 14px;
+      border: 1.5px solid #9c27b0;
+      border-radius: 8px;
+      background: #fff;
+      color: #9c27b0;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .export-btn:hover {
+      background: #f3e5f5;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 16px;
+      color: #aaa;
+    }
+
+    .empty-state .icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+
+    /* リンクリスト */
+    .link-list {
+      list-style: none;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .link-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .link-list::-webkit-scrollbar-thumb {
+      background: #ce93d8;
+      border-radius: 3px;
+    }
+
+    .link-item {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f5f5f5;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      transition: background 0.15s;
+    }
+
+    .link-item:hover {
+      background: #fce4ec22;
+    }
+
+    .link-depth {
+      flex-shrink: 0;
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #fff;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    .depth-0 { background: #e91e8a; }
+    .depth-1 { background: #9c27b0; }
+    .depth-2 { background: #7b1fa2; }
+    .depth-3 { background: #5c6bc0; }
+    .depth-4 { background: #2196f3; }
+
+    .link-url {
+      word-break: break-all;
+      color: #555;
+    }
+
+    .link-url a {
+      color: #7b1fa2;
+      text-decoration: none;
+    }
+
+    .link-url a:hover {
+      text-decoration: underline;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #333;
+      color: #fff;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 100;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+      .app {
+        flex-direction: column;
+      }
+      .settings-panel {
+        flex: none;
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>サイト内リンク取得ツール</h1>
+    <p>URLを入力してサイト内のリンクを一覧取得</p>
+  </header>
+
+  <div class="app">
+    <!-- 設定パネル -->
+    <div class="panel settings-panel">
+      <div class="section-title">設定</div>
+
+      <div class="form-group">
+        <label for="target-url">対象URL</label>
+        <input type="url" id="target-url" placeholder="https://example.com" value="">
+      </div>
+
+      <div class="form-group">
+        <label>最大リンク数</label>
+        <div class="range-row">
+          <input type="range" id="max-links" min="10" max="500" value="100" step="10">
+          <span class="range-value" id="max-links-value">100</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>最大階層数</label>
+        <div class="range-row">
+          <input type="range" id="max-depth" min="1" max="5" value="2" step="1">
+          <span class="range-value" id="max-depth-value">2</span>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <button class="btn-primary" id="btn-start">リンクを取得</button>
+      <button class="btn-stop" id="btn-stop">停止</button>
+
+      <div class="progress-area" id="progress-area">
+        <div class="progress-bar-bg">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="progress-text" id="progress-text">準備中...</div>
+      </div>
+    </div>
+
+    <!-- 結果パネル -->
+    <div class="panel results-panel">
+      <div class="result-header" id="result-header" style="display:none;">
+        <div class="result-count">
+          取得リンク数: <strong id="link-count">0</strong>
+        </div>
+        <div class="export-buttons">
+          <button class="export-btn" id="btn-copy">テキストコピー</button>
+          <button class="export-btn" id="btn-csv">CSV DL</button>
+        </div>
+      </div>
+
+      <div class="empty-state" id="empty-state">
+        <div class="icon">&#128279;</div>
+        <div>URLを入力して「リンクを取得」を押してください</div>
+      </div>
+
+      <ul class="link-list" id="link-list"></ul>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const $ = (sel) => document.querySelector(sel);
+    const PROXY_URL = '/api/fetch';
+
+    let abortFlag = false;
+    let crawledUrls = new Map(); // url -> { depth, title }
+
+    // スライダー値表示
+    $('#max-links').addEventListener('input', (e) => {
+      $('#max-links-value').textContent = e.target.value;
+    });
+    $('#max-depth').addEventListener('input', (e) => {
+      $('#max-depth-value').textContent = e.target.value;
+    });
+
+    // トースト
+    function showToast(msg) {
+      const t = $('#toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    // URLの正規化
+    function normalizeUrl(base, href) {
+      try {
+        const u = new URL(href, base);
+        u.hash = '';
+        // 末尾スラッシュの統一はしない（別ページの可能性がある）
+        return u.href;
+      } catch {
+        return null;
+      }
+    }
+
+    // HTMLからリンク抽出
+    function extractLinks(html, baseUrl, targetOrigin) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const anchors = doc.querySelectorAll('a[href]');
+      const links = new Set();
+
+      for (const a of anchors) {
+        const href = a.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:')) {
+          continue;
+        }
+        const normalized = normalizeUrl(baseUrl, href);
+        if (!normalized) continue;
+
+        try {
+          const parsed = new URL(normalized);
+          if (parsed.origin === targetOrigin) {
+            links.add(normalized);
+          }
+        } catch {
+          // skip
+        }
+      }
+
+      return [...links];
+    }
+
+    // HTMLを取得
+    async function fetchHtml(url) {
+      const res = await fetch(PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      return { html: data.html, finalUrl: data.finalUrl || url };
+    }
+
+    // UI更新
+    function updateProgress(text, percent) {
+      $('#progress-text').textContent = text;
+      $('#progress-bar').style.width = percent + '%';
+    }
+
+    function renderResults() {
+      const list = $('#link-list');
+      list.innerHTML = '';
+
+      for (const [url, info] of crawledUrls) {
+        const li = document.createElement('li');
+        li.className = 'link-item';
+
+        const depthClass = `depth-${Math.min(info.depth, 4)}`;
+        li.innerHTML = `
+          <span class="link-depth ${depthClass}">${info.depth}</span>
+          <span class="link-url"><a href="${escapeHtml(url)}" target="_blank" rel="noopener">${escapeHtml(url)}</a></span>
+        `;
+        list.appendChild(li);
+      }
+
+      $('#link-count').textContent = crawledUrls.size;
+      $('#result-header').style.display = 'flex';
+      $('#empty-state').style.display = 'none';
+    }
+
+    function escapeHtml(str) {
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+
+    // クロール
+    async function crawl() {
+      const inputUrl = $('#target-url').value.trim();
+      if (!inputUrl) {
+        showToast('URLを入力してください');
+        return;
+      }
+
+      let startUrl;
+      try {
+        startUrl = new URL(inputUrl);
+      } catch {
+        showToast('有効なURLを入力してください');
+        return;
+      }
+
+      const maxLinks = parseInt($('#max-links').value);
+      const maxDepth = parseInt($('#max-depth').value);
+      const targetOrigin = startUrl.origin;
+
+      // リセット
+      abortFlag = false;
+      crawledUrls = new Map();
+      $('#link-list').innerHTML = '';
+      $('#result-header').style.display = 'none';
+      $('#empty-state').style.display = 'none';
+      $('#btn-start').style.display = 'none';
+      $('#btn-stop').style.display = 'block';
+      $('#progress-area').style.display = 'block';
+      updateProgress('開始URLを取得中...', 5);
+
+      // BFSでクロール
+      let queue = [{ url: startUrl.href, depth: 0 }];
+      crawledUrls.set(startUrl.href, { depth: 0 });
+
+      try {
+        while (queue.length > 0 && !abortFlag) {
+          const { url, depth } = queue.shift();
+
+          if (crawledUrls.size > maxLinks) break;
+
+          const pct = Math.min(95, Math.round((crawledUrls.size / maxLinks) * 100));
+          updateProgress(`取得中... ${crawledUrls.size}/${maxLinks} (階層${depth})`, pct);
+
+          let html, finalUrl;
+          try {
+            const result = await fetchHtml(url);
+            html = result.html;
+            finalUrl = result.finalUrl;
+          } catch (err) {
+            console.warn(`Failed to fetch ${url}:`, err.message);
+            continue;
+          }
+
+          if (abortFlag) break;
+
+          // リンク抽出
+          const links = extractLinks(html, finalUrl, targetOrigin);
+
+          for (const link of links) {
+            if (crawledUrls.size >= maxLinks) break;
+            if (crawledUrls.has(link)) continue;
+
+            crawledUrls.set(link, { depth: depth + 1 });
+
+            // 次の階層もクロールする場合はキューに追加
+            if (depth + 1 < maxDepth) {
+              queue.push({ url: link, depth: depth + 1 });
+            }
+          }
+
+          // 途中経過を表示
+          renderResults();
+        }
+      } catch (err) {
+        showToast('エラー: ' + err.message);
+      }
+
+      // 完了
+      updateProgress(`完了 - ${crawledUrls.size}件のリンクを取得`, 100);
+      $('#btn-start').style.display = 'block';
+      $('#btn-stop').style.display = 'none';
+      renderResults();
+
+      setTimeout(() => {
+        $('#progress-area').style.display = 'none';
+      }, 2000);
+    }
+
+    // 停止
+    $('#btn-stop').addEventListener('click', () => {
+      abortFlag = true;
+      showToast('停止しました');
+    });
+
+    // 開始
+    $('#btn-start').addEventListener('click', crawl);
+
+    // Enterキーでも開始
+    $('#target-url').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') crawl();
+    });
+
+    // テキストコピー
+    $('#btn-copy').addEventListener('click', () => {
+      const lines = [];
+      for (const [url, info] of crawledUrls) {
+        lines.push(url);
+      }
+      navigator.clipboard.writeText(lines.join('\n')).then(() => {
+        showToast('コピーしました');
+      });
+    });
+
+    // CSVダウンロード
+    $('#btn-csv').addEventListener('click', () => {
+      const rows = [['URL', '階層']];
+      for (const [url, info] of crawledUrls) {
+        rows.push([url, info.depth]);
+      }
+      const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+      const bom = '\uFEFF';
+      const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'links.csv';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+  </script>
+</body>
+</html>
