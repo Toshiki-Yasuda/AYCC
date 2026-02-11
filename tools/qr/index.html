@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QRコード作成ツール</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Kaku Gothic ProN', sans-serif;
+      background: linear-gradient(135deg, #fce4ec 0%, #e1bee7 30%, #bbdefb 100%);
+      min-height: 100vh;
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      padding: 24px 16px 8px;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      background: linear-gradient(135deg, #e91e8a, #9c27b0, #2196f3);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .app {
+      display: flex;
+      gap: 24px;
+      max-width: 1100px;
+      margin: 16px auto;
+      padding: 0 16px 32px;
+    }
+
+    .panel {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .preview-panel {
+      flex: 0 0 360px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: sticky;
+      top: 16px;
+      align-self: flex-start;
+    }
+
+    .section-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #9c27b0;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #f3e5f5;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #555;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="url"],
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+      background: #fff;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 72px;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #9c27b0;
+      box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.1);
+    }
+
+    .form-group input[type="color"] {
+      width: 48px;
+      height: 36px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2px;
+      cursor: pointer;
+    }
+
+    .color-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .color-row span {
+      font-size: 0.85rem;
+      color: #666;
+      min-width: 50px;
+    }
+
+    .style-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .style-btn {
+      padding: 8px 4px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      background: #fff;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .style-btn:hover {
+      border-color: #ce93d8;
+      background: #fce4ec;
+    }
+
+    .style-btn.active {
+      border-color: #9c27b0;
+      background: #f3e5f5;
+      font-weight: 700;
+      color: #7b1fa2;
+    }
+
+    .range-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .range-row input[type="range"] {
+      flex: 1;
+      accent-color: #9c27b0;
+    }
+
+    .range-row .range-value {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #7b1fa2;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    .logo-upload {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-upload-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #e91e8a, #9c27b0);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .logo-upload-btn:hover { opacity: 0.85; }
+
+    .logo-preview {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      object-fit: contain;
+      border: 1.5px solid #e0e0e0;
+      display: none;
+    }
+
+    .logo-clear {
+      font-size: 0.8rem;
+      color: #e91e63;
+      cursor: pointer;
+      text-decoration: underline;
+      display: none;
+    }
+
+    #qr-preview {
+      margin: 16px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 280px;
+    }
+
+    #qr-preview canvas,
+    #qr-preview svg {
+      border-radius: 12px;
+    }
+
+    .download-buttons {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .dl-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dl-btn-png {
+      background: linear-gradient(135deg, #e91e8a, #9c27b0);
+      color: #fff;
+    }
+
+    .dl-btn-svg {
+      background: linear-gradient(135deg, #9c27b0, #2196f3);
+      color: #fff;
+    }
+
+    .dl-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(156, 39, 176, 0.3);
+    }
+
+    .gradient-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .gradient-toggle input[type="checkbox"] {
+      accent-color: #9c27b0;
+      width: 16px;
+      height: 16px;
+    }
+
+    .gradient-toggle label {
+      font-size: 0.85rem;
+      color: #555;
+      cursor: pointer;
+    }
+
+    .gradient-options {
+      display: none;
+      padding: 10px;
+      background: #fafafa;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+
+    .gradient-options.show { display: block; }
+
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #e0e0e0, transparent);
+      margin: 20px 0;
+    }
+
+    .placeholder-msg {
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .app {
+        flex-direction: column;
+      }
+      .preview-panel {
+        flex: none;
+        position: static;
+        order: -1;
+      }
+      .style-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>QRコード作成ツール</h1>
+    <p>テキストやURLからカスタムQRコードを生成</p>
+  </header>
+
+  <div class="app">
+    <!-- 設定パネル -->
+    <div class="panel settings-panel">
+
+      <!-- 入力 -->
+      <div class="section-title">入力データ</div>
+      <div class="form-group">
+        <label for="qr-data">テキスト / URL</label>
+        <textarea id="qr-data" placeholder="https://aycc.pages.dev/">https://aycc.pages.dev/</textarea>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- ドットスタイル -->
+      <div class="section-title">ドットスタイル</div>
+      <div class="form-group">
+        <label>QRコードのドット形状</label>
+        <div class="style-grid" id="dot-style-grid">
+          <button class="style-btn active" data-value="square">Square</button>
+          <button class="style-btn" data-value="dots">Dots</button>
+          <button class="style-btn" data-value="rounded">Rounded</button>
+          <button class="style-btn" data-value="classy">Classy</button>
+          <button class="style-btn" data-value="classy-rounded">Classy R.</button>
+          <button class="style-btn" data-value="extra-rounded">Extra R.</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>コーナー（四隅）の形状</label>
+        <div class="style-grid" id="corner-style-grid">
+          <button class="style-btn active" data-value="square">Square</button>
+          <button class="style-btn" data-value="dot">Dot</button>
+          <button class="style-btn" data-value="extra-rounded">Extra R.</button>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- 色設定 -->
+      <div class="section-title">色設定</div>
+      <div class="form-group">
+        <div class="color-row">
+          <span>前景色</span>
+          <input type="color" id="dot-color" value="#333333">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="color-row">
+          <span>背景色</span>
+          <input type="color" id="bg-color" value="#ffffff">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="color-row">
+          <span>コーナー色</span>
+          <input type="color" id="corner-color" value="#333333">
+        </div>
+      </div>
+
+      <!-- グラデーション -->
+      <div class="form-group">
+        <div class="gradient-toggle">
+          <input type="checkbox" id="use-gradient">
+          <label for="use-gradient">グラデーションを使用</label>
+        </div>
+        <div class="gradient-options" id="gradient-options">
+          <div class="form-group">
+            <label>タイプ</label>
+            <select id="gradient-type">
+              <option value="linear">リニア</option>
+              <option value="radial">ラジアル</option>
+            </select>
+          </div>
+          <div class="color-row" style="margin-top: 8px;">
+            <span>開始色</span>
+            <input type="color" id="gradient-start" value="#e91e8a">
+          </div>
+          <div class="color-row" style="margin-top: 8px;">
+            <span>終了色</span>
+            <input type="color" id="gradient-end" value="#2196f3">
+          </div>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- サイズ -->
+      <div class="section-title">サイズ</div>
+      <div class="form-group">
+        <label>QRコードサイズ</label>
+        <div class="range-row">
+          <input type="range" id="qr-size" min="150" max="600" value="300" step="10">
+          <span class="range-value" id="qr-size-value">300px</span>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- ロゴ -->
+      <div class="section-title">ロゴ / 画像</div>
+      <div class="form-group">
+        <div class="logo-upload">
+          <button class="logo-upload-btn" id="logo-upload-btn">画像を選択</button>
+          <img class="logo-preview" id="logo-preview" alt="ロゴ">
+          <span class="logo-clear" id="logo-clear">削除</span>
+          <input type="file" id="logo-input" accept="image/*" style="display: none;">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>ロゴサイズ</label>
+        <div class="range-row">
+          <input type="range" id="logo-size" min="0.1" max="0.5" value="0.3" step="0.05">
+          <span class="range-value" id="logo-size-value">0.3</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>ロゴ余白</label>
+        <div class="range-row">
+          <input type="range" id="logo-margin" min="0" max="20" value="5" step="1">
+          <span class="range-value" id="logo-margin-value">5px</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- プレビューパネル -->
+    <div class="panel preview-panel">
+      <div class="section-title">プレビュー</div>
+      <div id="qr-preview">
+        <span class="placeholder-msg">データを入力してください</span>
+      </div>
+      <div class="download-buttons">
+        <button class="dl-btn dl-btn-png" id="dl-png">PNG ダウンロード</button>
+        <button class="dl-btn dl-btn-svg" id="dl-svg">SVG ダウンロード</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  <script>
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => document.querySelectorAll(sel);
+
+    // 状態
+    let logoDataUrl = null;
+    let dotStyle = 'square';
+    let cornerStyle = 'square';
+    let qrCode = null;
+    let debounceTimer = null;
+
+    // 初期化
+    function initQR() {
+      const container = $('#qr-preview');
+      container.innerHTML = '';
+      const options = buildOptions();
+      qrCode = new QRCodeStyling(options);
+      qrCode.append(container);
+    }
+
+    function buildOptions() {
+      const data = $('#qr-data').value.trim();
+      const size = parseInt($('#qr-size').value);
+      const dotColor = $('#dot-color').value;
+      const bgColor = $('#bg-color').value;
+      const cornerColor = $('#corner-color').value;
+      const useGradient = $('#use-gradient').checked;
+
+      const options = {
+        width: size,
+        height: size,
+        data: data || ' ',
+        type: 'canvas',
+        dotsOptions: {
+          type: dotStyle,
+        },
+        cornersSquareOptions: {
+          type: cornerStyle,
+          color: cornerColor,
+        },
+        cornersDotOptions: {
+          type: cornerStyle === 'extra-rounded' ? 'dot' : undefined,
+          color: cornerColor,
+        },
+        backgroundOptions: {
+          color: bgColor,
+        },
+        qrOptions: {
+          errorCorrectionLevel: 'H',
+        },
+      };
+
+      // グラデーション or 単色
+      if (useGradient) {
+        const gradType = $('#gradient-type').value;
+        const gradStart = $('#gradient-start').value;
+        const gradEnd = $('#gradient-end').value;
+        options.dotsOptions.gradient = {
+          type: gradType,
+          colorStops: [
+            { offset: 0, color: gradStart },
+            { offset: 1, color: gradEnd },
+          ],
+        };
+      } else {
+        options.dotsOptions.color = dotColor;
+      }
+
+      // ロゴ
+      if (logoDataUrl) {
+        const logoSizeRatio = parseFloat($('#logo-size').value);
+        const logoMargin = parseInt($('#logo-margin').value);
+        options.image = logoDataUrl;
+        options.imageOptions = {
+          crossOrigin: 'anonymous',
+          margin: logoMargin,
+          imageSize: logoSizeRatio,
+        };
+      }
+
+      return options;
+    }
+
+    function updateQR() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const container = $('#qr-preview');
+        container.innerHTML = '';
+        const options = buildOptions();
+        qrCode = new QRCodeStyling(options);
+        qrCode.append(container);
+      }, 200);
+    }
+
+    // スタイルボタン
+    function setupStyleButtons(gridId, callback) {
+      const grid = $(`#${gridId}`);
+      grid.addEventListener('click', (e) => {
+        const btn = e.target.closest('.style-btn');
+        if (!btn) return;
+        grid.querySelectorAll('.style-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        callback(btn.dataset.value);
+        updateQR();
+      });
+    }
+
+    setupStyleButtons('dot-style-grid', (val) => { dotStyle = val; });
+    setupStyleButtons('corner-style-grid', (val) => { cornerStyle = val; });
+
+    // 入力変更
+    $('#qr-data').addEventListener('input', updateQR);
+
+    // 色変更
+    $$('#dot-color, #bg-color, #corner-color, #gradient-start, #gradient-end').forEach((el) => {
+      el.addEventListener('input', updateQR);
+    });
+
+    // グラデーション切り替え
+    $('#use-gradient').addEventListener('change', (e) => {
+      $('#gradient-options').classList.toggle('show', e.target.checked);
+      updateQR();
+    });
+
+    $('#gradient-type').addEventListener('change', updateQR);
+
+    // サイズ
+    $('#qr-size').addEventListener('input', (e) => {
+      $('#qr-size-value').textContent = e.target.value + 'px';
+      updateQR();
+    });
+
+    // ロゴ
+    $('#logo-upload-btn').addEventListener('click', () => {
+      $('#logo-input').click();
+    });
+
+    $('#logo-input').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        logoDataUrl = ev.target.result;
+        $('#logo-preview').src = logoDataUrl;
+        $('#logo-preview').style.display = 'block';
+        $('#logo-clear').style.display = 'inline';
+        updateQR();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    $('#logo-clear').addEventListener('click', () => {
+      logoDataUrl = null;
+      $('#logo-input').value = '';
+      $('#logo-preview').style.display = 'none';
+      $('#logo-clear').style.display = 'none';
+      updateQR();
+    });
+
+    $('#logo-size').addEventListener('input', (e) => {
+      $('#logo-size-value').textContent = e.target.value;
+      updateQR();
+    });
+
+    $('#logo-margin').addEventListener('input', (e) => {
+      $('#logo-margin-value').textContent = e.target.value + 'px';
+      updateQR();
+    });
+
+    // ダウンロード
+    $('#dl-png').addEventListener('click', () => {
+      if (qrCode) qrCode.download({ name: 'qrcode', extension: 'png' });
+    });
+
+    $('#dl-svg').addEventListener('click', () => {
+      if (qrCode) qrCode.download({ name: 'qrcode', extension: 'svg' });
+    });
+
+    // 初回生成
+    initQR();
+  </script>
+</body>
+</html>
