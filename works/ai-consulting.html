@@ -139,6 +139,48 @@
             opacity: 1;
         }
 
+        /* セクションタイトル スライドイン */
+        .slide-in-title {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .slide-in-divider {
+            opacity: 0;
+            transform: scaleX(0);
+            transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
+        }
+        .slide-in-subtitle {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.7s ease 0.35s, transform 0.7s ease 0.35s;
+        }
+        .slide-in-title.visible { opacity: 1; transform: translateX(0); }
+        .slide-in-divider.visible { opacity: 1; transform: scaleX(1); }
+        .slide-in-subtitle.visible { opacity: 1; transform: translateX(0); }
+
+        /* フェードインアニメーション */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .fade-in-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* スタガーフェードイン */
+        .stagger-item {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .stagger-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* 成果物プレビューカード */
         .deliverable-card {
             position: relative;
@@ -222,20 +264,20 @@
             </nav>
 
             <!-- タイトル -->
-            <div class="text-center mb-16">
-                <p class="text-xs font-medium text-navy-500 tracking-widest mb-4">PERSONAL CONSULTING</p>
-                <h1 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-2">
+            <div class="text-center mb-16 section-title-group">
+                <p class="text-xs font-medium text-navy-500 tracking-widest mb-4 slide-in-subtitle">PERSONAL CONSULTING</p>
+                <h1 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-2 slide-in-title">
                     AI活用 個人コンサルティング
                 </h1>
-                <p class="text-sm text-warm-gray-400 tracking-wider mb-4">仕事にも暮らしにも ── あなたに合わせたマンツーマンのAI活用支援</p>
-                <div class="divider"></div>
+                <p class="text-sm text-warm-gray-400 tracking-wider mb-4 slide-in-subtitle">仕事にも暮らしにも ── あなたに合わせたマンツーマンのAI活用支援</p>
+                <div class="divider slide-in-divider"></div>
             </div>
 
             <!-- コンテンツ -->
             <div class="max-w-4xl mx-auto">
 
                 <!-- イントロ -->
-                <div class="bg-white p-8 md:p-12 border-elegant mb-10">
+                <div class="bg-white p-8 md:p-12 border-elegant mb-10 fade-in-section">
                     <p class="text-warm-gray-600 leading-relaxed mb-4">
                         「AIが便利らしい」「ChatGPTを使ってみたい」 ── そう思っても、自分の仕事や暮らしにどう活かせばいいのか分からない、という方は少なくありません。
                     </p>
@@ -248,13 +290,13 @@
                 </div>
 
                 <!-- こんな方へ -->
-                <div class="mb-10">
-                    <div class="text-center mb-8">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3">こんな方へ</h2>
-                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto"></div>
+                <div class="mb-10 fade-in-section">
+                    <div class="text-center mb-8 section-title-group">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3 slide-in-title">こんな方へ</h2>
+                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto slide-in-divider"></div>
                     </div>
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div class="bg-white p-6 border-elegant">
+                    <div class="grid md:grid-cols-2 gap-4 stagger-container">
+                        <div class="bg-white p-6 border-elegant stagger-item">
                             <div class="flex items-start">
                                 <span class="text-rose-500 mr-3 mt-0.5 flex-shrink-0">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
@@ -262,7 +304,7 @@
                                 <p class="text-warm-gray-600 text-sm leading-relaxed">ChatGPTやClaudeを使い始めたが、もっと効果的な使い方を知りたい</p>
                             </div>
                         </div>
-                        <div class="bg-white p-6 border-elegant">
+                        <div class="bg-white p-6 border-elegant stagger-item">
                             <div class="flex items-start">
                                 <span class="text-rose-500 mr-3 mt-0.5 flex-shrink-0">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
@@ -270,7 +312,7 @@
                                 <p class="text-warm-gray-600 text-sm leading-relaxed">AIを使いたいが、自分の仕事や生活にどう活かせばいいか分からない</p>
                             </div>
                         </div>
-                        <div class="bg-white p-6 border-elegant">
+                        <div class="bg-white p-6 border-elegant stagger-item">
                             <div class="flex items-start">
                                 <span class="text-rose-500 mr-3 mt-0.5 flex-shrink-0">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
@@ -278,7 +320,7 @@
                                 <p class="text-warm-gray-600 text-sm leading-relaxed">調べ物、申請書類、補助金の情報整理など、日常の「面倒」をAIで楽にしたい</p>
                             </div>
                         </div>
-                        <div class="bg-white p-6 border-elegant">
+                        <div class="bg-white p-6 border-elegant stagger-item">
                             <div class="flex items-start">
                                 <span class="text-rose-500 mr-3 mt-0.5 flex-shrink-0">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
@@ -290,13 +332,13 @@
                 </div>
 
                 <!-- AYCCの特徴 -->
-                <div class="mb-10">
-                    <div class="text-center mb-8">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3">AYCCのコンサルティングの特徴</h2>
-                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto"></div>
+                <div class="mb-10 fade-in-section">
+                    <div class="text-center mb-8 section-title-group">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3 slide-in-title">AYCCのコンサルティングの特徴</h2>
+                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto slide-in-divider"></div>
                     </div>
-                    <div class="space-y-4">
-                        <div class="bg-white p-6 md:p-8 border-elegant">
+                    <div class="space-y-4 stagger-container">
+                        <div class="bg-white p-6 md:p-8 border-elegant stagger-item">
                             <div class="flex items-start gap-4">
                                 <div class="flex-shrink-0 w-10 h-10 bg-navy-50 rounded-full flex items-center justify-center">
                                     <svg class="w-5 h-5 text-navy-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
@@ -310,7 +352,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-white p-6 md:p-8 border-elegant">
+                        <div class="bg-white p-6 md:p-8 border-elegant stagger-item">
                             <div class="flex items-start gap-4">
                                 <div class="flex-shrink-0 w-10 h-10 bg-rose-50 rounded-full flex items-center justify-center">
                                     <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
@@ -323,7 +365,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-white p-6 md:p-8 border-elegant">
+                        <div class="bg-white p-6 md:p-8 border-elegant stagger-item">
                             <div class="flex items-start gap-4">
                                 <div class="flex-shrink-0 w-10 h-10 bg-navy-50 rounded-full flex items-center justify-center">
                                     <svg class="w-5 h-5 text-navy-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
@@ -336,7 +378,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-white p-6 md:p-8 border-elegant">
+                        <div class="bg-white p-6 md:p-8 border-elegant stagger-item">
                             <div class="flex items-start gap-4">
                                 <div class="flex-shrink-0 w-10 h-10 bg-rose-50 rounded-full flex items-center justify-center">
                                     <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
@@ -353,30 +395,30 @@
                 </div>
 
                 <!-- ご利用の流れ -->
-                <div class="mb-10">
-                    <div class="text-center mb-8">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3">ご利用の流れ</h2>
-                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto"></div>
+                <div class="mb-10 fade-in-section">
+                    <div class="text-center mb-8 section-title-group">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3 slide-in-title">ご利用の流れ</h2>
+                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto slide-in-divider"></div>
                     </div>
                     <div class="relative">
                         <div class="flow-line hidden md:block" style="top: 20px; left: 60px; right: 60px;"></div>
-                        <div class="grid md:grid-cols-4 gap-6 md:gap-4">
-                            <div class="text-center relative z-10">
+                        <div class="grid md:grid-cols-4 gap-6 md:gap-4 stagger-container">
+                            <div class="text-center relative z-10 stagger-item">
                                 <div class="w-10 h-10 bg-white border-2 border-navy-500 text-navy-500 rounded-full flex items-center justify-center mx-auto mb-4 text-sm font-medium">1</div>
                                 <h3 class="font-medium text-warm-gray-800 text-sm mb-2">ヒアリング</h3>
                                 <p class="text-warm-gray-400 text-xs leading-relaxed">お悩み・目標・<br>スキルレベルを確認</p>
                             </div>
-                            <div class="text-center relative z-10">
+                            <div class="text-center relative z-10 stagger-item">
                                 <div class="w-10 h-10 bg-white border-2 border-navy-500 text-navy-500 rounded-full flex items-center justify-center mx-auto mb-4 text-sm font-medium">2</div>
                                 <h3 class="font-medium text-warm-gray-800 text-sm mb-2">プラン設計</h3>
                                 <p class="text-warm-gray-400 text-xs leading-relaxed">あなた専用の<br>実施プランを作成</p>
                             </div>
-                            <div class="text-center relative z-10">
+                            <div class="text-center relative z-10 stagger-item">
                                 <div class="w-10 h-10 bg-white border-2 border-rose-500 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4 text-sm font-medium">3</div>
                                 <h3 class="font-medium text-warm-gray-800 text-sm mb-2">セッション</h3>
                                 <p class="text-warm-gray-400 text-xs leading-relaxed">Notta録音しながら<br>マンツーマンで実践</p>
                             </div>
-                            <div class="text-center relative z-10">
+                            <div class="text-center relative z-10 stagger-item">
                                 <div class="w-10 h-10 bg-white border-2 border-rose-500 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4 text-sm font-medium">4</div>
                                 <h3 class="font-medium text-warm-gray-800 text-sm mb-2">レポート配信</h3>
                                 <p class="text-warm-gray-400 text-xs leading-relaxed">振り返りレポート +<br>アクションアイテム</p>
@@ -386,17 +428,17 @@
                 </div>
 
                 <!-- 成果物のご紹介 -->
-                <div class="mb-10">
-                    <div class="text-center mb-8">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3">お渡しする成果物</h2>
-                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto"></div>
-                        <p class="text-warm-gray-400 text-xs mt-4">セッションごとに以下の資料をお渡しします</p>
+                <div class="mb-10 fade-in-section">
+                    <div class="text-center mb-8 section-title-group">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3 slide-in-title">お渡しする成果物</h2>
+                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto slide-in-divider"></div>
+                        <p class="text-warm-gray-400 text-xs mt-4 slide-in-subtitle">セッションごとに以下の資料をお渡しします</p>
                     </div>
 
-                    <div class="grid md:grid-cols-2 gap-6">
+                    <div class="grid md:grid-cols-2 gap-6 stagger-container">
 
                         <!-- 実施プラン -->
-                        <div class="deliverable-card bg-white border-elegant overflow-hidden">
+                        <div class="deliverable-card bg-white border-elegant overflow-hidden stagger-item">
                             <div class="bg-gradient-to-r from-navy-800 to-navy-700 px-6 py-4">
                                 <p class="text-navy-300 text-xs tracking-widest mb-1">DELIVERABLE 01</p>
                                 <h3 class="text-white font-medium">実施プラン</h3>
@@ -428,7 +470,7 @@
                         </div>
 
                         <!-- 振り返りレポート -->
-                        <div class="deliverable-card bg-white border-elegant overflow-hidden">
+                        <div class="deliverable-card bg-white border-elegant overflow-hidden stagger-item">
                             <div class="bg-gradient-to-r from-rose-800 to-rose-700 px-6 py-4">
                                 <p class="text-rose-300 text-xs tracking-widest mb-1">DELIVERABLE 02</p>
                                 <h3 class="text-white font-medium">振り返りレポート</h3>
@@ -463,10 +505,10 @@
                 </div>
 
                 <!-- セッション例 -->
-                <div class="mb-10">
-                    <div class="text-center mb-8">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3">セッションテーマの例</h2>
-                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto"></div>
+                <div class="mb-10 fade-in-section">
+                    <div class="text-center mb-8 section-title-group">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3 slide-in-title">セッションテーマの例</h2>
+                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto slide-in-divider"></div>
                     </div>
                     <div class="bg-white p-6 md:p-8 border-elegant">
                         <div class="grid md:grid-cols-2 gap-6">
@@ -546,10 +588,10 @@
                 </div>
 
                 <!-- 料金 -->
-                <div class="mb-10">
-                    <div class="text-center mb-8">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3">料金</h2>
-                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto"></div>
+                <div class="mb-10 fade-in-section">
+                    <div class="text-center mb-8 section-title-group">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3 slide-in-title">料金</h2>
+                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto slide-in-divider"></div>
                     </div>
                     <div class="bg-white border-elegant overflow-hidden">
                         <div class="p-6 md:p-8">
@@ -588,10 +630,10 @@
                 </div>
 
                 <!-- 体験者の声 -->
-                <div class="mb-10">
-                    <div class="text-center mb-8">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3">体験者の声</h2>
-                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto"></div>
+                <div class="mb-10 fade-in-section">
+                    <div class="text-center mb-8 section-title-group">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3 slide-in-title">体験者の声</h2>
+                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto slide-in-divider"></div>
                     </div>
                     <div class="bg-white border-elegant p-8 md:p-10 text-center">
                         <p class="text-xs text-navy-500 tracking-widest mb-3">COMING SOON</p>
@@ -637,11 +679,67 @@
 
     <!-- JavaScript -->
     <script>
+        // モバイルメニュー
         const menuToggle = document.getElementById('menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
         menuToggle.addEventListener('click', () => {
             mobileMenu.classList.toggle('menu-open');
         });
+
+        // セクションタイトル スライドイン
+        const titleGroups = document.querySelectorAll('.section-title-group');
+        const titleObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.querySelectorAll('.slide-in-title, .slide-in-divider, .slide-in-subtitle').forEach(el => {
+                        el.classList.add('visible');
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+        titleGroups.forEach(group => titleObserver.observe(group));
+
+        // フェードインアニメーション
+        const fadeInSections = document.querySelectorAll('.fade-in-section');
+        const fadeInObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        fadeInSections.forEach(section => fadeInObserver.observe(section));
+
+        // スタガーフェードイン（子要素が順番に現れる）
+        const staggerContainers = document.querySelectorAll('.stagger-container');
+        const staggerObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const items = entry.target.querySelectorAll('.stagger-item');
+                    items.forEach((item, i) => {
+                        setTimeout(() => {
+                            item.classList.add('visible');
+                        }, i * 120);
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        staggerContainers.forEach(container => staggerObserver.observe(container));
+
+        // 単独のスタガーアイテム
+        const soloItems = document.querySelectorAll('.fade-in-section .stagger-item:not(.stagger-container .stagger-item)');
+        const soloObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        soloItems.forEach(item => soloObserver.observe(item));
     </script>
 </body>
 </html>
