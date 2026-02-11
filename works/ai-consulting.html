@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ChatGPT・Claude等のAIツール活用を、あなたの業務に合わせてマンツーマンで支援。セッション録音からカスタムレポートまで、学びが確実に残る仕組みです。">
+    <title>AI活用 個人コンサルティング | AYCC</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+    <link rel="apple-touch-icon" href="../images/favicon.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rose': {
+                            50: '#fdf2f4',
+                            100: '#fce7eb',
+                            200: '#f9d0d9',
+                            300: '#f4a9ba',
+                            400: '#ec7a95',
+                            500: '#d4a5a5',
+                            600: '#b8848f',
+                            700: '#9a6b75',
+                            800: '#7d5660',
+                            900: '#5c4048',
+                        },
+                        'navy': {
+                            50: '#f5f7fa',
+                            100: '#eaeef4',
+                            200: '#d0dbe8',
+                            300: '#a7bdd4',
+                            400: '#7899bc',
+                            500: '#5a7ea5',
+                            600: '#47658a',
+                            700: '#3a5270',
+                            800: '#2d3e54',
+                            900: '#1e2a3a',
+                        },
+                        'warm-gray': {
+                            50: '#fafaf9',
+                            100: '#f5f5f4',
+                            200: '#e7e5e4',
+                            300: '#d6d3d1',
+                            400: '#a8a29e',
+                            500: '#78716c',
+                            600: '#57534e',
+                            700: '#44403c',
+                            800: '#292524',
+                            900: '#1c1917',
+                        }
+                    },
+                    fontFamily: {
+                        'serif': ['Noto Serif JP', 'serif'],
+                        'sans': ['Noto Sans JP', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            color: #44403c;
+            letter-spacing: 0.02em;
+        }
+
+        .font-elegant {
+            font-family: 'Noto Serif JP', serif;
+        }
+
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, #d4a5a5, #a7bdd4);
+            margin: 0 auto;
+        }
+
+        .border-elegant {
+            border: 1px solid rgba(168, 162, 158, 0.3);
+        }
+
+        .link-underline {
+            position: relative;
+        }
+
+        .link-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+
+        .link-underline:hover::after {
+            width: 100%;
+        }
+
+        /* モバイルメニューアニメーション */
+        #mobile-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: max-height 0.6s ease-out, opacity 0.6s ease-out;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+            margin-top: 0;
+        }
+
+        #mobile-menu.menu-open {
+            max-height: 500px;
+            opacity: 1;
+        }
+
+        /* 成果物プレビューカード */
+        .deliverable-card {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .deliverable-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        /* ステップフロー */
+        .flow-line {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            height: 2px;
+            background: linear-gradient(90deg, #d4a5a5, #a7bdd4);
+            z-index: 0;
+        }
+
+        @media (max-width: 767px) {
+            .flow-line {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-warm-gray-50">
+
+    <!-- ヘッダー -->
+    <header class="bg-white/90 backdrop-blur-sm border-b border-warm-gray-200 sticky top-0 z-50">
+        <nav class="container mx-auto pl-2 pr-6 py-5 relative">
+            <div class="flex justify-between items-center">
+                <!-- ロゴ -->
+                <a href="../index.html" class="flex items-center space-x-4">
+                    <img src="../images/logo.png" alt="AYCC Logo" class="h-10">
+                </a>
+
+                <!-- ナビゲーション -->
+                <div class="hidden lg:flex space-x-10">
+                    <a href="../index.html#home" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">ホーム</a>
+                    <a href="../index.html#services" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">サービス</a>
+                    <a href="../index.html#works" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">実績</a>
+                    <a href="../index.html#about" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">会社概要</a>
+                    <a href="digital-environment.html" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">開発体制</a>
+                    <a href="claude-opus-4-6.html" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">Claude Opus 4.6</a>
+                    <a href="../index.html#contact" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">お問い合わせ</a>
+                </div>
+
+                <!-- ハンバーガーメニュー(モバイル) -->
+                <button class="lg:hidden" id="menu-toggle">
+                    <svg class="w-6 h-6 text-warm-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- モバイルメニュー -->
+            <div id="mobile-menu" class="lg:hidden py-4 space-y-4">
+                <a href="../index.html#home" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">ホーム</a>
+                <a href="../index.html#services" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">サービス</a>
+                <a href="../index.html#works" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">実績</a>
+                <a href="../index.html#about" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">会社概要</a>
+                <a href="digital-environment.html" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">開発体制</a>
+                <a href="claude-opus-4-6.html" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">Claude Opus 4.6</a>
+                <a href="../index.html#contact" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">お問い合わせ</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="py-16 md:py-24">
+        <div class="container mx-auto px-6">
+
+            <!-- パンくずリスト -->
+            <nav class="mb-8 text-sm text-warm-gray-500">
+                <a href="../index.html" class="hover:text-warm-gray-700">ホーム</a>
+                <span class="mx-2">/</span>
+                <span class="text-warm-gray-700">AI活用 個人コンサルティング</span>
+            </nav>
+
+            <!-- タイトル -->
+            <div class="text-center mb-16">
+                <p class="text-xs font-medium text-navy-500 tracking-widest mb-4">PERSONAL CONSULTING</p>
+                <h1 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-2">
+                    AI活用 個人コンサルティング
+                </h1>
+                <p class="text-sm text-warm-gray-400 tracking-wider mb-4">あなたの業務に合わせた、マンツーマンのAI活用支援</p>
+                <div class="divider"></div>
+            </div>
+
+            <!-- コンテンツ -->
+            <div class="max-w-4xl mx-auto">
+
+                <!-- イントロ -->
+                <div class="bg-white p-8 md:p-12 border-elegant mb-10">
+                    <p class="text-warm-gray-600 leading-relaxed mb-4">
+                        「AIが便利らしい」「ChatGPTを使ってみたい」 ── そう思っても、自分の仕事にどう活かせばいいのか分からない、という方は少なくありません。
+                    </p>
+                    <p class="text-warm-gray-600 leading-relaxed mb-4">
+                        AYCCの個人コンサルティングは、<span class="font-medium text-warm-gray-800">あなたの業務内容やスキルレベルに合わせて、完全オーダーメイドで設計</span>するマンツーマンセッションです。
+                    </p>
+                    <p class="text-warm-gray-600 leading-relaxed">
+                        セッション中はNottaで全内容を録音し、文字起こしデータをもとに<span class="font-medium text-warm-gray-800">あなた専用の振り返りレポート</span>をお渡しします。「あの時何を学んだか」「次に何をすべきか」が、いつでも振り返れる形で残ります。
+                    </p>
+                </div>
+
+                <!-- こんな方へ -->
+                <div class="mb-10">
+                    <div class="text-center mb-8">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3">こんな方へ</h2>
+                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto"></div>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-white p-6 border-elegant">
+                            <div class="flex items-start">
+                                <span class="text-rose-500 mr-3 mt-0.5 flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </span>
+                                <p class="text-warm-gray-600 text-sm leading-relaxed">ChatGPTやClaudeを使い始めたが、もっと効果的な使い方を知りたい</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 border-elegant">
+                            <div class="flex items-start">
+                                <span class="text-rose-500 mr-3 mt-0.5 flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </span>
+                                <p class="text-warm-gray-600 text-sm leading-relaxed">AIで業務を効率化したいが、自分の業務にどう適用すればいいか分からない</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 border-elegant">
+                            <div class="flex items-start">
+                                <span class="text-rose-500 mr-3 mt-0.5 flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </span>
+                                <p class="text-warm-gray-600 text-sm leading-relaxed">資料作成やデータ分析、メール対応などにAIを活かしたい</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 border-elegant">
+                            <div class="flex items-start">
+                                <span class="text-rose-500 mr-3 mt-0.5 flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </span>
+                                <p class="text-warm-gray-600 text-sm leading-relaxed">周りに気軽に相談できる人がいない、独学に限界を感じている</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AYCCの特徴 -->
+                <div class="mb-10">
+                    <div class="text-center mb-8">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3">AYCCのコンサルティングの特徴</h2>
+                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto"></div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-white p-6 md:p-8 border-elegant">
+                            <div class="flex items-start gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-navy-50 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-navy-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-warm-gray-800 mb-2">完全オーダーメイドの実施プラン</h3>
+                                    <p class="text-warm-gray-500 text-sm leading-relaxed">事前ヒアリングをもとに、あなたの業務内容・スキルレベル・目標に合わせた進行プランを設計します。「AIの基礎から」「業務フロー作成に特化」「メモリ機能を使いこなす」など、テーマも自由です。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 md:p-8 border-elegant">
+                            <div class="flex items-start gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-rose-50 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-warm-gray-800 mb-2">Notta録音 → あなた専用レポート</h3>
+                                    <p class="text-warm-gray-500 text-sm leading-relaxed">セッション全体をNottaで録音・文字起こしし、その内容をAIで分析。あなたの反応や気づきの瞬間も含めた、事実ベースの<span class="font-medium text-warm-gray-700">振り返りレポート</span>をお渡しします。「あの時何を学んだか」がいつでも振り返れます。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 md:p-8 border-elegant">
+                            <div class="flex items-start gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-navy-50 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-navy-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-warm-gray-800 mb-2">「教える」だけでなく「一緒に使う」</h3>
+                                    <p class="text-warm-gray-500 text-sm leading-relaxed">講義形式ではなく、あなたの実際の業務課題をその場でAIと一緒に解決します。プロンプトの書き方、うまくいかなかった時の改善方法、試行錯誤のプロセスを体験しながら身につけます。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 md:p-8 border-elegant">
+                            <div class="flex items-start gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-rose-50 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-warm-gray-800 mb-2">フォローアップで定着</h3>
+                                    <p class="text-warm-gray-500 text-sm leading-relaxed">セッション後もメールやチャットで気軽に質問できます。「レポートを見返して試したけど、ここが分からない」にもお答えします。学びを実務に定着させるところまで伴走します。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ご利用の流れ -->
+                <div class="mb-10">
+                    <div class="text-center mb-8">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3">ご利用の流れ</h2>
+                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto"></div>
+                    </div>
+                    <div class="relative">
+                        <div class="flow-line hidden md:block" style="top: 36px; left: 60px; right: 60px;"></div>
+                        <div class="grid md:grid-cols-4 gap-6 md:gap-4">
+                            <div class="text-center relative z-10">
+                                <div class="w-10 h-10 bg-white border-2 border-navy-500 text-navy-500 rounded-full flex items-center justify-center mx-auto mb-4 text-sm font-medium">1</div>
+                                <h3 class="font-medium text-warm-gray-800 text-sm mb-2">ヒアリング</h3>
+                                <p class="text-warm-gray-400 text-xs leading-relaxed">お悩み・目標・<br>スキルレベルを確認</p>
+                            </div>
+                            <div class="text-center relative z-10">
+                                <div class="w-10 h-10 bg-white border-2 border-navy-500 text-navy-500 rounded-full flex items-center justify-center mx-auto mb-4 text-sm font-medium">2</div>
+                                <h3 class="font-medium text-warm-gray-800 text-sm mb-2">プラン設計</h3>
+                                <p class="text-warm-gray-400 text-xs leading-relaxed">あなた専用の<br>実施プランを作成</p>
+                            </div>
+                            <div class="text-center relative z-10">
+                                <div class="w-10 h-10 bg-white border-2 border-rose-500 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4 text-sm font-medium">3</div>
+                                <h3 class="font-medium text-warm-gray-800 text-sm mb-2">セッション</h3>
+                                <p class="text-warm-gray-400 text-xs leading-relaxed">Notta録音しながら<br>マンツーマンで実践</p>
+                            </div>
+                            <div class="text-center relative z-10">
+                                <div class="w-10 h-10 bg-white border-2 border-rose-500 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4 text-sm font-medium">4</div>
+                                <h3 class="font-medium text-warm-gray-800 text-sm mb-2">レポート配信</h3>
+                                <p class="text-warm-gray-400 text-xs leading-relaxed">振り返りレポート +<br>アクションアイテム</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 成果物のご紹介 -->
+                <div class="mb-10">
+                    <div class="text-center mb-8">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3">お渡しする成果物</h2>
+                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto"></div>
+                        <p class="text-warm-gray-400 text-xs mt-4">セッションごとに以下の資料をお渡しします</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+
+                        <!-- 実施プラン -->
+                        <div class="deliverable-card bg-white border-elegant overflow-hidden">
+                            <div class="bg-gradient-to-r from-navy-800 to-navy-700 px-6 py-4">
+                                <p class="text-navy-300 text-xs tracking-widest mb-1">DELIVERABLE 01</p>
+                                <h3 class="text-white font-medium">実施プラン</h3>
+                            </div>
+                            <div class="p-6">
+                                <p class="text-warm-gray-500 text-sm leading-relaxed mb-4">
+                                    事前ヒアリングをもとに作成する、セッションの設計図。あなたの現状・目標・業務課題を踏まえた進行プランです。
+                                </p>
+                                <div class="bg-warm-gray-50 p-4 rounded text-xs text-warm-gray-500 space-y-2">
+                                    <p class="font-medium text-warm-gray-600 mb-2">含まれる内容</p>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-navy-500 mt-0.5">&#9656;</span>
+                                        <span>全体設計の意図（なぜこのツール・テーマか）</span>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-navy-500 mt-0.5">&#9656;</span>
+                                        <span>タイムテーブル（各パートの所要時間・内容）</span>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-navy-500 mt-0.5">&#9656;</span>
+                                        <span>ガイドライン遵守のポイント</span>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-navy-500 mt-0.5">&#9656;</span>
+                                        <span>記録と財産化のプロセス</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 振り返りレポート -->
+                        <div class="deliverable-card bg-white border-elegant overflow-hidden">
+                            <div class="bg-gradient-to-r from-rose-800 to-rose-700 px-6 py-4">
+                                <p class="text-rose-300 text-xs tracking-widest mb-1">DELIVERABLE 02</p>
+                                <h3 class="text-white font-medium">振り返りレポート</h3>
+                            </div>
+                            <div class="p-6">
+                                <p class="text-warm-gray-500 text-sm leading-relaxed mb-4">
+                                    Notta録音 → 文字起こし → AI分析で作成する、あなた専用の復習ガイド。セッションの全内容が構造化された形で残ります。
+                                </p>
+                                <div class="bg-warm-gray-50 p-4 rounded text-xs text-warm-gray-500 space-y-2">
+                                    <p class="font-medium text-warm-gray-600 mb-2">含まれる内容</p>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-500 mt-0.5">&#9656;</span>
+                                        <span>各トピックの学び・キーフレーズ</span>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-500 mt-0.5">&#9656;</span>
+                                        <span>あなたの反応・気づきの記録</span>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-500 mt-0.5">&#9656;</span>
+                                        <span>実践のヒント・ハンズオン解説</span>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-500 mt-0.5">&#9656;</span>
+                                        <span>アクションアイテム（チェックリスト形式）</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- セッション例 -->
+                <div class="mb-10">
+                    <div class="text-center mb-8">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3">セッションテーマの例</h2>
+                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto"></div>
+                    </div>
+                    <div class="bg-white p-6 md:p-8 border-elegant">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="text-xs font-medium text-navy-500 tracking-wider mb-3">AI初心者向け</h3>
+                                <ul class="space-y-2 text-sm text-warm-gray-600">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-warm-gray-300 mt-1">─</span>
+                                        ChatGPT基礎 &amp; メモリ活用
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-warm-gray-300 mt-1">─</span>
+                                        AIで議事録・メール作成を効率化
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-warm-gray-300 mt-1">─</span>
+                                        Claudeで資料作成を時短する
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="text-xs font-medium text-rose-600 tracking-wider mb-3">業務特化型</h3>
+                                <ul class="space-y-2 text-sm text-warm-gray-600">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-warm-gray-300 mt-1">─</span>
+                                        AIで業務フロー図を自動作成
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-warm-gray-300 mt-1">─</span>
+                                        営業提案書のAIアシスト
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-warm-gray-300 mt-1">─</span>
+                                        データ分析・レポート作成の自動化
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <p class="text-warm-gray-400 text-xs mt-6 text-center">上記は一例です。ヒアリングを通じて、あなたに最適なテーマを一緒に決めます。</p>
+                    </div>
+                </div>
+
+                <!-- 料金 -->
+                <div class="mb-10">
+                    <div class="text-center mb-8">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-3">料金</h2>
+                        <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto"></div>
+                    </div>
+                    <div class="bg-white border-elegant overflow-hidden">
+                        <div class="p-6 md:p-8">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-warm-gray-50 p-6 rounded">
+                                    <p class="text-xs font-medium text-navy-500 tracking-wider mb-2">STANDARD</p>
+                                    <p class="font-elegant text-2xl text-warm-gray-800 mb-1">¥5,000 <span class="text-sm text-warm-gray-400 font-sans">/ 1時間</span></p>
+                                    <p class="text-warm-gray-400 text-xs">オンライン（Zoom / Google Meet）</p>
+                                </div>
+                                <div class="bg-warm-gray-50 p-6 rounded">
+                                    <p class="text-xs font-medium text-rose-600 tracking-wider mb-2">RECOMMENDED</p>
+                                    <p class="font-elegant text-2xl text-warm-gray-800 mb-1">¥8,000 <span class="text-sm text-warm-gray-400 font-sans">/ 2時間</span></p>
+                                    <p class="text-warm-gray-400 text-xs">初回の方におすすめ ─ じっくり体験＋実践</p>
+                                </div>
+                            </div>
+                            <div class="mt-6 text-xs text-warm-gray-400 space-y-1">
+                                <p>※ 実施プラン・振り返りレポートの作成費用を含みます</p>
+                                <p>※ セッション後のフォローアップ（メール相談）は1ヶ月間無料</p>
+                                <p>※ ご予算やペースはご相談に応じます</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- CTA -->
+    <section class="bg-navy-800 py-16 md:py-20">
+        <div class="container mx-auto px-6 max-w-3xl text-center">
+            <p class="text-xs font-medium text-navy-300 tracking-widest mb-3">GET STARTED</p>
+            <h2 class="font-elegant text-xl md:text-2xl text-white mb-4">
+                まずはお気軽にご相談ください
+            </h2>
+            <div class="w-12 h-0.5 bg-gradient-to-r from-rose-400 to-navy-300 mx-auto mb-8"></div>
+            <p class="text-navy-200 leading-relaxed mb-10 text-sm md:text-base">
+                「こんなこと聞いていいのかな」という内容でも大丈夫です。<br class="hidden md:block">
+                ヒアリングは無料ですので、まずはお悩みをお聞かせください。
+            </p>
+            <a href="../index.html#contact" class="inline-block bg-white text-navy-800 font-medium px-10 py-3.5 rounded text-sm tracking-wider hover:bg-rose-50 transition-all duration-300 shadow-lg">
+                お問い合わせフォームへ
+            </a>
+        </div>
+    </section>
+
+    <!-- フッター -->
+    <footer class="bg-warm-gray-800 text-warm-gray-300 py-12">
+        <div class="container mx-auto px-6">
+            <div class="text-center">
+                <p class="text-sm tracking-wider mb-2">
+                    &copy; 2026 AYCC
+                </p>
+                <p class="text-xs text-warm-gray-500">
+                    AI YASUDA CREATIVE & CONSULTING
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('menu-open');
+        });
+    </script>
+</body>
+</html>

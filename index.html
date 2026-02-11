@@ -322,17 +322,70 @@
             color: #fff;
         }
 
-        /* テキストリビールアニメーション */
-        .text-reveal .char {
-            display: inline-block;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
+        /* お悩みチェックボックス */
+        .concern-check {
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
-        .text-reveal.revealed .char {
-            opacity: 1;
-            transform: translateY(0);
+        .concern-check:hover {
+            background-color: #fdf2f8;
+            border-color: #d4a5a5;
+        }
+
+        .concern-check.checked {
+            background-color: #fdf2f8;
+            border-color: #d4a5a5;
+        }
+
+        .concern-check .check-box {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            border: 1.5px solid #d4a5a5;
+            border-radius: 3px;
+            position: relative;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .concern-check.checked .check-box {
+            background-color: #d4a5a5;
+            border-color: #d4a5a5;
+        }
+
+        .concern-check .check-box svg {
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            width: 16px;
+            height: 16px;
+        }
+
+        .concern-check .check-box .checkmark-path {
+            stroke-dasharray: 24;
+            stroke-dashoffset: 24;
+            transition: stroke-dashoffset 0.4s ease 0.1s;
+        }
+
+        .concern-check.checked .check-box .checkmark-path {
+            stroke-dashoffset: 0;
+        }
+
+        .concern-check.checked p {
+            color: #78716c;
+            text-decoration: line-through;
+            text-decoration-color: #d4a5a580;
+        }
+
+        /* お悩みCTAボタン演出 */
+        @keyframes cta-appear {
+            0%   { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .concern-cta {
+            opacity: 0;
+            animation: cta-appear 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
         }
 
         /* セクションタイトル スライドインアニメーション */
@@ -381,11 +434,102 @@
             transform: translateY(0);
         }
 
+        /* ステップフロー */
+        .step-flow {
+            position: relative;
+        }
+
+        .step-item {
+            position: relative;
+        }
+
+        .step-number {
+            display: block;
+            font-family: 'Noto Serif JP', serif;
+            font-size: 0.65rem;
+            color: #d4a5a5;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-icon-wrap {
+            width: 3.5rem;
+            height: 3.5rem;
+            margin: 0 auto 0.75rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1.5px solid #e8e0dc;
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-item:hover .step-icon-wrap {
+            border-color: #d4a5a5;
+            background: #fdf2f8;
+            transform: scale(1.08);
+        }
+
+        @keyframes icon-float {
+            0%   { transform: translateY(0) scale(1); }
+            35%  { transform: translateY(-3px) scale(1.05); }
+            65%  { transform: translateY(1px) scale(1); }
+            100% { transform: translateY(0) scale(1); }
+        }
+
+        .step-icon-wrap.float {
+            animation: icon-float 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ステップ間の接続線（PC） */
+        .step-connector {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .step-connector {
+                display: block;
+                position: absolute;
+                height: 1.5px;
+                overflow: hidden;
+            }
+
+            .step-connector-line {
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, #d4a5a580, #5a7ea580);
+                transform: scaleX(0);
+                transform-origin: left;
+                transition: transform 1.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+            }
+
+            .step-connector-line.grow {
+                transform: scaleX(1);
+            }
+        }
+
+        /* コンテンツ スタガーフェードイン */
+        .stagger-item {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .stagger-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* サービスカード高さ揃え + スタガーアニメーション */
         .service-cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
+            gap: 1.5rem;
+            max-width: 80rem;
+            margin: 0 auto;
         }
 
         @media (max-width: 768px) {
@@ -505,22 +649,18 @@
     <section id="home" class="py-24 md:py-32 hero-gradient hero-shimmer relative overflow-hidden">
         <div class="container mx-auto px-6 text-center">
             <!-- ロゴ -->
-            <img src="images/logo.png" alt="AYCC" class="mx-auto w-64 md:w-80 mb-10" data-parallax="0.3">
+            <img src="images/logo.png" alt="AYCC" class="mx-auto w-64 md:w-80 mb-10">
 
             <!-- サブタイトル -->
-            <p class="text-sm md:text-base text-warm-gray-500 tracking-[0.2em] mb-6" data-parallax="0.15">
+            <p class="text-sm md:text-base text-warm-gray-500 tracking-[0.2em] mb-6">
                 AI YASUDA CREATIVE & CONSULTING
             </p>
 
             <!-- キャッチコピー -->
-            <h1 id="hero-catchcopy" class="font-elegant text-2xl md:text-4xl font-medium text-warm-gray-800 mb-16 leading-relaxed text-reveal">
+            <h1 id="hero-catchcopy" class="font-elegant text-2xl md:text-4xl font-medium text-warm-gray-800 mb-16 leading-relaxed">
                 愛とAIで、あなたの変革を支援します
             </h1>
 
-            <!-- CTAボタン -->
-            <a href="#contact" class="cta-button inline-block border border-warm-gray-400 text-warm-gray-700 px-10 py-4 text-sm tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
-                お問い合わせ
-            </a>
         </div>
 
         <!-- スクロール誘導 -->
@@ -548,6 +688,193 @@
         </div>
     </a>
 
+    <!-- 私たちの想い -->
+    <section class="py-16 md:py-32 bg-white fade-in-section">
+        <div class="container mx-auto px-6">
+            <div class="max-w-3xl mx-auto text-center">
+                <div class="section-title-group">
+                    <h2 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-4 slide-in-title">
+                        Mission
+                    </h2>
+                    <div class="divider mb-6 slide-in-divider"></div>
+                    <p class="text-sm text-warm-gray-500 tracking-wider mb-12 slide-in-subtitle">
+                        私たちの想い
+                    </p>
+                </div>
+
+                <p class="font-elegant text-lg md:text-xl text-warm-gray-700 leading-relaxed mb-8 stagger-item">
+                    「何から始めればいいかわからない」から、一緒に。
+                </p>
+
+                <div class="text-warm-gray-500 leading-relaxed space-y-4 mb-10 stagger-item">
+                    <p>
+                        音楽教室の先生、小規模な介護事業者さん、助産院の助産師さん。<br>
+                        業務を効率化したいけれど、相談できる人がいない。
+                    </p>
+                    <p>
+                        まずはお話を聴かせてください。<br>
+                        課題を一緒に整理して、必要ならシステムも一緒に作ります。
+                    </p>
+                    <p>
+                        <span class="font-elegant text-warm-gray-700">相談から、制作、AI活用、運用まで。あなたに寄り添います。</span>
+                    </p>
+                </div>
+
+                <div class="divider mb-10"></div>
+
+                <div class="step-flow grid grid-cols-2 md:grid-cols-4 gap-8 text-center stagger-container">
+                    <div class="step-item stagger-item">
+                        <span class="step-number">01</span>
+                        <div class="step-icon-wrap">
+                            <svg class="w-6 h-6 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                            </svg>
+                        </div>
+                        <p class="font-medium text-warm-gray-700 text-sm mb-1">聴く</p>
+                        <p class="text-xs text-warm-gray-400">現場の困りごとを<br>丁寧にヒアリング</p>
+                        <div class="step-connector"><div class="step-connector-line"></div></div>
+                    </div>
+                    <div class="step-item stagger-item">
+                        <span class="step-number">02</span>
+                        <div class="step-icon-wrap">
+                            <svg class="w-6 h-6 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                        </div>
+                        <p class="font-medium text-warm-gray-700 text-sm mb-1">AIを活かす</p>
+                        <p class="text-xs text-warm-gray-400">あなたに合った<br>AI活用法をご提案</p>
+                        <div class="step-connector"><div class="step-connector-line"></div></div>
+                    </div>
+                    <div class="step-item stagger-item">
+                        <span class="step-number">03</span>
+                        <div class="step-icon-wrap">
+                            <svg class="w-6 h-6 text-navy-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path>
+                            </svg>
+                        </div>
+                        <p class="font-medium text-warm-gray-700 text-sm mb-1">一緒に作る</p>
+                        <p class="text-xs text-warm-gray-400">HP・システムを<br>必要な分だけ形に</p>
+                        <div class="step-connector"><div class="step-connector-line"></div></div>
+                    </div>
+                    <div class="step-item stagger-item">
+                        <span class="step-number">04</span>
+                        <div class="step-icon-wrap">
+                            <svg class="w-6 h-6 text-warm-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </div>
+                        <p class="font-medium text-warm-gray-700 text-sm mb-1">伴走する</p>
+                        <p class="text-xs text-warm-gray-400">導入後も保守パックで<br>ずっとサポート</p>
+                    </div>
+                </div>
+
+                <!-- コストメリット -->
+                <div class="mt-16 pt-12 border-t border-warm-gray-100 stagger-item">
+                    <p class="font-elegant text-lg md:text-xl text-warm-gray-700 text-center leading-relaxed mb-2">
+                        AYCCは、<span class="text-navy-700">GAS（Google Apps Script）× AI活用</span>で
+                    </p>
+                    <p class="font-elegant text-lg md:text-xl text-warm-gray-700 text-center leading-relaxed mb-8">
+                        低価格な<span class="text-navy-700 font-medium">開発費用</span>と<span class="text-navy-700 font-medium">保守パック費用</span>だけで<br>
+                        <span class="text-navy-700 font-medium">"あなた専用"</span>のシステムをお届けします。
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-3 mb-6">
+                        <span class="inline-block bg-warm-gray-50 text-warm-gray-500 text-xs px-4 py-2 tracking-wider border border-warm-gray-200">サーバー費用 不要</span>
+                        <span class="inline-block bg-warm-gray-50 text-warm-gray-500 text-xs px-4 py-2 tracking-wider border border-warm-gray-200">ソフトウェア利用料 不要</span>
+                        <span class="inline-block bg-warm-gray-50 text-warm-gray-500 text-xs px-4 py-2 tracking-wider border border-warm-gray-200">月額課金 なし</span>
+                    </div>
+                    <p class="text-center text-warm-gray-500 text-sm mt-8 mb-4">
+                        なぜ、ここまで低コストにできるのか？
+                    </p>
+                    <p class="text-center text-xs text-warm-gray-400 leading-relaxed mb-1">
+                        AI × クラウドによる開発体制で、少人数でも高品質・短期間の制作を実現しています。
+                    </p>
+                    <p class="text-center text-xs text-warm-gray-400 tracking-wider mb-4">
+                        ※ GAS開発以外にも、ご要望・規模に合わせた最適なご提案が可能です
+                    </p>
+                    <div class="text-center">
+                        <a href="works/digital-environment.html" class="inline-flex items-center text-xs text-navy-600 tracking-wider hover:text-navy-800 transition-colors">
+                            開発体制について詳しく見る
+                            <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- お悩みセクション -->
+    <section class="py-16 md:py-32 bg-warm-gray-50 fade-in-section">
+        <div class="container mx-auto px-6">
+            <div class="max-w-3xl mx-auto">
+                <div class="text-center mb-12 section-title-group">
+                    <h2 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-4 slide-in-title">
+                        こんなお悩み、ありませんか？
+                    </h2>
+                    <div class="divider mb-6 slide-in-divider"></div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4 mb-12 stagger-container">
+                    <div class="concern-check bg-white p-5 border-elegant flex items-start gap-3 stagger-item">
+                        <div class="check-box mt-0.5">
+                            <svg viewBox="0 0 16 16" fill="none"><path class="checkmark-path" d="M3 8.5L6.5 12L13 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <p class="text-warm-gray-600 text-sm leading-relaxed transition-all duration-300">予約管理が紙やLINEで煩雑になっている</p>
+                    </div>
+                    <div class="concern-check bg-white p-5 border-elegant flex items-start gap-3 stagger-item">
+                        <div class="check-box mt-0.5">
+                            <svg viewBox="0 0 16 16" fill="none"><path class="checkmark-path" d="M3 8.5L6.5 12L13 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <p class="text-warm-gray-600 text-sm leading-relaxed transition-all duration-300">顧客情報がバラバラで一元管理できていない</p>
+                    </div>
+                    <div class="concern-check bg-white p-5 border-elegant flex items-start gap-3 stagger-item">
+                        <div class="check-box mt-0.5">
+                            <svg viewBox="0 0 16 16" fill="none"><path class="checkmark-path" d="M3 8.5L6.5 12L13 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <p class="text-warm-gray-600 text-sm leading-relaxed transition-all duration-300">ITシステムの導入コストが高くて手が出ない</p>
+                    </div>
+                    <div class="concern-check bg-white p-5 border-elegant flex items-start gap-3 stagger-item">
+                        <div class="check-box mt-0.5">
+                            <svg viewBox="0 0 16 16" fill="none"><path class="checkmark-path" d="M3 8.5L6.5 12L13 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <p class="text-warm-gray-600 text-sm leading-relaxed transition-all duration-300">そもそも誰に相談すればいいのかわからない</p>
+                    </div>
+                    <div class="concern-check bg-white p-5 border-elegant flex items-start gap-3 stagger-item">
+                        <div class="check-box mt-0.5">
+                            <svg viewBox="0 0 16 16" fill="none"><path class="checkmark-path" d="M3 8.5L6.5 12L13 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <p class="text-warm-gray-600 text-sm leading-relaxed transition-all duration-300">ChatGPTやAIツール、気になるけど何から始めれば…</p>
+                    </div>
+                    <div class="concern-check bg-white p-5 border-elegant flex items-start gap-3 stagger-item">
+                        <div class="check-box mt-0.5">
+                            <svg viewBox="0 0 16 16" fill="none"><path class="checkmark-path" d="M3 8.5L6.5 12L13 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <p class="text-warm-gray-600 text-sm leading-relaxed transition-all duration-300">AIで業務が楽になるらしいが、自分にはどう活かせる？</p>
+                    </div>
+                </div>
+
+                <div class="text-center mt-10">
+                    <div class="flex justify-center mb-6 stagger-item">
+                        <span class="block w-px h-8 bg-gradient-to-b from-transparent to-warm-gray-300"></span>
+                    </div>
+                    <p class="font-elegant text-lg text-warm-gray-700 mb-6 stagger-item">
+                        そのお悩み、私たちに聞かせてください。
+                    </p>
+                    <div class="stagger-item">
+                        <a href="#contact" class="concern-cta inline-flex items-center text-sm text-warm-gray-500 tracking-wider hover:text-warm-gray-700 transition-colors duration-300">
+                            まずは相談する
+                            <svg class="w-3 h-3 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- 事業内容セクション -->
     <section id="services" class="py-16 md:py-32 fade-in-section">
         <div class="container mx-auto px-6">
@@ -563,24 +890,36 @@
             </div>
 
             <!-- 3カラムレイアウト -->
-            <div class="service-cards md:gap-12">
+            <div class="service-cards md:gap-6">
 
                 <!-- Creative -->
-                <div class="hover-lift bg-white p-10 border-elegant service-card-item">
-                    <div class="text-center mb-8">
-                        <div class="w-12 h-12 mx-auto mb-6 flex items-center justify-center">
+                <div class="hover-lift bg-white px-10 pt-6 pb-10 border-elegant service-card-item">
+                    <div class="text-center mb-6">
+                        <div class="w-12 h-12 mx-auto mb-3 flex items-center justify-center">
                             <svg class="w-8 h-8 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
                             </svg>
                         </div>
-                        <h3 class="font-elegant text-xl text-warm-gray-800 mb-2">Creative</h3>
+                        <h3 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-2"><span class="text-navy-500">C</span>reative</h3>
                         <p class="text-xs text-warm-gray-400 tracking-wider">音楽・芸術活動</p>
                     </div>
 
                     <div class="space-y-6 text-sm">
                         <div class="service-block">
                             <h4 class="font-medium text-warm-gray-700 mb-2"><span class="title-animated-line">マリンバ演奏活動</span></h4>
-                            <p class="text-warm-gray-500 leading-relaxed">マリンバの演奏活動 コンサート・イベント出演・慰問活動等、幅広く対応いたします。</p>
+                            <p class="text-warm-gray-500 leading-relaxed mb-4">マリンバの演奏活動 コンサート・イベント出演・慰問活動等、幅広く対応いたします。</p>
+
+                            <a href="works/concert.html" class="block bg-gradient-to-r from-warm-gray-50 to-rose-50 border border-warm-gray-200 rounded px-5 py-4 hover:shadow-md transition-all duration-300 group">
+                                <p class="text-xs text-rose-400 tracking-widest mb-1">SOLO CONCERT</p>
+                                <p class="font-elegant text-warm-gray-700 text-base mb-1">結 <span class="text-xs text-warm-gray-400">-yui-</span></p>
+                                <p class="text-xs text-warm-gray-500 mb-2">2026.10.25 Sat / マリンバソロコンサート開催</p>
+                                <span class="inline-flex items-center text-xs text-warm-gray-400 group-hover:text-warm-gray-600 transition-colors">
+                                    詳細を見る
+                                    <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </span>
+                            </a>
                         </div>
 
                         <div class="service-block">
@@ -596,14 +935,14 @@
                 </div>
 
                 <!-- 融合領域 -->
-                <div class="hover-lift bg-white p-10 border-elegant service-card-item">
-                    <div class="text-center mb-8">
-                        <div class="w-12 h-12 mx-auto mb-6 flex items-center justify-center">
+                <div class="hover-lift bg-white px-10 pt-6 pb-10 border-elegant service-card-item">
+                    <div class="text-center mb-6">
+                        <div class="w-12 h-12 mx-auto mb-3 flex items-center justify-center">
                             <svg class="w-8 h-8 text-navy-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
                             </svg>
                         </div>
-                        <h3 class="font-elegant text-xl text-warm-gray-800 mb-2">Creative × Consulting</h3>
+                        <h3 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-2 leading-none" style="line-height:0.9"><span class="text-navy-500">C</span>reative<br><span class="text-xl text-warm-gray-500">×</span><br><span class="text-navy-500">C</span>onsulting</h3>
                         <p class="text-xs text-warm-gray-400 tracking-wider">融合サービス</p>
                     </div>
 
@@ -634,28 +973,30 @@
                 </div>
 
                 <!-- Consulting -->
-                <div class="hover-lift bg-white p-10 border-elegant service-card-item">
-                    <div class="text-center mb-8">
-                        <div class="w-12 h-12 mx-auto mb-6 flex items-center justify-center">
+                <div class="hover-lift bg-white px-10 pt-6 pb-10 border-elegant service-card-item">
+                    <div class="text-center mb-6">
+                        <div class="w-12 h-12 mx-auto mb-3 flex items-center justify-center">
                             <svg class="w-8 h-8 text-navy-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                             </svg>
                         </div>
-                        <h3 class="font-elegant text-xl text-warm-gray-800 mb-2">Consulting</h3>
+                        <h3 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-2"><span class="text-navy-500">C</span>onsulting</h3>
                         <p class="text-xs text-warm-gray-400 tracking-wider">IT/AIコンサルティング</p>
                     </div>
 
                     <div class="space-y-6 text-sm">
                         <div class="service-block">
                             <h4 class="font-medium text-warm-gray-700 mb-2"><span class="title-animated-line">IT/AIコンサルティング</span></h4>
-                            <p class="text-warm-gray-500 leading-relaxed mb-4">企業・自治体のAI活用戦略策定から導入まで、伴走支援いたします。<a href="works/digital-environment.html#personal-consulting" class="text-navy-600 hover:underline">個人のご相談も対応中</a>。フルカスタマイズでご予算や目標イメージに合わせてサポートします。</p>
+                            <p class="text-warm-gray-500 leading-relaxed mb-4">企業・自治体のAI活用戦略策定から導入まで、伴走支援いたします。フルカスタマイズでご予算や目標イメージに合わせてサポートします。</p>
 
-                            <a href="works/mermaid-tool.html" class="inline-flex items-center border border-warm-gray-400 text-warm-gray-600 text-xs mt-2 px-4 py-2 tracking-wider shadow-md hover:shadow-lg hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                            <a href="works/mermaid-tool.html" class="inline-flex items-center border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider shadow-md hover:shadow-lg hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
                                 業務フロー分析ツール
                                 <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>
                             </a>
+
+                            <p class="text-warm-gray-400 text-xs mt-4">個人のお客様のご相談も承っています。<a href="works/ai-consulting.html" class="text-rose-500 hover:text-rose-700 transition-colors">お気軽にどうぞ →</a></p>
                         </div>
 
                         <div class="service-block">
@@ -665,23 +1006,7 @@
 
                         <div class="service-block">
                             <h4 class="font-medium text-warm-gray-700 mb-2"><span class="title-animated-line">アプリケーション開発</span></h4>
-                            <p class="text-warm-gray-500 leading-relaxed mb-4">業務効率化のためのアプリケーション開発を行います。ローカルアプリ・WEBアプリ・モバイルデバイス用アプリなど幅広く対応可能です。</p>
-
-                            <p class="text-warm-gray-400 text-xs mb-2 tracking-wider">制作事例</p>
-                            <div class="flex flex-wrap gap-2">
-                                <a href="works/shift-manager.html" class="inline-flex items-center border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider shadow-md hover:shadow-lg hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
-                                    シフト管理アプリ
-                                    <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                    </svg>
-                                </a>
-                                <a href="works/midwife-system.html" class="inline-flex items-center border border-warm-gray-400 text-warm-gray-600 text-xs px-4 py-2 tracking-wider shadow-md hover:shadow-lg hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
-                                    助産院 業務管理システム
-                                    <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                    </svg>
-                                </a>
-                            </div>
+                            <p class="text-warm-gray-500 leading-relaxed">ニーズに合わせた最適なアプリケーションを開発いたします。</p>
                         </div>
 
                         <div class="service-block">
@@ -699,6 +1024,159 @@
                     お問い合わせはこちら
                 </a>
             </div>
+        </div>
+    </section>
+
+    <!-- 業種別ソリューション -->
+    <section class="py-16 md:py-32 bg-gradient-to-b from-white to-warm-gray-50 fade-in-section">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 section-title-group">
+                <h2 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-4 slide-in-title">
+                    Solutions
+                </h2>
+                <div class="divider mx-auto mb-6 slide-in-divider"></div>
+                <p class="text-warm-gray-500 text-sm tracking-wider mb-2 slide-in-subtitle">業種別ソリューション</p>
+                <p class="text-warm-gray-400 text-xs tracking-wider max-w-xl mx-auto slide-in-subtitle">
+                    それぞれの業種に合わせた、HP + 業務システムのトータルパッケージをご提案します
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto stagger-container">
+
+                <!-- 音楽教室・習い事 -->
+                <a href="works/reservation-system.html" class="group block bg-white p-8 border-elegant hover-lift transition-all duration-500 stagger-item">
+                    <div class="text-center mb-6">
+                        <svg class="w-14 h-14 mx-auto" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 音符 -->
+                            <circle cx="32" cy="32" r="28" stroke="#d4a5a5" stroke-width="1" opacity="0.3"/>
+                            <ellipse cx="22" cy="44" rx="5" ry="3.5" stroke="#d4a5a5" stroke-width="1.5" fill="none"/>
+                            <ellipse cx="42" cy="40" rx="5" ry="3.5" stroke="#5a7ea5" stroke-width="1.5" fill="none"/>
+                            <line x1="27" y1="44" x2="27" y2="18" stroke="#d4a5a5" stroke-width="1.5" stroke-linecap="round"/>
+                            <line x1="47" y1="40" x2="47" y2="14" stroke="#5a7ea5" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M27 18 C32 15, 42 17, 47 14" stroke="#78716c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                            <!-- 小さな音符装飾 -->
+                            <circle cx="17" cy="22" r="1" fill="#d4a5a5" opacity="0.5"/>
+                            <circle cx="48" cy="26" r="1.5" fill="#5a7ea5" opacity="0.4"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-elegant text-lg text-warm-gray-800 text-center mb-4">音楽教室・習い事</h3>
+                    <div class="space-y-2 mb-6">
+                        <div class="flex items-center text-xs text-warm-gray-500">
+                            <svg class="w-3 h-3 mr-2 text-rose-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            ホームページ制作
+                        </div>
+                        <div class="flex items-center text-xs text-warm-gray-500">
+                            <svg class="w-3 h-3 mr-2 text-rose-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            生徒・レッスン管理
+                        </div>
+                        <div class="flex items-center text-xs text-warm-gray-500">
+                            <svg class="w-3 h-3 mr-2 text-rose-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            予約システム
+                        </div>
+                    </div>
+                    <p class="text-xs text-warm-gray-400 text-center group-hover:text-warm-gray-600 transition-colors">
+                        詳しく見る →
+                    </p>
+                </a>
+
+                <!-- 介護施設・福祉 -->
+                <a href="works/shift-manager.html" class="group block bg-white p-8 border-elegant hover-lift transition-all duration-500 stagger-item">
+                    <div class="text-center mb-6">
+                        <svg class="w-14 h-14 mx-auto" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 人を支える手 -->
+                            <circle cx="32" cy="32" r="28" stroke="#5a7ea5" stroke-width="1" opacity="0.3"/>
+                            <!-- メインの人物 -->
+                            <circle cx="32" cy="22" r="4" stroke="#5a7ea5" stroke-width="1.5" fill="none"/>
+                            <path d="M26 35 C26 29, 38 29, 38 35" stroke="#5a7ea5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                            <!-- 支える手 -->
+                            <path d="M18 44 C20 38, 24 36, 26 35" stroke="#d4a5a5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                            <path d="M46 44 C44 38, 40 36, 38 35" stroke="#d4a5a5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                            <!-- ハート -->
+                            <path d="M30 42 C30 40, 32 39, 32 41 C32 39, 34 40, 34 42 C34 44, 32 46, 32 46 C32 46, 30 44, 30 42Z" fill="#d4a5a5" opacity="0.5"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-elegant text-lg text-warm-gray-800 text-center mb-4">介護施設・福祉</h3>
+                    <div class="space-y-2 mb-6">
+                        <div class="flex items-center text-xs text-warm-gray-500">
+                            <svg class="w-3 h-3 mr-2 text-rose-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            シフト自動生成
+                        </div>
+                        <div class="flex items-center text-xs text-warm-gray-500">
+                            <svg class="w-3 h-3 mr-2 text-rose-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            スタッフ管理
+                        </div>
+                        <div class="flex items-center text-xs text-warm-gray-500">
+                            <svg class="w-3 h-3 mr-2 text-rose-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            Excel出力対応
+                        </div>
+                    </div>
+                    <p class="text-xs text-warm-gray-400 text-center group-hover:text-warm-gray-600 transition-colors">
+                        詳しく見る →
+                    </p>
+                </a>
+
+                <!-- 助産院・クリニック -->
+                <a href="works/midwife-system.html" class="group block bg-white p-8 border-elegant hover-lift transition-all duration-500 stagger-item">
+                    <div class="text-center mb-6">
+                        <svg class="w-14 h-14 mx-auto" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 母子 -->
+                            <circle cx="32" cy="32" r="28" stroke="#d4a5a5" stroke-width="1" opacity="0.3"/>
+                            <!-- 母 -->
+                            <circle cx="27" cy="22" r="4.5" stroke="#d4a5a5" stroke-width="1.5" fill="none"/>
+                            <path d="M20 38 C20 30, 34 30, 34 38" stroke="#d4a5a5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                            <!-- 赤ちゃん -->
+                            <circle cx="40" cy="30" r="3" stroke="#5a7ea5" stroke-width="1.5" fill="none"/>
+                            <path d="M36 40 C36 35, 44 35, 44 40" stroke="#5a7ea5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                            <!-- 繋がりの曲線 -->
+                            <path d="M34 36 C36 34, 36 34, 36 36" stroke="#78716c" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.5"/>
+                            <!-- 十字マーク（医療） -->
+                            <line x1="46" y1="18" x2="46" y2="24" stroke="#d4a5a5" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+                            <line x1="43" y1="21" x2="49" y2="21" stroke="#d4a5a5" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-elegant text-lg text-warm-gray-800 text-center mb-4">助産院・クリニック</h3>
+                    <div class="space-y-2 mb-6">
+                        <div class="flex items-center text-xs text-warm-gray-500">
+                            <svg class="w-3 h-3 mr-2 text-rose-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            ホームページ制作
+                        </div>
+                        <div class="flex items-center text-xs text-warm-gray-500">
+                            <svg class="w-3 h-3 mr-2 text-rose-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            予約・顧客管理
+                        </div>
+                        <div class="flex items-center text-xs text-warm-gray-500">
+                            <svg class="w-3 h-3 mr-2 text-rose-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            電子カルテ
+                        </div>
+                    </div>
+                    <p class="text-xs text-warm-gray-400 text-center group-hover:text-warm-gray-600 transition-colors">
+                        詳しく見る →
+                    </p>
+                </a>
+
+            </div>
+
+            <p class="text-center text-xs text-warm-gray-400 mt-12 tracking-wider">
+                上記以外の業種・ご要望にも柔軟に対応いたします。まずはお気軽にご相談ください。
+            </p>
         </div>
     </section>
 
@@ -759,10 +1237,10 @@
                             <p class="text-warm-gray-500 text-xs mt-1">業務効率化・AI導入支援・モバイルデバイス活用</p>
                         </div>
 
-                        <div class="pl-4 border-l-2 border-rose-200">
-                            <p class="font-medium text-warm-gray-700 text-sm">個人のお客様</p>
+                        <a href="works/ai-consulting.html" class="block pl-4 border-l-2 border-rose-200 hover:border-rose-400 transition-colors group">
+                            <p class="font-medium text-warm-gray-700 text-sm group-hover:text-warm-gray-900 transition-colors">個人のお客様</p>
                             <p class="text-warm-gray-500 text-xs mt-1">個別フルカスタマイズの<br>IT/AIスキルアップコンサルティング</p>
-                        </div>
+                        </a>
 
                         <div class="pl-4 border-l-2 border-rose-200">
                             <p class="font-medium text-warm-gray-700 text-sm">音楽教室の先生</p>
@@ -983,22 +1461,6 @@
             });
         });
 
-        // テキストリビールアニメーション（1文字ずつ浮かび上がる）
-        const catchcopy = document.getElementById('hero-catchcopy');
-        const text = catchcopy.textContent.trim();
-        catchcopy.innerHTML = '';
-        text.split('').forEach((char, i) => {
-            const span = document.createElement('span');
-            span.className = 'char';
-            span.style.transitionDelay = `${i * 0.06}s`;
-            span.textContent = char === ' ' ? '\u00A0' : char;
-            catchcopy.appendChild(span);
-        });
-        // 少し遅延させてからリビール開始
-        setTimeout(() => {
-            catchcopy.classList.add('revealed');
-        }, 400);
-
         // ページトップボタン & スクロール進捗バー
         const pageTopBtn = document.getElementById('page-top-btn');
         const scrollProgress = document.getElementById('scroll-progress');
@@ -1041,17 +1503,6 @@
             titleObserver.observe(group);
         });
 
-        // ヒーロー パララックス効果
-        const parallaxElements = document.querySelectorAll('[data-parallax]');
-
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            parallaxElements.forEach(el => {
-                const speed = parseFloat(el.dataset.parallax);
-                el.style.transform = `translateY(${scrollY * speed}px)`;
-            });
-        }, { passive: true });
-
         // フェードインアニメーション（Intersection Observer）
         const fadeInSections = document.querySelectorAll('.fade-in-section');
 
@@ -1072,6 +1523,101 @@
 
         fadeInSections.forEach(section => {
             fadeInObserver.observe(section);
+        });
+
+        // スタガーフェードイン（子要素が順番に現れる）
+        const staggerContainers = document.querySelectorAll('.stagger-container');
+        const staggerItems = document.querySelectorAll('.fade-in-section .stagger-item:not(.stagger-container .stagger-item)');
+
+        const staggerObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const items = entry.target.querySelectorAll('.stagger-item');
+                    items.forEach((item, i) => {
+                        setTimeout(() => {
+                            item.classList.add('visible');
+                        }, i * 120);
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        staggerContainers.forEach(container => {
+            staggerObserver.observe(container);
+        });
+
+        // 単独のスタガーアイテム（コンテナに属さないもの）
+        const soloStaggerObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        staggerItems.forEach(item => {
+            soloStaggerObserver.observe(item);
+        });
+
+        // ステップフロー連鎖アニメーション
+        function positionStepConnectors(flow) {
+            const icons = flow.querySelectorAll('.step-icon-wrap');
+            const connectors = flow.querySelectorAll('.step-connector');
+            for (let i = 0; i < connectors.length; i++) {
+                const iconRect = icons[i].getBoundingClientRect();
+                const nextRect = icons[i + 1].getBoundingClientRect();
+                const itemRect = icons[i].closest('.step-item').getBoundingClientRect();
+                const startX = iconRect.left + iconRect.width / 2 - itemRect.left;
+                const endX = nextRect.left + nextRect.width / 2 - itemRect.left;
+                const topY = iconRect.top + iconRect.height / 2 - itemRect.top;
+                connectors[i].style.left = startX + 'px';
+                connectors[i].style.width = (endX - startX) + 'px';
+                connectors[i].style.top = topY + 'px';
+            }
+        }
+        function runStepChain(flow) {
+            const icons = flow.querySelectorAll('.step-icon-wrap');
+            const lines = flow.querySelectorAll('.step-connector-line');
+            let step = 0;
+            function floatIcon(icon) {
+                icon.classList.remove('float');
+                void icon.offsetWidth;
+                icon.classList.add('float');
+            }
+            function growLine(i) {
+                lines[i].classList.add('grow');
+                // 線の半分あたりで次のアイコンを動かす
+                setTimeout(() => floatIcon(icons[i + 1]), 700);
+                // 線が届いたら次の線を開始
+                lines[i].addEventListener('transitionend', () => {
+                    if (i + 1 < lines.length) growLine(i + 1);
+                }, { once: true });
+            }
+            function start() {
+                floatIcon(icons[0]);
+                if (lines.length > 0) growLine(0);
+            }
+            setTimeout(start, 400);
+        }
+        const stepFlows = document.querySelectorAll('.step-flow');
+        const stepFlowObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    positionStepConnectors(entry.target);
+                    runStepChain(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+        stepFlows.forEach(flow => stepFlowObserver.observe(flow));
+
+        // お悩みチェックボックス
+        document.querySelectorAll('.concern-check').forEach(item => {
+            item.addEventListener('click', () => {
+                item.classList.toggle('checked');
+            });
         });
 
         // お問い合わせモーダル
