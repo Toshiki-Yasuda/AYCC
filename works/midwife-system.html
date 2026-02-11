@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AYCC - 助産院向け ホームページ & 業務管理システム">
+    <title>助産院向け HP & 業務管理システム | AYCC</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+    <link rel="apple-touch-icon" href="../images/favicon.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rose': {
+                            50: '#fdf2f4',
+                            100: '#fce7eb',
+                            200: '#f9d0d9',
+                            300: '#f4a9ba',
+                            400: '#ec7a95',
+                            500: '#d4a5a5',
+                            600: '#b8848f',
+                            700: '#9a6b75',
+                            800: '#7d5660',
+                            900: '#5c4048',
+                        },
+                        'navy': {
+                            50: '#f5f7fa',
+                            100: '#eaeef4',
+                            200: '#d0dbe8',
+                            300: '#a7bdd4',
+                            400: '#7899bc',
+                            500: '#5a7ea5',
+                            600: '#47658a',
+                            700: '#3a5270',
+                            800: '#2d3e54',
+                            900: '#1e2a3a',
+                        },
+                        'warm-gray': {
+                            50: '#fafaf9',
+                            100: '#f5f5f4',
+                            200: '#e7e5e4',
+                            300: '#d6d3d1',
+                            400: '#a8a29e',
+                            500: '#78716c',
+                            600: '#57534e',
+                            700: '#44403c',
+                            800: '#292524',
+                            900: '#1c1917',
+                        }
+                    },
+                    fontFamily: {
+                        'serif': ['Noto Serif JP', 'serif'],
+                        'sans': ['Noto Sans JP', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            color: #44403c;
+            letter-spacing: 0.02em;
+        }
+
+        .font-elegant {
+            font-family: 'Noto Serif JP', serif;
+        }
+
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, #d4a5a5, #a7bdd4);
+            margin: 0 auto;
+        }
+
+        .border-elegant {
+            border: 1px solid rgba(168, 162, 158, 0.3);
+        }
+
+        .link-underline {
+            position: relative;
+        }
+
+        .link-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+
+        .link-underline:hover::after {
+            width: 100%;
+        }
+
+        /* Lightbox */
+        .lightbox-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 100;
+            cursor: zoom-out;
+            justify-content: center;
+            align-items: center;
+        }
+        .lightbox-overlay.active {
+            display: flex;
+        }
+        .lightbox-overlay img {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .screenshot-thumb {
+            cursor: zoom-in;
+            transition: box-shadow 0.2s ease;
+        }
+        .screenshot-thumb:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        /* モバイルメニューアニメーション */
+        #mobile-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: max-height 0.6s ease-out, opacity 0.6s ease-out;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+            margin-top: 0;
+        }
+
+        #mobile-menu.menu-open {
+            max-height: 500px;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-warm-gray-50">
+
+    <!-- ヘッダー -->
+    <header class="bg-white/90 backdrop-blur-sm border-b border-warm-gray-200 sticky top-0 z-50">
+        <nav class="container mx-auto pl-2 pr-6 py-5 relative">
+            <div class="flex justify-between items-center">
+                <!-- ロゴ -->
+                <a href="../index.html" class="flex items-center space-x-4">
+                    <img src="../images/logo.png" alt="AYCC Logo" class="h-10">
+                </a>
+
+                <!-- ナビゲーション -->
+                <div class="hidden lg:flex space-x-10">
+                    <a href="../index.html#home" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">ホーム</a>
+                    <a href="../index.html#services" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">サービス</a>
+                    <a href="../index.html#works" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">実績</a>
+                    <a href="../index.html#about" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">会社概要</a>
+                    <a href="digital-environment.html" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">開発体制</a>
+                    <a href="claude-opus-4-6.html" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">Claude Opus 4.6</a>
+                    <a href="../index.html#contact" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">お問い合わせ</a>
+                </div>
+
+                <!-- ハンバーガーメニュー(モバイル) -->
+                <button class="lg:hidden" id="menu-toggle">
+                    <svg class="w-6 h-6 text-warm-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- モバイルメニュー -->
+            <div id="mobile-menu" class="lg:hidden py-4 space-y-4">
+                <a href="../index.html#home" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">ホーム</a>
+                <a href="../index.html#services" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">サービス</a>
+                <a href="../index.html#works" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">実績</a>
+                <a href="../index.html#about" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">会社概要</a>
+                <a href="digital-environment.html" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">開発体制</a>
+                <a href="claude-opus-4-6.html" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">Claude Opus 4.6</a>
+                <a href="../index.html#contact" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">お問い合わせ</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="py-16 md:py-24">
+        <div class="container mx-auto px-6">
+
+            <!-- パンくずリスト -->
+            <nav class="mb-8 text-sm text-warm-gray-500">
+                <a href="../index.html" class="hover:text-warm-gray-700">ホーム</a>
+                <span class="mx-2">/</span>
+                <a href="../index.html#works" class="hover:text-warm-gray-700">実績</a>
+                <span class="mx-2">/</span>
+                <span class="text-warm-gray-700">助産院向け HP & 業務管理システム</span>
+            </nav>
+
+            <!-- タイトル -->
+            <div class="text-center mb-16">
+                <h1 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-2">
+                    助産院向け HP & 業務管理システム
+                </h1>
+                <p class="text-sm text-warm-gray-400 tracking-wider mb-4">Midwifery Clinic Website & Management System</p>
+                <div class="divider"></div>
+            </div>
+
+            <!-- コンテンツ -->
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white p-8 md:p-12 border-elegant">
+
+                    <!-- デモサイトリンク -->
+                    <div class="mb-10 text-center">
+                        <div class="inline-flex flex-col sm:flex-row gap-4">
+                            <a href="https://midwife-hp.pages.dev/" target="_blank" rel="noopener noreferrer"
+                               class="inline-flex items-center justify-center border border-rose-400 text-rose-700 px-6 py-3 text-sm tracking-wider hover:bg-rose-50 transition-all duration-300 rounded">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                </svg>
+                                デモHP を見る
+                            </a>
+                            <a href="https://midwife-hp.pages.dev/app/" target="_blank" rel="noopener noreferrer"
+                               class="inline-flex items-center justify-center border border-navy-400 text-navy-700 px-6 py-3 text-sm tracking-wider hover:bg-navy-50 transition-all duration-300 rounded">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                </svg>
+                                管理システムデモ を見る
+                            </a>
+                        </div>
+                        <p class="text-xs text-warm-gray-400 mt-3">※ デモ環境のため、利用しているデータはダミーデータです</p>
+                    </div>
+
+                    <!-- システム画面紹介 -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-2 pb-2 border-b border-warm-gray-200 text-center">
+                            画面イメージ
+                        </h2>
+                        <p class="text-xs text-warm-gray-400 text-center mb-6">クリックで拡大表示</p>
+
+                        <!-- PC画面 2列グリッド -->
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <!-- 助産院HP -->
+                            <div>
+                                <div class="inline-block bg-rose-50 text-rose-700 text-xs px-2 py-0.5 rounded-full mb-2">助産院ホームページ</div>
+                                <img src="../images/midwife-hp-top.png" alt="助産院ホームページ" class="w-full rounded-lg shadow-sm border border-warm-gray-200 screenshot-thumb" onclick="openLightbox(this)">
+                            </div>
+
+                            <!-- 管理システム: ダッシュボード -->
+                            <div>
+                                <div class="inline-block bg-navy-50 text-navy-700 text-xs px-2 py-0.5 rounded-full mb-2">管理システム - ダッシュボード</div>
+                                <img src="../images/midwife-system-dashboard.png" alt="管理システム ダッシュボード" class="w-full rounded-lg shadow-sm border border-warm-gray-200 screenshot-thumb" onclick="openLightbox(this)">
+                            </div>
+
+                            <!-- 管理システム: 顧客管理 -->
+                            <div>
+                                <div class="inline-block bg-navy-50 text-navy-700 text-xs px-2 py-0.5 rounded-full mb-2">管理システム - 顧客管理</div>
+                                <img src="../images/midwife-system-customers.png" alt="顧客管理画面" class="w-full rounded-lg shadow-sm border border-warm-gray-200 screenshot-thumb" onclick="openLightbox(this)">
+                            </div>
+
+                            <!-- 管理システム: 電子カルテ -->
+                            <div>
+                                <div class="inline-block bg-navy-50 text-navy-700 text-xs px-2 py-0.5 rounded-full mb-2">管理システム - 電子カルテ</div>
+                                <img src="../images/midwife-system-karte.png" alt="電子カルテ画面" class="w-full rounded-lg shadow-sm border border-warm-gray-200 screenshot-thumb" onclick="openLightbox(this)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 概要 -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            概要
+                        </h2>
+                        <p class="text-warm-gray-600 leading-relaxed mb-4">
+                            出張専門の助産院向けに、ホームページと業務管理システムをセットで提供するソリューションです。
+                            「予約受付」「顧客・お子様管理」「電子カルテ」「スケジュール管理」を一つのシステムに集約し、
+                            助産師さんの訪問業務を効率化します。
+                        </p>
+                        <p class="text-warm-gray-600 leading-relaxed">
+                            ホームページは Next.js + Tailwind CSS で構築し、Cloudflare Pages でホスティング。
+                            管理システムは Google Apps Script 上で動作するため、サーバー維持費用がかかりません。
+                            訪問先のスマートフォンからもカルテ入力・予約確認が可能です。
+                        </p>
+                    </div>
+
+                    <!-- 提供内容 -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            提供内容
+                        </h2>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <!-- HP -->
+                            <div class="bg-rose-50 p-5 rounded-lg">
+                                <h3 class="text-sm font-medium text-rose-700 mb-3 tracking-wider">ホームページ</h3>
+                                <ul class="text-warm-gray-600 space-y-2 text-sm">
+                                    <li class="flex items-start">
+                                        <span class="text-rose-400 mr-2 mt-0.5">●</span>
+                                        トップページ（院の紹介・サービス概要・補助金案内）
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-rose-400 mr-2 mt-0.5">●</span>
+                                        助産院紹介・助産師プロフィール
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-rose-400 mr-2 mt-0.5">●</span>
+                                        メニュー・料金（訪問の流れ・FAQ付き）
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-rose-400 mr-2 mt-0.5">●</span>
+                                        アクセス・お問い合わせ
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-rose-400 mr-2 mt-0.5">●</span>
+                                        レスポンシブ対応（PC / スマホ）
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- システム -->
+                            <div class="bg-navy-50 p-5 rounded-lg">
+                                <h3 class="text-sm font-medium text-navy-700 mb-3 tracking-wider">業務管理システム</h3>
+                                <ul class="text-warm-gray-600 space-y-2 text-sm">
+                                    <li class="flex items-start">
+                                        <span class="text-navy-400 mr-2 mt-0.5">●</span>
+                                        予約管理（受付・確認・リマインダー通知）
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-navy-400 mr-2 mt-0.5">●</span>
+                                        顧客・お子様情報の紐づけ管理
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-navy-400 mr-2 mt-0.5">●</span>
+                                        電子カルテ（メニュー別テンプレート）
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-navy-400 mr-2 mt-0.5">●</span>
+                                        スケジュール管理（カレンダー表示）
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-navy-400 mr-2 mt-0.5">●</span>
+                                        スマートフォン完全対応
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 主な機能 -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            管理システムの主な機能
+                        </h2>
+
+                        <ul class="text-warm-gray-600 space-y-3">
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">ダッシュボード</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">今日の予約・確認待ち・今月の予約数を一覧表示。日々の業務状況をひと目で把握できます。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">予約管理</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">Webフォームからの予約受付・承認・キャンセル管理。ステータス変更時に自動メール通知。前日のリマインダー配信で予約忘れを防止。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">顧客・お子様管理</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">お母さんの情報にお子様を紐づけて管理。出産日・月齢を自動計算し、メニュー提案や記録に活用。複数のお子様にも対応。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">電子カルテ</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">母乳相談・睡眠相談・ベビーマッサージ・離乳食相談など、メニューに応じたテンプレートを自動表示。訪問先のスマホからも記録可能。過去の施術履歴を時系列で一覧確認。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">スケジュール管理</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">カレンダー表示で予約状況を確認。日付クリックでその日の予約詳細を表示。訪問スケジュールの管理に最適。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-navy-500 mr-3">●</span>
+                                <div>
+                                    <span class="font-medium">院の設定管理</span>
+                                    <p class="text-sm text-warm-gray-500 mt-1">院名・メニュー・料金・営業時間などをシステム上で一元管理。設定変更が即座に反映されます。</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 技術スタック -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            使用技術
+                        </h2>
+
+                        <h3 class="text-sm font-medium text-rose-600 mb-3 tracking-wider">ホームページ</h3>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Next.js 14</span>
+                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Tailwind CSS</span>
+                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">TypeScript</span>
+                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Cloudflare Pages</span>
+                        </div>
+
+                        <h3 class="text-sm font-medium text-navy-600 mb-3 tracking-wider">管理システム</h3>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Google Apps Script</span>
+                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Google Spreadsheet</span>
+                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">HTML / CSS / JavaScript</span>
+                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">GAS MailApp</span>
+                        </div>
+                        <p class="text-sm text-warm-gray-500 leading-relaxed">
+                            ホームページは静的サイトとして高速配信。管理システムはGoogle Apps Scriptの標準機能のみで構成し、
+                            外部サーバー不要で運用コストを最小限に。データはGoogle Spreadsheetに保存され、
+                            Googleのインフラ上で安全に管理されます。
+                        </p>
+                    </div>
+
+                    <!-- コストメリット -->
+                    <div class="mb-10">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                            コストメリット
+                        </h2>
+                        <div class="bg-warm-gray-50 p-6 rounded-lg">
+                            <div class="grid md:grid-cols-3 gap-6 text-center">
+                                <div>
+                                    <p class="text-2xl font-medium text-navy-700 mb-1">0円</p>
+                                    <p class="text-xs text-warm-gray-500">サーバー維持費 / 月</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-medium text-navy-700 mb-1">0円</p>
+                                    <p class="text-xs text-warm-gray-500">ソフトウェア利用料 / 月</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-medium text-navy-700 mb-1">0円</p>
+                                    <p class="text-xs text-warm-gray-500">データベース費用 / 月</p>
+                                </div>
+                            </div>
+                            <p class="text-sm text-warm-gray-500 mt-6 leading-relaxed text-center">
+                                必要なのは初期の開発費用と月額の保守パック費用のみ。<br>
+                                Google Workspace（無料プラン可）と Cloudflare Pages（無料枠）を活用し、<br>
+                                月額数万円の既存サービスと比べて圧倒的な低コストで運用できます。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="text-center pt-6 border-t border-warm-gray-200">
+                        <p class="text-warm-gray-600 mb-4">
+                            助産院・助産師さんの業務に合わせてカスタマイズいたします。
+                        </p>
+                        <p class="text-sm text-warm-gray-500 mb-6">
+                            ヒアリング → 要件定義 → 開発 → テスト → 導入の流れで、<br>
+                            実務に最適化したシステムをお届けします。
+                        </p>
+                        <a href="../index.html#contact" class="inline-block border border-warm-gray-400 text-warm-gray-700 px-8 py-3 text-sm tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                            お問い合わせ
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- 戻るリンク -->
+                <div class="mt-10 text-center">
+                    <a href="../index.html#works" class="text-warm-gray-500 hover:text-warm-gray-700 text-sm inline-flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        実績一覧に戻る
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- フッター -->
+    <footer class="bg-warm-gray-800 text-warm-gray-300 py-12">
+        <div class="container mx-auto px-6">
+            <div class="text-center">
+                <p class="text-sm tracking-wider mb-2">
+                    &copy; 2026 AYCC
+                </p>
+                <p class="text-xs text-warm-gray-500">
+                    AI YASUDA CREATIVE & CONSULTING
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lightbox -->
+    <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="">
+    </div>
+
+    <!-- ハンバーガーメニュー -->
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('menu-open');
+        });
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('menu-open');
+            });
+        });
+    </script>
+
+    <script>
+        function openLightbox(img) {
+            var overlay = document.getElementById('lightbox');
+            document.getElementById('lightbox-img').src = img.src;
+            document.getElementById('lightbox-img').alt = img.alt;
+            overlay.classList.add('active');
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLightbox();
+        });
+    </script>
+</body>
+</html>
