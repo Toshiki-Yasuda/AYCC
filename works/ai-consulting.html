@@ -139,6 +139,17 @@
             opacity: 1;
         }
 
+        /* ステップアップメッセージ */
+        .stepup-line {
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .stepup-message.visible .stepup-line {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* セクションタイトル スライドイン */
         .slide-in-title {
             opacity: 0;
@@ -266,10 +277,11 @@
             <!-- タイトル -->
             <div class="text-center mb-16 section-title-group">
                 <p class="text-xs font-medium text-navy-500 tracking-widest mb-4 slide-in-subtitle">PERSONAL CONSULTING</p>
-                <p class="font-elegant text-lg md:text-xl text-warm-gray-500 mb-3 slide-in-title leading-relaxed">
-                    AIを、チャットツールから、自分をよく知る相棒、有能な秘書へ。<br>
-                    <span class="text-warm-gray-800 font-medium">仕事を任せ、成果物を作るエージェントへ。</span>
-                </p>
+                <div class="mb-6 stepup-message">
+                    <p class="font-elegant text-warm-gray-400 text-sm md:text-base mb-2 tracking-wider stepup-line" style="transition-delay: 0.2s;">AIを、チャットツールから、</p>
+                    <p class="font-elegant text-warm-gray-600 text-base md:text-lg mb-2 stepup-line" style="transition-delay: 0.5s;">自分をよく知る相棒、有能な秘書へ。</p>
+                    <p class="font-elegant text-warm-gray-800 text-lg md:text-xl font-medium stepup-line" style="transition-delay: 0.8s;">仕事を任せ、成果物を作るエージェントへ。</p>
+                </div>
                 <div class="divider slide-in-divider mb-6"></div>
                 <h1 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-2 slide-in-title">
                     AI活用 個人コンサルティング
@@ -690,6 +702,20 @@
         menuToggle.addEventListener('click', () => {
             mobileMenu.classList.toggle('menu-open');
         });
+
+        // ステップアップメッセージ
+        const stepupMsg = document.querySelector('.stepup-message');
+        if (stepupMsg) {
+            const stepupObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            stepupObserver.observe(stepupMsg);
+        }
 
         // セクションタイトル スライドイン
         const titleGroups = document.querySelectorAll('.section-title-group');
