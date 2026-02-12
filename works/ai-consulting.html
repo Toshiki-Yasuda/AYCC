@@ -468,78 +468,64 @@
                     <div class="grid md:grid-cols-2 gap-6 stagger-container">
 
                         <!-- 実施プラン -->
-                        <div class="deliverable-card bg-white border-elegant overflow-hidden stagger-item cursor-pointer" onclick="this.querySelector('.accordion-body').classList.toggle('open'); this.querySelector('.accordion-icon').classList.toggle('rotate-180');">
-                            <div class="bg-gradient-to-r from-navy-800 to-navy-700 px-6 py-4 flex items-center justify-between">
-                                <div>
-                                    <p class="text-navy-300 text-xs tracking-widest mb-1">DELIVERABLE 01</p>
-                                    <h3 class="text-white font-medium">実施プラン</h3>
-                                </div>
-                                <svg class="accordion-icon w-4 h-4 text-navy-300 transition-transform duration-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
+                        <div class="deliverable-card bg-white border-elegant overflow-hidden stagger-item">
+                            <div class="bg-gradient-to-r from-navy-800 to-navy-700 px-6 py-4">
+                                <p class="text-navy-300 text-xs tracking-widest mb-1">DELIVERABLE 01</p>
+                                <h3 class="text-white font-medium">実施プラン</h3>
                             </div>
-                            <div class="px-6 py-4">
-                                <p class="text-warm-gray-500 text-sm leading-relaxed">セッションの設計図。あなたの現状・目標に合わせた進行プランです。</p>
-                            </div>
-                            <div class="accordion-body">
-                                <div class="px-6 pb-6">
-                                    <div class="bg-warm-gray-50 p-4 rounded text-xs text-warm-gray-500 space-y-2">
-                                        <p class="font-medium text-warm-gray-600 mb-2">含まれる内容</p>
-                                        <div class="flex items-start gap-2">
-                                            <span class="text-navy-500 mt-0.5">&#9656;</span>
-                                            <span>全体設計の意図（なぜこのツール・テーマか）</span>
-                                        </div>
-                                        <div class="flex items-start gap-2">
-                                            <span class="text-navy-500 mt-0.5">&#9656;</span>
-                                            <span>タイムテーブル（各パートの所要時間・内容）</span>
-                                        </div>
-                                        <div class="flex items-start gap-2">
-                                            <span class="text-navy-500 mt-0.5">&#9656;</span>
-                                            <span>ガイドライン遵守のポイント</span>
-                                        </div>
-                                        <div class="flex items-start gap-2">
-                                            <span class="text-navy-500 mt-0.5">&#9656;</span>
-                                            <span>記録と財産化のプロセス</span>
-                                        </div>
+                            <div class="p-6">
+                                <p class="text-warm-gray-500 text-sm leading-relaxed mb-4">
+                                    事前ヒアリングをもとに作成する、セッションの設計図。あなたの現状・目標・やりたいことを踏まえた進行プランです。
+                                </p>
+                                <div class="bg-warm-gray-50 p-4 rounded text-xs text-warm-gray-500 space-y-2">
+                                    <p class="font-medium text-warm-gray-600 mb-2">含まれる内容</p>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-navy-500 mt-0.5">&#9656;</span>
+                                        <span>全体設計の意図（なぜこのツール・テーマか）</span>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-navy-500 mt-0.5">&#9656;</span>
+                                        <span>タイムテーブル（各パートの所要時間・内容）</span>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-navy-500 mt-0.5">&#9656;</span>
+                                        <span>ガイドライン遵守のポイント</span>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-navy-500 mt-0.5">&#9656;</span>
+                                        <span>記録と財産化のプロセス</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- 振り返りレポート -->
-                        <div class="deliverable-card bg-white border-elegant overflow-hidden stagger-item cursor-pointer" onclick="this.querySelector('.accordion-body').classList.toggle('open'); this.querySelector('.accordion-icon').classList.toggle('rotate-180');">
-                            <div class="bg-gradient-to-r from-rose-800 to-rose-700 px-6 py-4 flex items-center justify-between">
-                                <div>
-                                    <p class="text-rose-300 text-xs tracking-widest mb-1">DELIVERABLE 02</p>
-                                    <h3 class="text-white font-medium">振り返りレポート</h3>
-                                </div>
-                                <svg class="accordion-icon w-4 h-4 text-rose-300 transition-transform duration-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
+                        <div class="deliverable-card bg-white border-elegant overflow-hidden stagger-item">
+                            <div class="bg-gradient-to-r from-rose-800 to-rose-700 px-6 py-4">
+                                <p class="text-rose-300 text-xs tracking-widest mb-1">DELIVERABLE 02</p>
+                                <h3 class="text-white font-medium">振り返りレポート</h3>
                             </div>
-                            <div class="px-6 py-4">
-                                <p class="text-warm-gray-500 text-sm leading-relaxed">Notta録音 → AI分析で作成する、あなた専用の復習ガイドです。</p>
-                            </div>
-                            <div class="accordion-body">
-                                <div class="px-6 pb-6">
-                                    <div class="bg-warm-gray-50 p-4 rounded text-xs text-warm-gray-500 space-y-2">
-                                        <p class="font-medium text-warm-gray-600 mb-2">含まれる内容</p>
-                                        <div class="flex items-start gap-2">
-                                            <span class="text-rose-500 mt-0.5">&#9656;</span>
-                                            <span>各トピックの学び・キーフレーズ</span>
-                                        </div>
-                                        <div class="flex items-start gap-2">
-                                            <span class="text-rose-500 mt-0.5">&#9656;</span>
-                                            <span>あなたの反応・気づきの記録</span>
-                                        </div>
-                                        <div class="flex items-start gap-2">
-                                            <span class="text-rose-500 mt-0.5">&#9656;</span>
-                                            <span>実践のヒント・ハンズオン解説</span>
-                                        </div>
-                                        <div class="flex items-start gap-2">
-                                            <span class="text-rose-500 mt-0.5">&#9656;</span>
-                                            <span>アクションアイテム（チェックリスト形式）</span>
-                                        </div>
+                            <div class="p-6">
+                                <p class="text-warm-gray-500 text-sm leading-relaxed mb-4">
+                                    Notta録音 → 文字起こし → AI分析で作成する、あなた専用の復習ガイド。セッションの全内容が構造化された形で残ります。
+                                </p>
+                                <div class="bg-warm-gray-50 p-4 rounded text-xs text-warm-gray-500 space-y-2">
+                                    <p class="font-medium text-warm-gray-600 mb-2">含まれる内容</p>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-500 mt-0.5">&#9656;</span>
+                                        <span>各トピックの学び・キーフレーズ</span>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-500 mt-0.5">&#9656;</span>
+                                        <span>あなたの反応・気づきの記録</span>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-500 mt-0.5">&#9656;</span>
+                                        <span>実践のヒント・ハンズオン解説</span>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-500 mt-0.5">&#9656;</span>
+                                        <span>アクションアイテム（チェックリスト形式）</span>
                                     </div>
                                 </div>
                             </div>
@@ -680,7 +666,9 @@
                         <h2 class="font-elegant text-lg text-warm-gray-800 mb-3 slide-in-title">体験者の声</h2>
                         <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto slide-in-divider"></div>
                     </div>
-                    <div class="max-w-2xl mx-auto">
+
+                    <div class="space-y-4">
+                        <!-- 体験者の声カード -->
                         <div class="bg-white border-elegant overflow-hidden cursor-pointer" onclick="this.querySelector('.accordion-body').classList.toggle('open'); this.querySelector('.accordion-icon').classList.toggle('rotate-180');">
                             <div class="p-6 flex items-center justify-between gap-4">
                                 <div class="flex items-start gap-4">
@@ -706,6 +694,119 @@
                                         <p class="text-warm-gray-600 text-sm leading-loose">
                                             私にあったレベルの説明と、AIを活用することの不安や未使用になる挫折を回避する説明も織り混ぜてくれていたので、講習の内容を身につけて、今より生活をもっと私らしくスマートに楽しんで活用したいです。
                                         </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- この方の実施プラン -->
+                        <div class="bg-white border-elegant overflow-hidden cursor-pointer" onclick="this.querySelector('.accordion-body').classList.toggle('open'); this.querySelector('.accordion-icon').classList.toggle('rotate-180');">
+                            <div class="p-6 flex items-center justify-between gap-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-navy-50 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 text-navy-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-warm-gray-700 text-sm font-medium">この方の実施プラン</p>
+                                        <p class="text-warm-gray-400 text-xs mt-0.5">AI活用の基礎と業務効率化 ─ 3時間セッション</p>
+                                    </div>
+                                </div>
+                                <svg class="accordion-icon w-4 h-4 text-warm-gray-400 transition-transform duration-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                            <div class="accordion-body">
+                                <div class="px-6 pb-6 pt-0">
+                                    <div class="border-t border-warm-gray-100 pt-5 text-sm text-warm-gray-600 space-y-4">
+                                        <div>
+                                            <p class="font-medium text-warm-gray-700 mb-2">セッションの目的</p>
+                                            <p class="leading-relaxed">AIツールの基本操作を習得し、日常業務（提案書作成・情報整理・メール対応）での活用イメージを具体化する。</p>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-warm-gray-700 mb-2">タイムテーブル</p>
+                                            <div class="bg-warm-gray-50 p-4 rounded text-xs space-y-2">
+                                                <div class="flex gap-3">
+                                                    <span class="text-navy-500 font-medium w-20 flex-shrink-0">0:00 - 0:30</span>
+                                                    <span>ヒアリング・現状の使い方と課題の整理</span>
+                                                </div>
+                                                <div class="flex gap-3">
+                                                    <span class="text-navy-500 font-medium w-20 flex-shrink-0">0:30 - 1:30</span>
+                                                    <span>ChatGPT基本操作・プロンプトの書き方・メモリ機能の活用</span>
+                                                </div>
+                                                <div class="flex gap-3">
+                                                    <span class="text-navy-500 font-medium w-20 flex-shrink-0">1:30 - 2:30</span>
+                                                    <span>実務演習（提案書の下書き・メール文面作成を実践）</span>
+                                                </div>
+                                                <div class="flex gap-3">
+                                                    <span class="text-navy-500 font-medium w-20 flex-shrink-0">2:30 - 3:00</span>
+                                                    <span>振り返り・今後のアクション整理</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="text-warm-gray-400 text-xs">※ 実際の内容はお客様に合わせてカスタマイズしています</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- この方の振り返りレポート -->
+                        <div class="bg-white border-elegant overflow-hidden cursor-pointer" onclick="this.querySelector('.accordion-body').classList.toggle('open'); this.querySelector('.accordion-icon').classList.toggle('rotate-180');">
+                            <div class="p-6 flex items-center justify-between gap-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-rose-50 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-warm-gray-700 text-sm font-medium">この方の振り返りレポート</p>
+                                        <p class="text-warm-gray-400 text-xs mt-0.5">セッション録音をもとにAIが分析・構造化</p>
+                                    </div>
+                                </div>
+                                <svg class="accordion-icon w-4 h-4 text-warm-gray-400 transition-transform duration-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                            <div class="accordion-body">
+                                <div class="px-6 pb-6 pt-0">
+                                    <div class="border-t border-warm-gray-100 pt-5 text-sm text-warm-gray-600 space-y-4">
+                                        <div>
+                                            <p class="font-medium text-warm-gray-700 mb-2">セッションのハイライト</p>
+                                            <ul class="space-y-2 text-xs">
+                                                <li class="flex items-start gap-2">
+                                                    <span class="text-rose-500 mt-0.5">&#9656;</span>
+                                                    <span>「AIに聞く」ではなく「AIと考える」という視点の転換に大きな気づき</span>
+                                                </li>
+                                                <li class="flex items-start gap-2">
+                                                    <span class="text-rose-500 mt-0.5">&#9656;</span>
+                                                    <span>プロンプトに「背景」と「目的」を入れるだけで回答精度が大幅向上することを体感</span>
+                                                </li>
+                                                <li class="flex items-start gap-2">
+                                                    <span class="text-rose-500 mt-0.5">&#9656;</span>
+                                                    <span>メモリ機能で「自分の仕事を知っているAI」を育てる方法に強い関心</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-warm-gray-700 mb-2">アクションアイテム</p>
+                                            <div class="bg-warm-gray-50 p-4 rounded text-xs space-y-2">
+                                                <div class="flex items-start gap-2">
+                                                    <span class="text-warm-gray-300">&#9744;</span>
+                                                    <span>ChatGPTのメモリに自分の業務内容・担当顧客の特徴を登録する</span>
+                                                </div>
+                                                <div class="flex items-start gap-2">
+                                                    <span class="text-warm-gray-300">&#9744;</span>
+                                                    <span>週1回、提案書の下書きをAIで作成してみる</span>
+                                                </div>
+                                                <div class="flex items-start gap-2">
+                                                    <span class="text-warm-gray-300">&#9744;</span>
+                                                    <span>うまくいったプロンプトをメモに残す習慣をつける</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="text-warm-gray-400 text-xs">※ 実際の内容はお客様に合わせて作成しています</p>
                                     </div>
                                 </div>
                             </div>
