@@ -213,6 +213,19 @@
             z-index: 0;
         }
 
+        /* アコーディオン */
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+        .accordion-body.open {
+            max-height: 500px;
+        }
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+
         @media (max-width: 767px) {
             .flow-line {
                 display: none;
@@ -455,64 +468,78 @@
                     <div class="grid md:grid-cols-2 gap-6 stagger-container">
 
                         <!-- 実施プラン -->
-                        <div class="deliverable-card bg-white border-elegant overflow-hidden stagger-item">
-                            <div class="bg-gradient-to-r from-navy-800 to-navy-700 px-6 py-4">
-                                <p class="text-navy-300 text-xs tracking-widest mb-1">DELIVERABLE 01</p>
-                                <h3 class="text-white font-medium">実施プラン</h3>
+                        <div class="deliverable-card bg-white border-elegant overflow-hidden stagger-item cursor-pointer" onclick="this.querySelector('.accordion-body').classList.toggle('open'); this.querySelector('.accordion-icon').classList.toggle('rotate-180');">
+                            <div class="bg-gradient-to-r from-navy-800 to-navy-700 px-6 py-4 flex items-center justify-between">
+                                <div>
+                                    <p class="text-navy-300 text-xs tracking-widest mb-1">DELIVERABLE 01</p>
+                                    <h3 class="text-white font-medium">実施プラン</h3>
+                                </div>
+                                <svg class="accordion-icon w-4 h-4 text-navy-300 transition-transform duration-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
                             </div>
-                            <div class="p-6">
-                                <p class="text-warm-gray-500 text-sm leading-relaxed mb-4">
-                                    事前ヒアリングをもとに作成する、セッションの設計図。あなたの現状・目標・やりたいことを踏まえた進行プランです。
-                                </p>
-                                <div class="bg-warm-gray-50 p-4 rounded text-xs text-warm-gray-500 space-y-2">
-                                    <p class="font-medium text-warm-gray-600 mb-2">含まれる内容</p>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-navy-500 mt-0.5">&#9656;</span>
-                                        <span>全体設計の意図（なぜこのツール・テーマか）</span>
-                                    </div>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-navy-500 mt-0.5">&#9656;</span>
-                                        <span>タイムテーブル（各パートの所要時間・内容）</span>
-                                    </div>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-navy-500 mt-0.5">&#9656;</span>
-                                        <span>ガイドライン遵守のポイント</span>
-                                    </div>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-navy-500 mt-0.5">&#9656;</span>
-                                        <span>記録と財産化のプロセス</span>
+                            <div class="px-6 py-4">
+                                <p class="text-warm-gray-500 text-sm leading-relaxed">セッションの設計図。あなたの現状・目標に合わせた進行プランです。</p>
+                            </div>
+                            <div class="accordion-body">
+                                <div class="px-6 pb-6">
+                                    <div class="bg-warm-gray-50 p-4 rounded text-xs text-warm-gray-500 space-y-2">
+                                        <p class="font-medium text-warm-gray-600 mb-2">含まれる内容</p>
+                                        <div class="flex items-start gap-2">
+                                            <span class="text-navy-500 mt-0.5">&#9656;</span>
+                                            <span>全体設計の意図（なぜこのツール・テーマか）</span>
+                                        </div>
+                                        <div class="flex items-start gap-2">
+                                            <span class="text-navy-500 mt-0.5">&#9656;</span>
+                                            <span>タイムテーブル（各パートの所要時間・内容）</span>
+                                        </div>
+                                        <div class="flex items-start gap-2">
+                                            <span class="text-navy-500 mt-0.5">&#9656;</span>
+                                            <span>ガイドライン遵守のポイント</span>
+                                        </div>
+                                        <div class="flex items-start gap-2">
+                                            <span class="text-navy-500 mt-0.5">&#9656;</span>
+                                            <span>記録と財産化のプロセス</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- 振り返りレポート -->
-                        <div class="deliverable-card bg-white border-elegant overflow-hidden stagger-item">
-                            <div class="bg-gradient-to-r from-rose-800 to-rose-700 px-6 py-4">
-                                <p class="text-rose-300 text-xs tracking-widest mb-1">DELIVERABLE 02</p>
-                                <h3 class="text-white font-medium">振り返りレポート</h3>
+                        <div class="deliverable-card bg-white border-elegant overflow-hidden stagger-item cursor-pointer" onclick="this.querySelector('.accordion-body').classList.toggle('open'); this.querySelector('.accordion-icon').classList.toggle('rotate-180');">
+                            <div class="bg-gradient-to-r from-rose-800 to-rose-700 px-6 py-4 flex items-center justify-between">
+                                <div>
+                                    <p class="text-rose-300 text-xs tracking-widest mb-1">DELIVERABLE 02</p>
+                                    <h3 class="text-white font-medium">振り返りレポート</h3>
+                                </div>
+                                <svg class="accordion-icon w-4 h-4 text-rose-300 transition-transform duration-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
                             </div>
-                            <div class="p-6">
-                                <p class="text-warm-gray-500 text-sm leading-relaxed mb-4">
-                                    Notta録音 → 文字起こし → AI分析で作成する、あなた専用の復習ガイド。セッションの全内容が構造化された形で残ります。
-                                </p>
-                                <div class="bg-warm-gray-50 p-4 rounded text-xs text-warm-gray-500 space-y-2">
-                                    <p class="font-medium text-warm-gray-600 mb-2">含まれる内容</p>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-500 mt-0.5">&#9656;</span>
-                                        <span>各トピックの学び・キーフレーズ</span>
-                                    </div>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-500 mt-0.5">&#9656;</span>
-                                        <span>あなたの反応・気づきの記録</span>
-                                    </div>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-500 mt-0.5">&#9656;</span>
-                                        <span>実践のヒント・ハンズオン解説</span>
-                                    </div>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-500 mt-0.5">&#9656;</span>
-                                        <span>アクションアイテム（チェックリスト形式）</span>
+                            <div class="px-6 py-4">
+                                <p class="text-warm-gray-500 text-sm leading-relaxed">Notta録音 → AI分析で作成する、あなた専用の復習ガイドです。</p>
+                            </div>
+                            <div class="accordion-body">
+                                <div class="px-6 pb-6">
+                                    <div class="bg-warm-gray-50 p-4 rounded text-xs text-warm-gray-500 space-y-2">
+                                        <p class="font-medium text-warm-gray-600 mb-2">含まれる内容</p>
+                                        <div class="flex items-start gap-2">
+                                            <span class="text-rose-500 mt-0.5">&#9656;</span>
+                                            <span>各トピックの学び・キーフレーズ</span>
+                                        </div>
+                                        <div class="flex items-start gap-2">
+                                            <span class="text-rose-500 mt-0.5">&#9656;</span>
+                                            <span>あなたの反応・気づきの記録</span>
+                                        </div>
+                                        <div class="flex items-start gap-2">
+                                            <span class="text-rose-500 mt-0.5">&#9656;</span>
+                                            <span>実践のヒント・ハンズオン解説</span>
+                                        </div>
+                                        <div class="flex items-start gap-2">
+                                            <span class="text-rose-500 mt-0.5">&#9656;</span>
+                                            <span>アクションアイテム（チェックリスト形式）</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -653,22 +680,33 @@
                         <h2 class="font-elegant text-lg text-warm-gray-800 mb-3 slide-in-title">体験者の声</h2>
                         <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto slide-in-divider"></div>
                     </div>
-                    <div class="bg-white border-elegant p-8 md:p-10">
-                        <div class="max-w-2xl mx-auto">
-                            <p class="font-elegant text-4xl text-rose-300 text-center mb-4">"</p>
-                            <p class="text-warm-gray-600 text-sm leading-loose mb-4">
-                                講習を受けて、<span class="font-medium text-warm-gray-800">AIは単なる自動化ツールではなく自分の考えを言語化するトレーニングツールにもなる</span>ことを教えてもらいました。
-                            </p>
-                            <p class="text-warm-gray-600 text-sm leading-loose mb-4">
-                                仕事の簡略化のヒントも得られましたが、それ以上に<span class="font-medium text-warm-gray-800">自身のスキルアップに繋がりそうなことが一番の収穫</span>でした。
-                            </p>
-                            <p class="text-warm-gray-600 text-sm leading-loose mb-6">
-                                私にあったレベルの説明と、AIを活用することの不安や未使用になる挫折を回避する説明も織り混ぜてくれていたので、講習の内容を身につけて、今より生活をもっと私らしくスマートに楽しんで活用したいです。
-                            </p>
-                            <div class="text-right">
-                                <div class="inline-flex items-center gap-3">
-                                    <div class="w-8 h-px bg-gradient-to-r from-rose-300 to-navy-300"></div>
-                                    <p class="text-warm-gray-400 text-xs tracking-wider">女性・システム営業</p>
+                    <div class="max-w-2xl mx-auto">
+                        <div class="bg-white border-elegant overflow-hidden cursor-pointer" onclick="this.querySelector('.accordion-body').classList.toggle('open'); this.querySelector('.accordion-icon').classList.toggle('rotate-180');">
+                            <div class="p-6 flex items-center justify-between gap-4">
+                                <div class="flex items-start gap-4">
+                                    <p class="font-elegant text-2xl text-rose-300 leading-none flex-shrink-0">"</p>
+                                    <div>
+                                        <p class="text-warm-gray-700 text-sm font-medium leading-relaxed">自身のスキルアップに繋がりそうなことが一番の収穫でした</p>
+                                        <p class="text-warm-gray-400 text-xs mt-2 tracking-wider">女性・システム営業</p>
+                                    </div>
+                                </div>
+                                <svg class="accordion-icon w-4 h-4 text-warm-gray-400 transition-transform duration-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                            <div class="accordion-body">
+                                <div class="px-6 pb-6 pt-0">
+                                    <div class="border-t border-warm-gray-100 pt-5">
+                                        <p class="text-warm-gray-600 text-sm leading-loose mb-3">
+                                            講習を受けて、<span class="font-medium text-warm-gray-800">AIは単なる自動化ツールではなく自分の考えを言語化するトレーニングツールにもなる</span>ことを教えてもらいました。
+                                        </p>
+                                        <p class="text-warm-gray-600 text-sm leading-loose mb-3">
+                                            仕事の簡略化のヒントも得られましたが、それ以上に<span class="font-medium text-warm-gray-800">自身のスキルアップに繋がりそうなことが一番の収穫</span>でした。
+                                        </p>
+                                        <p class="text-warm-gray-600 text-sm leading-loose">
+                                            私にあったレベルの説明と、AIを活用することの不安や未使用になる挫折を回避する説明も織り混ぜてくれていたので、講習の内容を身につけて、今より生活をもっと私らしくスマートに楽しんで活用したいです。
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
