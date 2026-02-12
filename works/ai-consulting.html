@@ -213,21 +213,30 @@
             z-index: 0;
         }
 
-        /* 展開パネル */
-        .expand-panel {
+        /* アコーディオン */
+        .acc-trigger {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .acc-trigger:hover {
+            background-color: rgba(0, 0, 0, 0.015);
+        }
+        .acc-trigger .acc-icon {
+            transition: transform 0.3s ease;
+        }
+        .acc-trigger.active .acc-icon {
+            transform: rotate(180deg);
+        }
+        .acc-body {
             display: grid;
             grid-template-rows: 0fr;
             transition: grid-template-rows 0.4s ease;
         }
-        .expand-panel > div {
+        .acc-body > div {
             overflow: hidden;
         }
-        .expand-panel.open {
+        .acc-body.open {
             grid-template-rows: 1fr;
-        }
-        .voice-card.active {
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            transform: translateY(-2px);
         }
 
         @media (max-width: 767px) {
@@ -671,49 +680,18 @@
                         <div class="w-8 h-px bg-gradient-to-r from-rose-500 to-navy-300 mx-auto slide-in-divider"></div>
                     </div>
 
-                    <div class="grid grid-cols-3 gap-3 md:gap-4" id="voice-cards">
-                        <!-- 感想カード -->
-                        <div class="voice-card bg-white border-elegant p-4 md:p-5 cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all duration-300 text-center" data-panel="panel-voice">
-                            <p class="font-elegant text-2xl text-rose-300 mb-2">"</p>
-                            <p class="text-warm-gray-700 text-xs font-medium leading-relaxed mb-2">スキルアップに繋がりそうなことが一番の収穫</p>
-                            <p class="text-warm-gray-400 text-xs tracking-wider">女性・システム営業</p>
-                        </div>
-
-                        <!-- 実施プランカード -->
-                        <div class="voice-card bg-white border-elegant p-4 md:p-5 cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all duration-300 text-center" data-panel="panel-plan">
-                            <div class="w-8 h-8 bg-navy-50 rounded-full flex items-center justify-center mx-auto mb-2">
-                                <svg class="w-4 h-4 text-navy-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
-                                </svg>
-                            </div>
-                            <p class="text-warm-gray-700 text-xs font-medium mb-1">実施プラン</p>
-                            <p class="text-warm-gray-400 text-xs hidden md:block">2時間セッション</p>
-                        </div>
-
-                        <!-- 振り返りレポートカード -->
-                        <div class="voice-card bg-white border-elegant p-4 md:p-5 cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all duration-300 text-center" data-panel="panel-report">
-                            <div class="w-8 h-8 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-2">
-                                <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/>
-                                </svg>
-                            </div>
-                            <p class="text-warm-gray-700 text-xs font-medium mb-1">振り返りレポート</p>
-                            <p class="text-warm-gray-400 text-xs hidden md:block">AI分析・構造化</p>
-                        </div>
-                    </div>
-
-                    <!-- 展開パネル: 感想 -->
-                    <div id="panel-voice" class="expand-panel">
-                        <div class="bg-white border-elegant p-6 md:p-8 mt-4">
+                    <div class="bg-white border-elegant">
+                        <!-- 感想（常時表示） -->
+                        <div class="p-6 md:p-8">
                             <div class="max-w-2xl mx-auto text-center">
-                                <p class="font-elegant text-3xl text-rose-300 mb-4">"</p>
-                                <p class="text-warm-gray-600 text-sm leading-loose mb-3">
+                                <p class="font-elegant text-2xl text-rose-300 mb-3">"</p>
+                                <p class="text-warm-gray-600 text-sm leading-loose mb-2">
                                     講習を受けて、<span class="font-medium text-warm-gray-800">AIは単なる自動化ツールではなく自分の考えを言語化するトレーニングツールにもなる</span>ことを教えてもらいました。
                                 </p>
-                                <p class="text-warm-gray-600 text-sm leading-loose mb-3">
+                                <p class="text-warm-gray-600 text-sm leading-loose mb-2">
                                     仕事の簡略化のヒントも得られましたが、それ以上に<span class="font-medium text-warm-gray-800">自身のスキルアップに繋がりそうなことが一番の収穫</span>でした。
                                 </p>
-                                <p class="text-warm-gray-600 text-sm leading-loose mb-6">
+                                <p class="text-warm-gray-600 text-sm leading-loose mb-5">
                                     私にあったレベルの説明と、AIを活用することの不安や未使用になる挫折を回避する説明も織り混ぜてくれていたので、講習の内容を身につけて、今より生活をもっと私らしくスマートに楽しんで活用したいです。
                                 </p>
                                 <div class="inline-flex items-center gap-3">
@@ -723,120 +701,106 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- 展開パネル: 実施プラン -->
-                    <div id="panel-plan" class="expand-panel">
-                        <div class="bg-white border-elegant p-6 md:p-8 mt-4">
-                            <div class="flex items-center gap-3 mb-5 pb-4 border-b border-warm-gray-100">
-                                <div class="w-8 h-8 bg-navy-50 rounded-full flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-4 h-4 text-navy-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
-                                    </svg>
+                        <!-- アコーディオン: 実施プラン -->
+                        <div class="border-t border-warm-gray-100">
+                            <div class="acc-trigger flex items-center justify-between px-6 md:px-8 py-4" data-acc="acc-plan">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-7 h-7 bg-navy-50 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-3.5 h-3.5 text-navy-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-warm-gray-700 text-sm font-medium">この方の実施プラン</p>
+                                        <p class="text-warm-gray-400 text-xs hidden md:block">2時間セッション・完全カスタマイズ設計</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p class="font-medium text-warm-gray-700 text-sm">この方の実施プラン</p>
-                                    <p class="text-warm-gray-400 text-xs">AI活用の基礎と業務効率化 ─ 2時間セッション</p>
-                                </div>
+                                <svg class="acc-icon w-4 h-4 text-warm-gray-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
                             </div>
-                            <div class="text-sm text-warm-gray-600 space-y-5">
+                            <div id="acc-plan" class="acc-body">
                                 <div>
-                                    <p class="font-medium text-warm-gray-700 mb-2">セッションの設計思想</p>
-                                    <p class="leading-relaxed mb-2">お客様の業務課題・AI経験・目標をヒアリングし、一人ひとりに最適化したプランを設計。この方の場合は「ChatGPT × メモリ機能」を軸に、業務フロー作成の効率化を目指しました。</p>
-                                    <div class="bg-warm-gray-50 p-3 rounded text-xs space-y-1.5 mt-3">
-                                        <p class="flex items-start gap-2"><span class="text-navy-500">&#9656;</span><span><strong>なぜChatGPTか</strong> ─ 認知度・企業導入実績が豊富で、お客様への提案にも活かせる</span></p>
-                                        <p class="flex items-start gap-2"><span class="text-navy-500">&#9656;</span><span><strong>なぜメモリ重視か</strong> ─ 「毎回指示する道具」→「自分を知る相棒」への転換が継続利用の鍵</span></p>
-                                        <p class="flex items-start gap-2"><span class="text-navy-500">&#9656;</span><span><strong>ガイドライン遵守</strong> ─ 社内ルールを確認し、安心して使える環境を最初に整備</span></p>
+                                    <div class="px-6 md:px-8 pb-6 md:pb-8 text-sm text-warm-gray-600 space-y-5">
+                                        <div>
+                                            <p class="font-medium text-warm-gray-700 mb-2">セッションの設計思想</p>
+                                            <p class="text-xs leading-relaxed mb-2">お客様の業務課題・AI経験・目標をヒアリングし、一人ひとりに最適化したプランを設計。この方の場合は「ChatGPT × メモリ機能」を軸に、業務フロー作成の効率化を目指しました。</p>
+                                            <div class="bg-warm-gray-50 p-3 rounded text-xs space-y-1.5 mt-3">
+                                                <p class="flex items-start gap-2"><span class="text-navy-500">&#9656;</span><span><strong>なぜChatGPTか</strong> ─ 認知度・企業導入実績が豊富で、お客様への提案にも活かせる</span></p>
+                                                <p class="flex items-start gap-2"><span class="text-navy-500">&#9656;</span><span><strong>なぜメモリ重視か</strong> ─ 「毎回指示する道具」→「自分を知る相棒」への転換が継続利用の鍵</span></p>
+                                                <p class="flex items-start gap-2"><span class="text-navy-500">&#9656;</span><span><strong>ガイドライン遵守</strong> ─ 社内ルールを確認し、安心して使える環境を最初に整備</span></p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-warm-gray-700 mb-2">タイムテーブル（2時間）</p>
+                                            <div class="bg-warm-gray-50 p-4 rounded text-xs space-y-2">
+                                                <div class="flex gap-3"><span class="text-navy-500 font-medium w-16 flex-shrink-0">15分</span><span>セットアップ・ガイドライン確認・ゴール設定</span></div>
+                                                <div class="flex gap-3"><span class="text-navy-500 font-medium w-16 flex-shrink-0">15分</span><span>AIの基礎知識 ─ LLMの仕組みと3つの落とし穴</span></div>
+                                                <div class="flex gap-3"><span class="text-navy-500 font-medium w-16 flex-shrink-0">15分</span><span>ChatGPTの実践体験 ─ プロンプトの違いを体感</span></div>
+                                                <div class="flex gap-3"><span class="text-navy-500 font-medium w-16 flex-shrink-0">20分</span><span class="font-medium text-warm-gray-700">メモリ機能で「自分のAI」を育てる <span class="text-rose-400">★核心</span></span></div>
+                                                <div class="flex gap-3"><span class="text-navy-500 font-medium w-16 flex-shrink-0">20分</span><span>小さな困り事からAIで解決する成功体験</span></div>
+                                                <div class="flex gap-3"><span class="text-navy-500 font-medium w-16 flex-shrink-0">25分</span><span>業務課題への実践的なAI活用（本題）</span></div>
+                                                <div class="flex gap-3"><span class="text-navy-500 font-medium w-16 flex-shrink-0">10分</span><span>振り返り・今後のアクション・フォローアップ案内</span></div>
+                                            </div>
+                                        </div>
+                                        <p class="text-warm-gray-400 text-xs">※ 事前ヒアリングに基づく完全カスタマイズ設計。記録→分析→ナレッジ化までがセットです。</p>
                                     </div>
-                                </div>
-                                <div>
-                                    <p class="font-medium text-warm-gray-700 mb-2">タイムテーブル（2時間）</p>
-                                    <div class="bg-warm-gray-50 p-4 rounded text-xs space-y-2">
-                                        <div class="flex gap-3">
-                                            <span class="text-navy-500 font-medium w-16 flex-shrink-0">15分</span>
-                                            <span>セットアップ・ガイドライン確認・ゴール設定</span>
-                                        </div>
-                                        <div class="flex gap-3">
-                                            <span class="text-navy-500 font-medium w-16 flex-shrink-0">15分</span>
-                                            <span>AIの基礎知識 ─ LLMの仕組みと3つの落とし穴</span>
-                                        </div>
-                                        <div class="flex gap-3">
-                                            <span class="text-navy-500 font-medium w-16 flex-shrink-0">15分</span>
-                                            <span>ChatGPTの実践体験 ─ プロンプトの違いを体感</span>
-                                        </div>
-                                        <div class="flex gap-3">
-                                            <span class="text-navy-500 font-medium w-16 flex-shrink-0">20分</span>
-                                            <span class="font-medium text-warm-gray-700">メモリ機能で「自分のAI」を育てる <span class="text-rose-400">★核心</span></span>
-                                        </div>
-                                        <div class="flex gap-3">
-                                            <span class="text-navy-500 font-medium w-16 flex-shrink-0">20分</span>
-                                            <span>小さな困り事からAIで解決する成功体験</span>
-                                        </div>
-                                        <div class="flex gap-3">
-                                            <span class="text-navy-500 font-medium w-16 flex-shrink-0">25分</span>
-                                            <span>業務課題への実践的なAI活用（本題）</span>
-                                        </div>
-                                        <div class="flex gap-3">
-                                            <span class="text-navy-500 font-medium w-16 flex-shrink-0">10分</span>
-                                            <span>振り返り・今後のアクション・フォローアップ案内</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <p class="font-medium text-warm-gray-700 mb-2">プランの特徴</p>
-                                    <p class="text-xs text-warm-gray-500 leading-relaxed">事前ヒアリングに基づく完全カスタマイズ設計。セッションはNottaで録音し、文字起こしデータをもとに振り返りレポートを作成。単なる講習ではなく、記録→分析→ナレッジ化までがセットです。</p>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- 展開パネル: 振り返りレポート -->
-                    <div id="panel-report" class="expand-panel">
-                        <div class="bg-white border-elegant p-6 md:p-8 mt-4">
-                            <div class="flex items-center gap-3 mb-5 pb-4 border-b border-warm-gray-100">
-                                <div class="w-8 h-8 bg-rose-50 rounded-full flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/>
-                                    </svg>
+                        <!-- アコーディオン: 振り返りレポート -->
+                        <div class="border-t border-warm-gray-100">
+                            <div class="acc-trigger flex items-center justify-between px-6 md:px-8 py-4" data-acc="acc-report">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-7 h-7 bg-rose-50 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-3.5 h-3.5 text-rose-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-warm-gray-700 text-sm font-medium">この方の振り返りレポート</p>
+                                        <p class="text-warm-gray-400 text-xs hidden md:block">セッション録音をもとにAIが分析・構造化</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p class="font-medium text-warm-gray-700 text-sm">この方の振り返りレポート</p>
-                                    <p class="text-warm-gray-400 text-xs">セッション録音をもとにAIが分析・構造化</p>
-                                </div>
+                                <svg class="acc-icon w-4 h-4 text-warm-gray-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
                             </div>
-                            <div class="text-sm text-warm-gray-600 space-y-5">
+                            <div id="acc-report" class="acc-body">
                                 <div>
-                                    <p class="font-medium text-warm-gray-700 mb-2">レポートの構成（全9セクション）</p>
-                                    <p class="text-xs text-warm-gray-500 leading-relaxed mb-3">Nottaで録音した2時間のセッションを文字起こしし、AIが分析・構造化。あなたの反応や発言、気づきの瞬間も事実ベースで記録したパーソナルレポートです。</p>
-                                    <div class="bg-warm-gray-50 p-4 rounded text-xs space-y-1.5">
-                                        <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">1</span><span>導入・現状ヒアリング</span></p>
-                                        <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">2</span><span>LLMの仕組み ─ AIの「正体」を知る</span></p>
-                                        <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">3</span><span>社内ガイドラインの確認</span></p>
-                                        <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">4</span><span>プロンプトの書き方 ─ AIへの「伝え方」の技術</span></p>
-                                        <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">5</span><span>メモリ機能 ─ AIを「自分のパートナー」に変える</span></p>
-                                        <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">6</span><span>音声入力 ─ 思考力そのものを鍛えるツール</span></p>
-                                        <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">7</span><span>エージェント機能 ─ AIは「作る」こともできる</span></p>
-                                        <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">8</span><span>実務への適用 ─ 業務課題の実践</span></p>
-                                        <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">9</span><span>まとめ・アクションプラン</span></p>
+                                    <div class="px-6 md:px-8 pb-6 md:pb-8 text-sm text-warm-gray-600 space-y-5">
+                                        <div>
+                                            <p class="font-medium text-warm-gray-700 mb-2">レポートの構成（全9セクション）</p>
+                                            <p class="text-xs text-warm-gray-500 leading-relaxed mb-3">Nottaで録音した2時間のセッションを文字起こしし、AIが分析・構造化。反応や発言、気づきの瞬間も事実ベースで記録したパーソナルレポートです。</p>
+                                            <div class="bg-warm-gray-50 p-4 rounded text-xs space-y-1.5">
+                                                <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">1</span><span>導入・現状ヒアリング</span></p>
+                                                <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">2</span><span>LLMの仕組み ─ AIの「正体」を知る</span></p>
+                                                <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">3</span><span>社内ガイドラインの確認</span></p>
+                                                <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">4</span><span>プロンプトの書き方 ─ AIへの「伝え方」の技術</span></p>
+                                                <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">5</span><span>メモリ機能 ─ AIを「自分のパートナー」に変える</span></p>
+                                                <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">6</span><span>音声入力 ─ 思考力そのものを鍛えるツール</span></p>
+                                                <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">7</span><span>エージェント機能 ─ AIは「作る」こともできる</span></p>
+                                                <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">8</span><span>実務への適用 ─ 業務課題の実践</span></p>
+                                                <p class="flex items-start gap-2"><span class="text-rose-400 font-medium w-4 flex-shrink-0">9</span><span>まとめ・アクションプラン</span></p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-warm-gray-700 mb-2">セッション中のキーフレーズ</p>
+                                            <div class="bg-rose-50/50 border border-rose-100 p-3 rounded text-xs italic text-warm-gray-600 leading-relaxed">
+                                                「ChatGPTは秘書だと思って。質問しちゃ駄目ですよ。指示してください」─ この一言で「検索ツール」から「仕事のパートナー」への認識が変わりました。
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-warm-gray-700 mb-2">各セクションに含まれる要素</p>
+                                            <div class="flex flex-wrap gap-2 text-xs">
+                                                <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">学んだこと</span>
+                                                <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded">あなたの反応</span>
+                                                <span class="bg-purple-50 text-purple-700 px-2 py-0.5 rounded">キーフレーズ</span>
+                                                <span class="bg-orange-50 text-orange-700 px-2 py-0.5 rounded">アクション</span>
+                                                <span class="bg-warm-gray-100 text-warm-gray-600 px-2 py-0.5 rounded">ハンズオン記録</span>
+                                            </div>
+                                        </div>
+                                        <p class="text-warm-gray-400 text-xs">※ セッション録音の文字起こしデータをもとに、お客様ごとに作成しています</p>
                                     </div>
                                 </div>
-                                <div>
-                                    <p class="font-medium text-warm-gray-700 mb-2">セッション中のキーフレーズ</p>
-                                    <div class="bg-rose-50/50 border border-rose-100 p-3 rounded text-xs italic text-warm-gray-600 leading-relaxed">
-                                        「ChatGPTは秘書だと思って。質問しちゃ駄目ですよ。指示してください」─ この一言で「検索ツール」から「仕事のパートナー」への認識が変わりました。
-                                    </div>
-                                </div>
-                                <div>
-                                    <p class="font-medium text-warm-gray-700 mb-2">各セクションに含まれる要素</p>
-                                    <div class="flex flex-wrap gap-2 text-xs">
-                                        <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">学んだこと</span>
-                                        <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded">あなたの反応</span>
-                                        <span class="bg-purple-50 text-purple-700 px-2 py-0.5 rounded">キーフレーズ</span>
-                                        <span class="bg-orange-50 text-orange-700 px-2 py-0.5 rounded">アクション</span>
-                                        <span class="bg-warm-gray-100 text-warm-gray-600 px-2 py-0.5 rounded">ハンズオン記録</span>
-                                    </div>
-                                </div>
-                                <p class="text-warm-gray-400 text-xs">※ セッション録音の文字起こしデータをもとに、お客様ごとに作成しています</p>
                             </div>
                         </div>
                     </div>
@@ -979,21 +943,21 @@
         }, { threshold: 0.15 });
         soloItems.forEach(item => soloObserver.observe(item));
 
-        // 体験者の声カード展開
-        document.querySelectorAll('.voice-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const targetId = card.dataset.panel;
-                const targetPanel = document.getElementById(targetId);
-                const isOpen = targetPanel.classList.contains('open');
+        // 体験者の声アコーディオン
+        document.querySelectorAll('.acc-trigger').forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const targetId = trigger.dataset.acc;
+                const targetBody = document.getElementById(targetId);
+                const isOpen = targetBody.classList.contains('open');
 
-                // 全パネルを閉じ、全カードのactiveを外す
-                document.querySelectorAll('.expand-panel').forEach(p => p.classList.remove('open'));
-                document.querySelectorAll('.voice-card').forEach(c => c.classList.remove('active'));
+                // 全て閉じる
+                document.querySelectorAll('.acc-body').forEach(b => b.classList.remove('open'));
+                document.querySelectorAll('.acc-trigger').forEach(t => t.classList.remove('active'));
 
-                // クリックしたのが閉じてたパネルなら開く
+                // 閉じてたなら開く
                 if (!isOpen) {
-                    targetPanel.classList.add('open');
-                    card.classList.add('active');
+                    targetBody.classList.add('open');
+                    trigger.classList.add('active');
                 }
             });
         });
