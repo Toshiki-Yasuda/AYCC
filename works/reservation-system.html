@@ -502,120 +502,125 @@
                         </div>
                     </div>
 
-                    <!-- 主な機能（アコーディオン） -->
-                    <div class="mb-10">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
-                            主な機能
-                        </h2>
-
-                        <details class="bg-navy-50 rounded-lg mb-3 border-l-4 border-navy-400">
-                            <summary class="px-4 py-3 cursor-pointer list-none flex items-center justify-between hover:bg-navy-100/50 transition-colors rounded-lg text-sm">
-                                <span class="font-medium text-navy-700">管理者向け機能（7項目）</span>
-                                <svg class="w-4 h-4 text-navy-400 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </summary>
-                            <div class="px-4 pb-3">
-                                <ul class="text-warm-gray-600 text-sm space-y-2">
-                                    <li>● 教室ホームページ ── 教室紹介・講師紹介・レッスン料金・アクセス・ブログを備えた専用サイト</li>
-                                    <li>● ダッシュボード ── 統計指標のリアルタイム表示、月間カレンダー、今日・明日のスケジュール</li>
-                                    <li>● 生徒管理・招待制 ── トークンベースの招待リンク自動発行、メール1通でマイページ共有</li>
-                                    <li>● 定期レッスン管理 ── 曜日×時間帯の固定スケジュール、欠席・振替の例外管理</li>
-                                    <li>● 月謝管理 ── 月別×生徒別の支払い追跡、滞納アラートとリマインドメール</li>
-                                    <li>● レッスンメモ ── 内容・宿題・次回目標を記録し生徒と共有</li>
-                                    <li>● 設定 ── 教室情報・利用規約管理、操作ログ、パスワード変更</li>
-                                </ul>
-                            </div>
-                        </details>
-
-                        <details class="bg-rose-50 rounded-lg mb-3 border-l-4 border-rose-300">
-                            <summary class="px-4 py-3 cursor-pointer list-none flex items-center justify-between hover:bg-rose-100/50 transition-colors rounded-lg text-sm">
-                                <span class="font-medium text-rose-700">生徒向け機能（4項目）</span>
-                                <svg class="w-4 h-4 text-rose-400 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </summary>
-                            <div class="px-4 pb-3">
-                                <ul class="text-warm-gray-600 text-sm space-y-2">
-                                    <li>● レッスン予約 ── 招待リンクからログイン不要でアクセス、カレンダーから空き枠を選んで予約</li>
-                                    <li>● マイ予約管理 ── 予約一覧の確認とキャンセル</li>
-                                    <li>● レッスン記録閲覧 ── 先生が書いたメモ・宿題・目標をマイページから確認</li>
-                                    <li>● 教室情報・利用規約 ── 連絡先表示と規約の確認・同意</li>
-                                </ul>
-                            </div>
-                        </details>
-
-                        <details class="bg-warm-gray-100 rounded-lg border-l-4 border-warm-gray-400">
-                            <summary class="px-4 py-3 cursor-pointer list-none flex items-center justify-between hover:bg-warm-gray-200/50 transition-colors rounded-lg text-sm">
-                                <span class="font-medium text-warm-gray-700">自動化・運用（4項目）</span>
-                                <svg class="w-4 h-4 text-warm-gray-400 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </summary>
-                            <div class="px-4 pb-3">
-                                <ul class="text-warm-gray-600 text-sm space-y-2">
-                                    <li>● メールリマインダー ── レッスン前日に自動配信、予約忘れを防止</li>
-                                    <li>● 操作ログ ── すべての操作を記録、管理者・生徒でフィルタリング可能</li>
-                                    <li>● セキュリティ ── rate limit、middleware認証、JWT、bcryptハッシュ化</li>
-                                    <li>● レスポンシブ対応 ── PC・タブレット・スマートフォンに完全対応</li>
-                                </ul>
-                            </div>
-                        </details>
-                    </div>
-
-                    <!-- 使用技術 -->
-                    <div class="mb-10">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
-                            使用技術
-                        </h2>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Next.js 16</span>
-                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">React 19</span>
-                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">TypeScript</span>
-                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">PostgreSQL</span>
-                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Prisma ORM</span>
-                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">NextAuth.js v5</span>
-                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">JWT</span>
-                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Tailwind CSS</span>
-                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">shadcn/ui</span>
-                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Nodemailer</span>
-                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Playwright</span>
-                            <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Vitest</span>
-                        </div>
-                        <p class="text-sm text-warm-gray-500 leading-relaxed">
-                            Next.jsのフルスタック構成で、サーバーサイドレンダリングとAPI統合を実現。PostgreSQLにデータを安全に保存し、Prisma ORMによる型安全なDB操作を実装。VPS上にデプロイし、低コストかつ高い自由度で運用できます。
-                        </p>
-                    </div>
-
-                    <!-- システム構成 -->
-                    <div class="mb-10">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
-                            システム構成
-                        </h2>
-                        <div class="bg-warm-gray-50 p-6 rounded-lg text-sm text-warm-gray-600 leading-relaxed">
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <div>
-                                    <p class="font-medium text-warm-gray-700 mb-2">フロントエンド</p>
-                                    <p>Next.js App Router + React Server Componentsによるモダンな構成。Tailwind CSS + shadcn/uiで洗練されたUIを実現。</p>
-                                </div>
-                                <div>
-                                    <p class="font-medium text-warm-gray-700 mb-2">バックエンド</p>
-                                    <p>Next.js Server Actions + API Routesでフロントとバックを統合。NextAuth.js v5によるJWT認証でセキュアなアクセス制御。</p>
-                                </div>
-                                <div>
-                                    <p class="font-medium text-warm-gray-700 mb-2">データストア</p>
-                                    <p>PostgreSQL + Prisma ORMによる型安全なデータ管理。13テーブル構成で教室運営に必要なデータを網羅。</p>
-                                </div>
-                                <div>
-                                    <p class="font-medium text-warm-gray-700 mb-2">自動化</p>
-                                    <p>Cronジョブによるリマインダー自動配信。44ユニットテスト + 43 E2Eテストによる品質保証。</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CTA -->
-                    <div class="text-center pt-6 border-t border-warm-gray-200">
+                    <!-- CTA（メイン） -->
+                    <div class="text-center pt-6 mb-12 border-t border-warm-gray-200">
                         <p class="text-warm-gray-600 mb-6">
                             教室の規模や運用に合わせたカスタマイズも承ります。<br>お気軽にお問い合わせください。
                         </p>
                         <a href="../index.html#contact" class="inline-block border border-warm-gray-400 text-warm-gray-700 px-8 py-3 text-sm tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
                             お問い合わせ
                         </a>
+                    </div>
+
+                    <!-- 技術情報セクション -->
+                    <div class="border-t border-warm-gray-200 pt-8">
+                        <p class="text-xs text-warm-gray-400 text-center mb-8 tracking-wider">── 技術情報 ──</p>
+
+                        <!-- 主な機能（アコーディオン） -->
+                        <div class="mb-10">
+                            <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                                主な機能
+                            </h2>
+
+                            <details class="bg-navy-50 rounded-lg mb-3 border-l-4 border-navy-400">
+                                <summary class="px-4 py-3 cursor-pointer list-none flex items-center justify-between hover:bg-navy-100/50 transition-colors rounded-lg text-sm">
+                                    <span class="font-medium text-navy-700">管理者向け機能（7項目）</span>
+                                    <svg class="w-4 h-4 text-navy-400 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </summary>
+                                <div class="px-4 pb-3">
+                                    <ul class="text-warm-gray-600 text-sm space-y-2">
+                                        <li>● 教室ホームページ ── 教室紹介・講師紹介・レッスン料金・アクセス・ブログを備えた専用サイト</li>
+                                        <li>● ダッシュボード ── 生徒数・予約状況の一覧表示、月間カレンダー、今日・明日のスケジュール</li>
+                                        <li>● 生徒管理・招待制 ── 招待リンクの自動発行、メール1通で生徒のマイページを共有</li>
+                                        <li>● 定期レッスン管理 ── 曜日×時間帯の固定スケジュール、欠席・振替の管理</li>
+                                        <li>● 月謝管理 ── 月別×生徒別の支払い追跡、滞納アラートとリマインドメール</li>
+                                        <li>● レッスンメモ ── 内容・宿題・次回目標を記録し生徒と共有</li>
+                                        <li>● 設定 ── 教室情報・利用規約管理、操作ログ、パスワード変更</li>
+                                    </ul>
+                                </div>
+                            </details>
+
+                            <details class="bg-rose-50 rounded-lg mb-3 border-l-4 border-rose-300">
+                                <summary class="px-4 py-3 cursor-pointer list-none flex items-center justify-between hover:bg-rose-100/50 transition-colors rounded-lg text-sm">
+                                    <span class="font-medium text-rose-700">生徒向け機能（4項目）</span>
+                                    <svg class="w-4 h-4 text-rose-400 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </summary>
+                                <div class="px-4 pb-3">
+                                    <ul class="text-warm-gray-600 text-sm space-y-2">
+                                        <li>● レッスン予約 ── 招待リンクからログイン不要でアクセス、カレンダーから空き枠を選んで予約</li>
+                                        <li>● マイ予約管理 ── 予約一覧の確認とキャンセル</li>
+                                        <li>● レッスン記録閲覧 ── 先生が書いたメモ・宿題・目標をマイページから確認</li>
+                                        <li>● 教室情報・利用規約 ── 連絡先表示と規約の確認・同意</li>
+                                    </ul>
+                                </div>
+                            </details>
+
+                            <details class="bg-warm-gray-100 rounded-lg border-l-4 border-warm-gray-400">
+                                <summary class="px-4 py-3 cursor-pointer list-none flex items-center justify-between hover:bg-warm-gray-200/50 transition-colors rounded-lg text-sm">
+                                    <span class="font-medium text-warm-gray-700">自動化・運用（4項目）</span>
+                                    <svg class="w-4 h-4 text-warm-gray-400 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </summary>
+                                <div class="px-4 pb-3">
+                                    <ul class="text-warm-gray-600 text-sm space-y-2">
+                                        <li>● メールリマインダー ── レッスン前日に自動配信、予約忘れを防止</li>
+                                        <li>● 操作ログ ── すべての操作を記録、管理者・生徒で絞り込み可能</li>
+                                        <li>● セキュリティ ── 不正アクセス防止・パスワード暗号化など、安心のセキュリティ対策</li>
+                                        <li>● レスポンシブ対応 ── PC・タブレット・スマートフォンに完全対応</li>
+                                    </ul>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- 使用技術 -->
+                        <div class="mb-10">
+                            <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                                使用技術
+                            </h2>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Next.js 16</span>
+                                <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">React 19</span>
+                                <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">TypeScript</span>
+                                <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">PostgreSQL</span>
+                                <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Prisma ORM</span>
+                                <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">NextAuth.js v5</span>
+                                <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Tailwind CSS</span>
+                                <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">shadcn/ui</span>
+                                <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Nodemailer</span>
+                                <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Playwright</span>
+                                <span class="px-3 py-1 bg-warm-gray-100 text-warm-gray-600 text-sm rounded">Vitest</span>
+                            </div>
+                            <p class="text-sm text-warm-gray-500 leading-relaxed">
+                                最新のWeb技術を用いたフルスタック構成。データベースに安全に情報を保存し、専用サーバー上で運用するため、低コストかつ高い自由度でカスタマイズできます。87のテスト（単体テスト44 + 画面テスト43）で品質を保証しています。
+                            </p>
+                        </div>
+
+                        <!-- システム構成 -->
+                        <div class="mb-10">
+                            <h2 class="font-elegant text-lg text-warm-gray-800 mb-4 pb-2 border-b border-warm-gray-200">
+                                システム構成
+                            </h2>
+                            <div class="bg-warm-gray-50 p-6 rounded-lg text-sm text-warm-gray-600 leading-relaxed">
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <p class="font-medium text-warm-gray-700 mb-2">画面表示</p>
+                                        <p>最新のReactフレームワーク（Next.js 16）を採用。スマートフォンでもパソコンでも快適に操作できるデザインです。</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-warm-gray-700 mb-2">サーバー・認証</p>
+                                        <p>画面と裏側の処理を1つのシステムに統合。パスワード認証と招待リンク方式で、安全にアクセスを管理します。</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-warm-gray-700 mb-2">データ管理</p>
+                                        <p>PostgreSQL（データベース）で生徒・予約・月謝などの情報を安全に管理。13種類のデータ構造で教室運営に必要な情報を網羅しています。</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-warm-gray-700 mb-2">自動化・品質</p>
+                                        <p>リマインダーメールの自動配信。87のテストを毎回実行し、システムの安定性を確保しています。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
