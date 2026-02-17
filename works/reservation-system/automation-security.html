@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -24,32 +24,34 @@
         }
     </script>
     <style>
-        body {
-            font-family: 'Noto Sans JP', sans-serif;
-        }
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Noto Serif JP', serif;
-        }
-        .gradient-bg {
-            background: linear-gradient(135deg, #fce7eb 0%, #e8d4f2 50%, #d0dbe8 100%);
-        }
-        .section-divider {
-            height: 1px;
-            background: linear-gradient(to right, transparent, #d6d3d1, transparent);
-            margin: 4rem 0;
-        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Noto Sans JP', sans-serif; }
+        .font-elegant { font-family: 'Noto Serif JP', serif; letter-spacing: 0.05em; }
+
+        .divider { width: 60px; height: 1px; background: linear-gradient(90deg, #d4a5a5, #a7bdd4); margin: 0 auto; }
+        .border-elegant { border: 1px solid rgba(168, 162, 158, 0.3); }
+
+        .link-underline { position: relative; }
+        .link-underline::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px; background: currentColor; transition: width 0.3s ease; }
+        .link-underline:hover::after { width: 100%; }
+
+        .lightbox-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; cursor: zoom-out; justify-content: center; align-items: center; }
+        .lightbox-overlay.active { display: flex; }
+        .lightbox-overlay img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 8px; }
+
         .badge-new {
             display: inline-block;
-            background: linear-gradient(135deg, #ec7a95, #7899bc);
+            background: linear-gradient(135deg, #ec7a95 0%, #d4a5a5 100%);
             color: white;
-            font-size: 0.65rem;
+            font-size: 0.625rem;
             font-weight: 700;
-            padding: 0.15rem 0.5rem;
-            border-radius: 9999px;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
             margin-left: 0.5rem;
             vertical-align: middle;
             letter-spacing: 0.05em;
         }
+
         .tech-card {
             background: linear-gradient(135deg, rgba(252, 231, 235, 0.3), rgba(208, 219, 232, 0.3));
             border: 1px solid rgba(216, 180, 254, 0.2);
@@ -59,6 +61,7 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
         }
+
         .icon-wrapper {
             width: 3.5rem;
             height: 3.5rem;
@@ -69,640 +72,406 @@
             background: linear-gradient(135deg, #fce7eb, #d0dbe8);
             margin-bottom: 1rem;
         }
-        .lightbox {
-            display: none;
-            position: fixed;
-            z-index: 9999;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            align-items: center;
-            justify-content: center;
-        }
-        .lightbox.active {
-            display: flex;
-        }
-        .lightbox img {
-            max-width: 90%;
-            max-height: 90%;
-            object-fit: contain;
-        }
-        .lightbox-close {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            color: white;
-            font-size: 3rem;
-            font-weight: 300;
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
-        .lightbox-close:hover {
-            opacity: 0.7;
-        }
-        .nav-link {
-            position: relative;
-            padding-bottom: 0.25rem;
-        }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(to right, #ec7a95, #7899bc);
-            transition: width 0.3s ease;
-        }
-        .nav-link:hover::after {
-            width: 100%;
-        }
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            z-index: 1001;
-        }
-        .hamburger span {
-            width: 25px;
-            height: 3px;
-            background-color: #2d3e54;
-            margin: 3px 0;
-            transition: 0.3s;
-        }
-        .mobile-menu {
-            display: none;
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 80%;
-            max-width: 300px;
-            height: 100vh;
-            background: white;
-            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
-            transition: right 0.3s ease;
-            z-index: 1000;
-            padding: 5rem 2rem 2rem;
-            overflow-y: auto;
-        }
-        .mobile-menu.active {
-            right: 0;
-        }
-        @media (max-width: 768px) {
-            .hamburger {
-                display: flex;
-            }
-            .desktop-menu {
-                display: none;
-            }
-            .mobile-menu {
-                display: block;
-            }
-        }
+
+        #mobile-menu { position: absolute; top: 100%; left: 0; right: 0; max-height: 0; opacity: 0; overflow: hidden; background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: max-height 0.6s ease-out, opacity 0.6s ease-out; padding-left: 1.5rem; padding-right: 1.5rem; }
+        #mobile-menu.menu-open { max-height: 500px; opacity: 1; }
+
+        .fade-in-section { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        .fade-in-section.visible { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body class="bg-warm-gray-50 text-warm-gray-800">
 
     <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="../../index.html" class="text-2xl font-bold font-serif text-navy-800">
-                AYCC
-            </a>
-            <nav class="desktop-menu flex items-center space-x-8">
-                <a href="../../index.html" class="nav-link text-navy-700 hover:text-navy-900">ホーム</a>
-                <a href="../../index.html#services" class="nav-link text-navy-700 hover:text-navy-900">サービス</a>
-                <a href="../../index.html#about" class="nav-link text-navy-700 hover:text-navy-900">私たちについて</a>
-                <a href="../../index.html#contact" class="bg-gradient-to-r from-rose-400 to-navy-500 text-white px-6 py-2 rounded-full hover:shadow-lg transition">お問い合わせ</a>
-            </nav>
-            <div class="hamburger" onclick="toggleMobileMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
+    <header class="bg-white/90 backdrop-blur-sm border-b border-warm-gray-200 sticky top-0 z-50">
+        <nav class="container mx-auto pl-2 pr-6 py-3 md:py-5 relative">
+            <div class="flex justify-between items-center">
+                <a href="../../index.html" class="flex items-center space-x-4">
+                    <img src="../../images/logo.png" alt="AYCC Logo" class="h-8 md:h-10">
+                </a>
+                <div class="hidden lg:flex space-x-10">
+                    <a href="../../index.html#home" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">ホーム</a>
+                    <a href="../../index.html#services" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">サービス</a>
+                    <a href="../../index.html#solutions" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">ソリューション</a>
+                    <a href="../../index.html#works" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">実績</a>
+                    <a href="../../index.html#about" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">会社概要</a>
+                    <a href="../ai-consulting.html" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">個人コンサル</a>
+                    <a href="../../index.html#contact" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">お問い合わせ</a>
+                </div>
+                <button class="lg:hidden" id="menu-toggle">
+                    <svg class="w-6 h-6 text-warm-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
             </div>
-        </div>
+            <div id="mobile-menu" class="lg:hidden py-4 space-y-4">
+                <a href="../../index.html#home" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">ホーム</a>
+                <a href="../../index.html#services" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">サービス</a>
+                <a href="../../index.html#solutions" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">ソリューション</a>
+                <a href="../../index.html#works" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">実績</a>
+                <a href="../../index.html#about" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">会社概要</a>
+                <a href="../ai-consulting.html" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">個人コンサル</a>
+                <a href="../../index.html#contact" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">お問い合わせ</a>
+            </div>
+        </nav>
     </header>
 
-    <!-- Mobile Menu -->
-    <div class="mobile-menu" id="mobileMenu">
-        <a href="../../index.html" class="block py-3 text-navy-700 hover:text-navy-900 border-b border-warm-gray-200">ホーム</a>
-        <a href="../../index.html#services" class="block py-3 text-navy-700 hover:text-navy-900 border-b border-warm-gray-200">サービス</a>
-        <a href="../../index.html#about" class="block py-3 text-navy-700 hover:text-navy-900 border-b border-warm-gray-200">私たちについて</a>
-        <a href="../../index.html#contact" class="block py-3 text-navy-700 hover:text-navy-900 border-b border-warm-gray-200">お問い合わせ</a>
-    </div>
+    <!-- メイン -->
+    <main class="py-16 md:py-24">
+        <div class="container mx-auto px-6">
 
-    <!-- Breadcrumb -->
-    <div class="bg-warm-gray-100 border-b border-warm-gray-200">
-        <div class="container mx-auto px-6 py-3">
-            <div class="flex items-center space-x-2 text-sm text-warm-gray-600">
-                <a href="../../index.html" class="hover:text-navy-700">ホーム</a>
-                <span>/</span>
-                <a href="../../index.html#services" class="hover:text-navy-700">サービス</a>
-                <span>/</span>
-                <a href="../reservation-system.html" class="hover:text-navy-700">音楽教室管理システム</a>
-                <span>/</span>
-                <span class="text-navy-700 font-medium">自動化・セキュリティ</span>
+            <!-- パンくず -->
+            <nav class="mb-8 text-sm text-warm-gray-500">
+                <a href="../../index.html" class="hover:text-warm-gray-700">ホーム</a>
+                <span class="mx-2">/</span>
+                <a href="../../index.html#services" class="hover:text-warm-gray-700">サービス</a>
+                <span class="mx-2">/</span>
+                <a href="../reservation-system.html" class="hover:text-warm-gray-700">音楽教室管理システム</a>
+                <span class="mx-2">/</span>
+                <span class="text-warm-gray-700">自動化・セキュリティ</span>
+            </nav>
+
+            <!-- タイトル -->
+            <div class="text-center mb-16">
+                <h1 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-2">自動化・セキュリティ</h1>
+                <p class="text-sm text-warm-gray-400 tracking-wider mb-4">Automation & Security</p>
+                <div class="divider"></div>
+            </div>
+
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white p-8 md:p-12 border-elegant">
+
+                    <!-- キャッチ -->
+                    <div class="bg-rose-50 border border-rose-200 rounded-lg p-5 md:p-6 mb-10 text-center">
+                        <p class="font-elegant text-rose-800 text-base md:text-lg mb-2">手間なく、安心して運用できる仕組み。</p>
+                        <p class="text-warm-gray-600 text-sm leading-relaxed">
+                            先生の負担を減らし、生徒さんとの時間をもっと大切にできるように。<br class="hidden sm:inline">
+                            システムが自動で行う3つの機能をご紹介します。
+                        </p>
+                    </div>
+
+                    <!-- 1. 自動化機能 -->
+                    <div class="mb-12">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
+                            自動化機能
+                        </h2>
+
+                        <!-- リマインドメール -->
+                        <div class="mb-8">
+                            <h3 class="text-warm-gray-700 font-medium text-sm mb-3">リマインドメール自動送信</h3>
+                            <div class="space-y-2 mb-3">
+                                <div class="flex items-start gap-2">
+                                    <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                    <p class="text-warm-gray-600 text-sm">レッスン前日に保護者へ自動通知</p>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                    <p class="text-warm-gray-600 text-sm">重複送信防止の仕組みで安心</p>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                    <p class="text-warm-gray-600 text-sm">先生は何もしなくてOK</p>
+                                </div>
+                            </div>
+                            <p class="text-warm-gray-500 text-xs leading-relaxed">
+                                毎日深夜0時に、翌日のレッスンがある生徒さんの保護者へ自動でメールを送信。「明日はレッスンですよ」と優しくお知らせします。
+                            </p>
+                        </div>
+
+                        <!-- 月謝自動生成 -->
+                        <div class="mb-8">
+                            <h3 class="text-warm-gray-700 font-medium text-sm mb-3">月謝自動生成</h3>
+                            <div class="space-y-2 mb-3">
+                                <div class="flex items-start gap-2">
+                                    <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                    <p class="text-warm-gray-600 text-sm">月初に全生徒分の月謝を自動作成</p>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                    <p class="text-warm-gray-600 text-sm">同時実行でも二重処理を防止</p>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                    <p class="text-warm-gray-600 text-sm">詳細は<a href="./tuition-management.html" class="text-rose-600 hover:underline">月謝管理ページ</a>へ</p>
+                                </div>
+                            </div>
+                            <p class="text-warm-gray-500 text-xs leading-relaxed">
+                                毎月1日深夜0時に、生徒ごとに設定された月謝額を自動生成。先生は確認するだけで、面倒な入力作業は不要です。
+                            </p>
+                        </div>
+
+                        <!-- 誕生日通知 -->
+                        <div class="mb-8">
+                            <div class="flex items-center gap-2 mb-3">
+                                <h3 class="text-warm-gray-700 font-medium text-sm">誕生日通知</h3>
+                                <span class="badge-new">NEW</span>
+                            </div>
+                            <div class="space-y-2 mb-3">
+                                <div class="flex items-start gap-2">
+                                    <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                    <p class="text-warm-gray-600 text-sm">生徒の誕生日をダッシュボードで自動通知</p>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                    <p class="text-warm-gray-600 text-sm">きめ細かい配慮で信頼関係を構築</p>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                    <p class="text-warm-gray-600 text-sm">カード一枚で心のこもったお祝いを</p>
+                                </div>
+                            </div>
+                            <p class="text-warm-gray-500 text-xs leading-relaxed">
+                                生徒さんの誕生日を逃さず表示。出席のたびに「おめでとう」と声をかけることで、温かい教室の雰囲気をつくります。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 2. 安心のセキュリティ -->
+                    <div class="mb-12">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
+                            安心のセキュリティ
+                        </h2>
+                        <p class="text-warm-gray-600 text-sm leading-relaxed mb-6">
+                            大切な生徒情報を守り、システムを安定して運用するために、万全のセキュリティ対策を施しています。
+                        </p>
+
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div class="bg-warm-gray-50 rounded-lg p-4">
+                                <p class="text-warm-gray-700 text-sm font-medium mb-1">不正アクセス防止</p>
+                                <p class="text-warm-gray-500 text-xs">自動処理は専用の認証キーでのみ実行可能。外部からの不正な操作をブロック</p>
+                            </div>
+                            <div class="bg-warm-gray-50 rounded-lg p-4">
+                                <p class="text-warm-gray-700 text-sm font-medium mb-1">データ整合性</p>
+                                <p class="text-warm-gray-500 text-xs">トランザクション機能により予約の重複チェックを確実に実行</p>
+                            </div>
+                            <div class="bg-warm-gray-50 rounded-lg p-4">
+                                <p class="text-warm-gray-700 text-sm font-medium mb-1">ダブルブッキング防止</p>
+                                <p class="text-warm-gray-500 text-xs">複数の保護者が同時予約しても、同じ枠に重複が入らないよう厳密に制御</p>
+                            </div>
+                            <div class="bg-warm-gray-50 rounded-lg p-4">
+                                <p class="text-warm-gray-700 text-sm font-medium mb-1">URLトークン認証</p>
+                                <p class="text-warm-gray-500 text-xs">生徒ごとに固有のURLを発行。パスワードレスで安全にアクセス</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. パフォーマンス最適化 -->
+                    <div class="mb-12">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
+                            パフォーマンス最適化
+                        </h2>
+                        <p class="text-warm-gray-600 text-sm leading-relaxed mb-6">
+                            快適に使えるシステムであることも、大切な品質のひとつです。
+                        </p>
+
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-2">
+                                <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                <div>
+                                    <p class="text-warm-gray-700 text-sm font-medium">N+1クエリの解消</p>
+                                    <p class="text-warm-gray-500 text-xs">データベースへの問い合わせ回数を大幅に削減。ページ表示が高速に</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                <div>
+                                    <p class="text-warm-gray-700 text-sm font-medium">レスポンシブ対応</p>
+                                    <p class="text-warm-gray-500 text-xs">PC、スマートフォン、タブレット、すべてのデバイスで美しく快適に</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                <div>
+                                    <p class="text-warm-gray-700 text-sm font-medium">高速なページ表示</p>
+                                    <p class="text-warm-gray-500 text-xs">最新のWeb技術を活用し、ストレスのない操作感を実現</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. 技術仕様 -->
+                    <div class="mb-12">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
+                            技術仕様
+                        </h2>
+                        <p class="text-warm-gray-600 text-sm leading-relaxed mb-6">
+                            信頼性の高い技術スタックと、徹底したテスト体制で、長く安心してお使いいただけます。
+                        </p>
+
+                        <div class="grid sm:grid-cols-2 gap-6 mb-8">
+                            <div>
+                                <p class="text-warm-gray-700 text-sm font-medium mb-3">フロントエンド</p>
+                                <div class="space-y-1">
+                                    <p class="text-warm-gray-600 text-xs">• Next.js 16 — 最新のReactフレームワーク</p>
+                                    <p class="text-warm-gray-600 text-xs">• React 19 — 高速で柔軟なUI構築</p>
+                                    <p class="text-warm-gray-600 text-xs">• TypeScript — 型安全で保守性の高いコード</p>
+                                    <p class="text-warm-gray-600 text-xs">• Tailwind CSS — モダンで美しいデザイン</p>
+                                    <p class="text-warm-gray-600 text-xs">• shadcn/ui — 洗練されたUIコンポーネント</p>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-warm-gray-700 text-sm font-medium mb-3">バックエンド</p>
+                                <div class="space-y-1">
+                                    <p class="text-warm-gray-600 text-xs">• PostgreSQL — 堅牢なデータベース</p>
+                                    <p class="text-warm-gray-600 text-xs">• Prisma ORM — 型安全なデータ操作</p>
+                                    <p class="text-warm-gray-600 text-xs">• NextAuth.js v5 — セキュアな認証機能</p>
+                                    <p class="text-warm-gray-600 text-xs">• Nodemailer — 信頼性の高いメール送信</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- システム構成 -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+                            <div class="bg-warm-gray-50 rounded-lg p-3 text-center">
+                                <p class="text-warm-gray-700 text-xs font-medium mb-2">画面表示</p>
+                                <div class="text-warm-gray-500 text-xs space-y-0.5">
+                                    <p>App Router</p>
+                                    <p>Server Components</p>
+                                    <p>Tailwind CSS</p>
+                                </div>
+                            </div>
+                            <div class="bg-warm-gray-50 rounded-lg p-3 text-center">
+                                <p class="text-warm-gray-700 text-xs font-medium mb-2">サーバー・認証</p>
+                                <div class="text-warm-gray-500 text-xs space-y-0.5">
+                                    <p>API Routes</p>
+                                    <p>NextAuth.js v5</p>
+                                    <p>Server Actions</p>
+                                </div>
+                            </div>
+                            <div class="bg-warm-gray-50 rounded-lg p-3 text-center">
+                                <p class="text-warm-gray-700 text-xs font-medium mb-2">データ管理</p>
+                                <div class="text-warm-gray-500 text-xs space-y-0.5">
+                                    <p>PostgreSQL</p>
+                                    <p>Prisma ORM</p>
+                                    <p>トランザクション</p>
+                                </div>
+                            </div>
+                            <div class="bg-warm-gray-50 rounded-lg p-3 text-center">
+                                <p class="text-warm-gray-700 text-xs font-medium mb-2">自動化・品質</p>
+                                <div class="text-warm-gray-500 text-xs space-y-0.5">
+                                    <p>Cron Jobs</p>
+                                    <p>Nodemailer</p>
+                                    <p>TypeScript</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- テスト体制 -->
+                        <div class="bg-warm-gray-50 rounded-lg p-5">
+                            <p class="text-warm-gray-700 text-sm font-medium mb-3">テスト体制</p>
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                        <p class="text-warm-gray-600 text-xs">単体テスト（機能ごとの動作確認）</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                        <p class="text-warm-gray-600 text-xs">結合テスト（複数機能の連携確認）</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                        <p class="text-warm-gray-600 text-xs">実運用テスト（実際の教室での検証）</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                        <p class="text-warm-gray-600 text-xs">ユーザーフィードバックの収集</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                        <p class="text-warm-gray-600 text-xs">定期的なセキュリティアップデート</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                        <p class="text-warm-gray-600 text-xs">機能追加・改善の継続実施</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="text-center py-8 border-t border-warm-gray-200">
+                        <p class="text-warm-gray-600 text-sm mb-6">
+                            自動化で、先生の時間を生徒さんへ。<br>お気軽にお問い合わせください。
+                        </p>
+                        <a href="../../index.html#contact" class="inline-block border border-warm-gray-400 text-warm-gray-700 px-8 py-3 text-sm tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                            お問い合わせ
+                        </a>
+                    </div>
+
+                    <!-- ページナビゲーション -->
+                    <div class="flex justify-between items-center pt-6 border-t border-warm-gray-100">
+                        <a href="student-features.html" class="text-warm-gray-500 hover:text-warm-gray-700 text-sm inline-flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                            生徒・保護者向け機能
+                        </a>
+                        <a href="screenshots.html" class="text-warm-gray-500 hover:text-warm-gray-700 text-sm inline-flex items-center">
+                            スクリーンショット一覧
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- 戻るリンク -->
+                <div class="mt-10 text-center">
+                    <a href="../reservation-system.html" class="text-warm-gray-500 hover:text-warm-gray-700 text-sm inline-flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        音楽教室管理システム トップに戻る
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- Hero Section -->
-    <section class="gradient-bg py-20">
-        <div class="container mx-auto px-6 text-center">
-            <p class="text-navy-600 text-sm uppercase tracking-widest mb-4">Automation & Security</p>
-            <h1 class="text-4xl md:text-5xl font-bold text-navy-900 mb-6">自動化・セキュリティ</h1>
-            <p class="text-xl md:text-2xl text-navy-700 font-light max-w-3xl mx-auto">
-                手間なく、安心して運用できる仕組み。
-            </p>
-        </div>
-    </section>
-
-    <!-- Main Content -->
-    <main class="container mx-auto px-6 py-16">
-
-        <!-- Section 1: 自動化機能 -->
-        <section class="mb-20">
-            <h2 class="text-3xl md:text-4xl font-bold text-navy-900 mb-4 text-center">自動化機能</h2>
-            <p class="text-lg text-warm-gray-600 text-center mb-12 max-w-3xl mx-auto">
-                先生の負担を減らし、生徒さんとの時間をもっと大切にできるように。<br>
-                システムが自動で行う3つの機能をご紹介します。
-            </p>
-
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- リマインドメール -->
-                <div class="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition">
-                    <div class="icon-wrapper mx-auto">
-                        <svg class="w-8 h-8 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-navy-900 mb-3 text-center">リマインドメール自動送信</h3>
-                    <ul class="space-y-2 text-warm-gray-700">
-                        <li class="flex items-start">
-                            <span class="text-rose-500 mr-2">✓</span>
-                            <span>レッスン前日に保護者へ自動通知</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-rose-500 mr-2">✓</span>
-                            <span>重複送信防止の仕組みで安心</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-rose-500 mr-2">✓</span>
-                            <span>先生は何もしなくてOK</span>
-                        </li>
-                    </ul>
-                    <p class="mt-4 text-sm text-warm-gray-600 leading-relaxed">
-                        毎日深夜0時に、翌日のレッスンがある生徒さんの保護者へ自動でメールを送信。「明日はレッスンですよ」と優しくお知らせします。
-                    </p>
-                </div>
-
-                <!-- 月謝自動生成 -->
-                <div class="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition">
-                    <div class="icon-wrapper mx-auto">
-                        <svg class="w-8 h-8 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-navy-900 mb-3 text-center">月謝自動生成</h3>
-                    <ul class="space-y-2 text-warm-gray-700">
-                        <li class="flex items-start">
-                            <span class="text-rose-500 mr-2">✓</span>
-                            <span>月初に全生徒分の月謝を自動作成</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-rose-500 mr-2">✓</span>
-                            <span>同時実行でも二重処理を防止</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-rose-500 mr-2">✓</span>
-                            <span>詳細は<a href="./tuition-management.html" class="text-navy-600 hover:underline">月謝管理ページ</a>へ</span>
-                        </li>
-                    </ul>
-                    <p class="mt-4 text-sm text-warm-gray-600 leading-relaxed">
-                        毎月1日深夜0時に、生徒ごとに設定された月謝額を自動生成。先生は確認するだけで、面倒な入力作業は不要です。
-                    </p>
-                </div>
-
-                <!-- 誕生日通知 -->
-                <div class="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition border-2 border-rose-200">
-                    <div class="icon-wrapper mx-auto">
-                        <svg class="w-8 h-8 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-navy-900 mb-3 text-center">
-                        誕生日通知<span class="badge-new">NEW</span>
-                    </h3>
-                    <ul class="space-y-2 text-warm-gray-700">
-                        <li class="flex items-start">
-                            <span class="text-rose-500 mr-2">✓</span>
-                            <span>生徒の誕生日をダッシュボードで自動通知</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-rose-500 mr-2">✓</span>
-                            <span>きめ細かい配慮で信頼関係を構築</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-rose-500 mr-2">✓</span>
-                            <span>カード一枚で心のこもったお祝いを</span>
-                        </li>
-                    </ul>
-                    <p class="mt-4 text-sm text-warm-gray-600 leading-relaxed">
-                        生徒さんの誕生日を逃さず表示。出席のたびに「おめでとう」と声をかけることで、温かい教室の雰囲気をつくります。
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <div class="section-divider"></div>
-
-        <!-- Section 2: 安心のセキュリティ -->
-        <section class="mb-20">
-            <h2 class="text-3xl md:text-4xl font-bold text-navy-900 mb-4 text-center">安心のセキュリティ</h2>
-            <p class="text-lg text-warm-gray-600 text-center mb-12 max-w-3xl mx-auto">
-                大切な生徒情報を守り、システムを安定して運用するために、<br>
-                万全のセキュリティ対策を施しています。
-            </p>
-
-            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                <div class="tech-card rounded-xl p-8">
-                    <h3 class="text-xl font-bold text-navy-900 mb-3 flex items-center">
-                        <svg class="w-6 h-6 text-rose-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                        </svg>
-                        不正アクセス防止
-                    </h3>
-                    <p class="text-warm-gray-700 leading-relaxed">
-                        自動処理（Cronジョブ）は専用の認証キーでのみ実行可能。外部からの不正な操作を完全にブロックします。
-                    </p>
-                </div>
-
-                <div class="tech-card rounded-xl p-8">
-                    <h3 class="text-xl font-bold text-navy-900 mb-3 flex items-center">
-                        <svg class="w-6 h-6 text-rose-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                        </svg>
-                        データ整合性
-                    </h3>
-                    <p class="text-warm-gray-700 leading-relaxed">
-                        データベース内のトランザクション機能により、予約の重複チェックを確実に実行。データの矛盾を防ぎます。
-                    </p>
-                </div>
-
-                <div class="tech-card rounded-xl p-8">
-                    <h3 class="text-xl font-bold text-navy-900 mb-3 flex items-center">
-                        <svg class="w-6 h-6 text-rose-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                        ダブルブッキング防止
-                    </h3>
-                    <p class="text-warm-gray-700 leading-relaxed">
-                        複数の保護者が同時に予約操作をしても、同じ枠に重複して予約が入ることがないよう、厳密に制御しています。
-                    </p>
-                </div>
-
-                <div class="tech-card rounded-xl p-8">
-                    <h3 class="text-xl font-bold text-navy-900 mb-3 flex items-center">
-                        <svg class="w-6 h-6 text-rose-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
-                        </svg>
-                        URLトークン認証
-                    </h3>
-                    <p class="text-warm-gray-700 leading-relaxed">
-                        生徒ごとに固有のURLを発行。パスワードレスで安全にアクセスでき、保護者の利便性とセキュリティを両立します。
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <div class="section-divider"></div>
-
-        <!-- Section 3: パフォーマンス最適化 -->
-        <section class="mb-20">
-            <h2 class="text-3xl md:text-4xl font-bold text-navy-900 mb-4 text-center">パフォーマンス最適化</h2>
-            <p class="text-lg text-warm-gray-600 text-center mb-12 max-w-3xl mx-auto">
-                快適に使えるシステムであることも、大切な品質のひとつ。<br>
-                先生も保護者も、ストレスなく操作できるよう設計しています。
-            </p>
-
-            <div class="max-w-4xl mx-auto space-y-6">
-                <div class="bg-white rounded-xl shadow-md p-8 flex items-start">
-                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-rose-100 to-navy-100 flex items-center justify-center mr-6">
-                        <svg class="w-6 h-6 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-navy-900 mb-2">N+1クエリの解消</h3>
-                        <p class="text-warm-gray-700 leading-relaxed">
-                            データベースへの問い合わせ回数を大幅に削減。ページ表示が高速になり、快適に操作できます。
-                        </p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl shadow-md p-8 flex items-start">
-                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-rose-100 to-navy-100 flex items-center justify-center mr-6">
-                        <svg class="w-6 h-6 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-navy-900 mb-2">レスポンシブ対応</h3>
-                        <p class="text-warm-gray-700 leading-relaxed">
-                            PC、スマートフォン、タブレット、すべてのデバイスで美しく快適に使えるデザインです。
-                        </p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl shadow-md p-8 flex items-start">
-                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-rose-100 to-navy-100 flex items-center justify-center mr-6">
-                        <svg class="w-6 h-6 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-navy-900 mb-2">高速なページ表示</h3>
-                        <p class="text-warm-gray-700 leading-relaxed">
-                            最新のWeb技術を活用し、ストレスのない操作感を実現。待ち時間を最小限に抑えています。
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <div class="section-divider"></div>
-
-        <!-- Section 4: 技術仕様 -->
-        <section class="mb-20">
-            <h2 class="text-3xl md:text-4xl font-bold text-navy-900 mb-4 text-center">技術仕様</h2>
-            <p class="text-lg text-warm-gray-600 text-center mb-12 max-w-3xl mx-auto">
-                信頼性の高い技術スタックと、徹底したテスト体制。<br>
-                長く安心してお使いいただける基盤を整えています。
-            </p>
-
-            <div class="max-w-5xl mx-auto">
-                <!-- 技術スタック -->
-                <div class="bg-white rounded-xl shadow-md p-8 mb-8">
-                    <h3 class="text-2xl font-bold text-navy-900 mb-6 flex items-center">
-                        <svg class="w-7 h-7 text-rose-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-                        </svg>
-                        使用技術スタック
-                    </h3>
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <h4 class="font-bold text-navy-800 mb-3">フロントエンド</h4>
-                            <ul class="space-y-2 text-warm-gray-700">
-                                <li class="flex items-start">
-                                    <span class="text-rose-500 mr-2">•</span>
-                                    <span><strong>Next.js 16</strong> — 最新のReactフレームワーク</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-rose-500 mr-2">•</span>
-                                    <span><strong>React 19</strong> — 高速で柔軟なUI構築</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-rose-500 mr-2">•</span>
-                                    <span><strong>TypeScript</strong> — 型安全で保守性の高いコード</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-rose-500 mr-2">•</span>
-                                    <span><strong>Tailwind CSS</strong> — モダンで美しいデザイン</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-rose-500 mr-2">•</span>
-                                    <span><strong>shadcn/ui</strong> — 洗練されたUIコンポーネント</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-navy-800 mb-3">バックエンド</h4>
-                            <ul class="space-y-2 text-warm-gray-700">
-                                <li class="flex items-start">
-                                    <span class="text-rose-500 mr-2">•</span>
-                                    <span><strong>PostgreSQL</strong> — 堅牢なデータベース</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-rose-500 mr-2">•</span>
-                                    <span><strong>Prisma ORM</strong> — 型安全なデータ操作</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-rose-500 mr-2">•</span>
-                                    <span><strong>NextAuth.js v5</strong> — セキュアな認証機能</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-rose-500 mr-2">•</span>
-                                    <span><strong>Nodemailer</strong> — 信頼性の高いメール送信</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- システム構成 -->
-                <div class="bg-white rounded-xl shadow-md p-8 mb-8">
-                    <h3 class="text-2xl font-bold text-navy-900 mb-6 flex items-center">
-                        <svg class="w-7 h-7 text-rose-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                        </svg>
-                        システム構成
-                    </h3>
-                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="bg-gradient-to-br from-rose-50 to-warm-gray-50 rounded-lg p-6 border border-warm-gray-200">
-                            <h4 class="font-bold text-navy-800 mb-3 text-center">画面表示</h4>
-                            <ul class="text-sm text-warm-gray-700 space-y-1">
-                                <li>• Next.js App Router</li>
-                                <li>• React Server Components</li>
-                                <li>• Tailwind CSS</li>
-                                <li>• shadcn/ui</li>
-                            </ul>
-                        </div>
-                        <div class="bg-gradient-to-br from-navy-50 to-warm-gray-50 rounded-lg p-6 border border-warm-gray-200">
-                            <h4 class="font-bold text-navy-800 mb-3 text-center">サーバー・認証</h4>
-                            <ul class="text-sm text-warm-gray-700 space-y-1">
-                                <li>• Next.js API Routes</li>
-                                <li>• NextAuth.js v5</li>
-                                <li>• Server Actions</li>
-                                <li>• Middleware</li>
-                            </ul>
-                        </div>
-                        <div class="bg-gradient-to-br from-rose-50 to-navy-50 rounded-lg p-6 border border-warm-gray-200">
-                            <h4 class="font-bold text-navy-800 mb-3 text-center">データ管理</h4>
-                            <ul class="text-sm text-warm-gray-700 space-y-1">
-                                <li>• PostgreSQL</li>
-                                <li>• Prisma ORM</li>
-                                <li>• トランザクション制御</li>
-                                <li>• データバリデーション</li>
-                            </ul>
-                        </div>
-                        <div class="bg-gradient-to-br from-navy-50 to-rose-50 rounded-lg p-6 border border-warm-gray-200">
-                            <h4 class="font-bold text-navy-800 mb-3 text-center">自動化・品質</h4>
-                            <ul class="text-sm text-warm-gray-700 space-y-1">
-                                <li>• Cron Jobs（自動処理）</li>
-                                <li>• Nodemailer（メール）</li>
-                                <li>• TypeScript（型安全）</li>
-                                <li>• テスト体制</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- テスト体制 -->
-                <div class="bg-gradient-to-br from-navy-900 to-navy-700 text-white rounded-xl shadow-md p-8">
-                    <h3 class="text-2xl font-bold mb-6 flex items-center">
-                        <svg class="w-7 h-7 text-rose-300 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
-                        </svg>
-                        テスト体制
-                    </h3>
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <p class="text-navy-100 leading-relaxed mb-4">
-                                開発段階から本番環境まで、徹底した品質管理を行っています。
-                            </p>
-                            <ul class="space-y-2 text-navy-100">
-                                <li class="flex items-start">
-                                    <span class="text-rose-300 mr-2">✓</span>
-                                    <span>単体テスト（機能ごとの動作確認）</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-rose-300 mr-2">✓</span>
-                                    <span>結合テスト（複数機能の連携確認）</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-rose-300 mr-2">✓</span>
-                                    <span>実運用テスト（実際の教室での検証）</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <div>
-                            <p class="text-navy-100 leading-relaxed mb-4">
-                                リリース後も継続的に改善を重ね、より良いシステムへ進化させます。
-                            </p>
-                            <ul class="space-y-2 text-navy-100">
-                                <li class="flex items-start">
-                                    <span class="text-rose-300 mr-2">✓</span>
-                                    <span>ユーザーフィードバックの収集</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-rose-300 mr-2">✓</span>
-                                    <span>定期的なセキュリティアップデート</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-rose-300 mr-2">✓</span>
-                                    <span>機能追加・改善の継続実施</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <div class="section-divider"></div>
-
-        <!-- Page Navigation -->
-        <section class="mb-16">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-6 max-w-4xl mx-auto">
-                <a href="./student-features.html" class="flex items-center text-navy-700 hover:text-navy-900 group">
-                    <svg class="w-6 h-6 mr-2 transform group-hover:-translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                    </svg>
-                    <div class="text-left">
-                        <div class="text-sm text-warm-gray-500">前のページ</div>
-                        <div class="font-bold">生徒・保護者向け機能</div>
-                    </div>
-                </a>
-                <a href="./screenshots.html" class="flex items-center text-navy-700 hover:text-navy-900 group">
-                    <div class="text-right">
-                        <div class="text-sm text-warm-gray-500">次のページ</div>
-                        <div class="font-bold">スクリーンショット一覧</div>
-                    </div>
-                    <svg class="w-6 h-6 ml-2 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </a>
-            </div>
-        </section>
-
-        <!-- CTA Section -->
-        <section class="gradient-bg rounded-2xl shadow-xl p-12 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold text-navy-900 mb-4">
-                自動化で、先生の時間を生徒さんへ。
-            </h2>
-            <p class="text-lg text-navy-700 mb-8 max-w-2xl mx-auto">
-                音楽教室管理システムの導入について、お気軽にご相談ください。<br>
-                デモンストレーションや詳細な機能説明も承ります。
-            </p>
-            <a href="../../index.html#contact" class="inline-block bg-gradient-to-r from-rose-500 to-navy-600 text-white px-10 py-4 rounded-full text-lg font-bold hover:shadow-2xl hover:scale-105 transition">
-                お問い合わせ
-            </a>
-        </section>
-
     </main>
 
     <!-- Footer -->
-    <footer class="bg-navy-900 text-white py-12 mt-20">
+    <footer class="bg-warm-gray-800 text-warm-gray-300 py-12">
         <div class="container mx-auto px-6">
-            <div class="grid md:grid-cols-3 gap-8 mb-8">
-                <div>
-                    <h3 class="text-2xl font-bold font-serif mb-4">AYCC</h3>
-                    <p class="text-navy-200 text-sm leading-relaxed">
-                        愛とAIで、あなたの変革を支援します。
-                    </p>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4">サービス</h4>
-                    <ul class="space-y-2 text-navy-200 text-sm">
-                        <li><a href="../../index.html#services" class="hover:text-white transition">Webサイト制作</a></li>
-                        <li><a href="../../index.html#services" class="hover:text-white transition">業務アプリ開発</a></li>
-                        <li><a href="../../index.html#services" class="hover:text-white transition">AIコンサルティング</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4">会社情報</h4>
-                    <ul class="space-y-2 text-navy-200 text-sm">
-                        <li><a href="../../index.html#about" class="hover:text-white transition">私たちについて</a></li>
-                        <li><a href="../../index.html#contact" class="hover:text-white transition">お問い合わせ</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="border-t border-navy-700 pt-8 text-center text-navy-300 text-sm">
-                <p>&copy; 2026 AYCC (AI YASUDA CREATIVE & CONSULTING). All rights reserved.</p>
+            <div class="text-center">
+                <p class="text-sm tracking-wider mb-2">&copy; 2026 AYCC</p>
+                <p class="text-xs text-warm-gray-500">AI YASUDA CREATIVE & CONSULTING</p>
             </div>
         </div>
     </footer>
 
     <!-- Lightbox -->
-    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
-        <span class="lightbox-close">&times;</span>
-        <img id="lightbox-img" src="" alt="拡大画像">
+    <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="">
     </div>
 
     <script>
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            menu.classList.toggle('active');
-        }
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuToggle.addEventListener('click', () => { mobileMenu.classList.toggle('menu-open'); });
+        mobileMenu.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { mobileMenu.classList.remove('menu-open'); }); });
 
+        // Lightbox
         function openLightbox(src) {
             document.getElementById('lightbox').classList.add('active');
             document.getElementById('lightbox-img').src = src;
         }
-
         function closeLightbox() {
             document.getElementById('lightbox').classList.remove('active');
         }
-
-        document.addEventListener('click', function(e) {
-            const menu = document.getElementById('mobileMenu');
-            const hamburger = document.querySelector('.hamburger');
-            if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
-                menu.classList.remove('active');
-            }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLightbox();
         });
+
+        // Fade-in Animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-in-section').forEach(el => observer.observe(el));
     </script>
 
 </body>

@@ -12,7 +12,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 
     <!-- Tailwind Config -->
     <script>
@@ -67,7 +67,7 @@
             left: 0;
             right: 0;
             height: 1px;
-            background: linear-gradient(to right, transparent, #d6d3d1, transparent);
+            background: linear-gradient(90deg, transparent, #d4a5a5, #a7bdd4, transparent);
         }
         .divider span {
             position: relative;
@@ -82,24 +82,9 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        .link-underline {
-            position: relative;
-            text-decoration: none;
-        }
-        .link-underline::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: currentColor;
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-        .link-underline:hover::after {
-            transform: scaleX(1);
-        }
+        .link-underline { position: relative; }
+        .link-underline::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px; background: currentColor; transition: width 0.3s ease; }
+        .link-underline:hover::after { width: 100%; }
 
         .lightbox-overlay {
             display: none;
@@ -144,13 +129,13 @@
             transform: rotate(90deg);
         }
 
-        .mobile-menu {
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-        }
-        .mobile-menu.active {
-            transform: translateX(0);
-        }
+        /* Mobile Menu */
+        #mobile-menu { position: absolute; top: 100%; left: 0; right: 0; max-height: 0; opacity: 0; overflow: hidden; background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: max-height 0.6s ease-out, opacity 0.6s ease-out; padding-left: 1.5rem; padding-right: 1.5rem; }
+        #mobile-menu.menu-open { max-height: 500px; opacity: 1; }
+
+        /* Fade-in Animation */
+        .fade-in-section { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        .fade-in-section.visible { opacity: 1; transform: translateY(0); }
 
         .img-placeholder {
             background: linear-gradient(135deg, #f5f5f4 0%, #e7e5e4 100%);
@@ -188,54 +173,51 @@
 <body class="bg-warm-gray-50 text-warm-gray-800">
 
     <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-50">
-        <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
-            <a href="../../index.html" class="text-2xl font-elegant text-navy-800">AYCC</a>
-
-            <!-- Desktop Menu -->
-            <div class="hidden md:flex items-center space-x-8">
-                <a href="../../index.html#services" class="text-warm-gray-700 hover:text-rose-600 transition link-underline">サービス</a>
-                <a href="../../index.html#works" class="text-warm-gray-700 hover:text-rose-600 transition link-underline">実績</a>
-                <a href="../../index.html#about" class="text-warm-gray-700 hover:text-rose-600 transition link-underline">私たちについて</a>
-                <a href="../../index.html#contact" class="bg-gradient-to-r from-rose-500 to-rose-600 text-white px-6 py-2 rounded-full hover:shadow-lg transition">お問い合わせ</a>
+    <header class="bg-white/90 backdrop-blur-sm border-b border-warm-gray-200 sticky top-0 z-50">
+        <nav class="container mx-auto pl-2 pr-6 py-3 md:py-5 relative">
+            <div class="flex justify-between items-center">
+                <a href="../../index.html" class="flex items-center space-x-4">
+                    <img src="../../images/logo.png" alt="AYCC Logo" class="h-8 md:h-10">
+                </a>
+                <div class="hidden lg:flex space-x-10">
+                    <a href="../../index.html#home" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">ホーム</a>
+                    <a href="../../index.html#services" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">サービス</a>
+                    <a href="../../index.html#solutions" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">ソリューション</a>
+                    <a href="../../index.html#works" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">実績</a>
+                    <a href="../../index.html#about" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">会社概要</a>
+                    <a href="../ai-consulting.html" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">個人コンサル</a>
+                    <a href="../../index.html#contact" class="text-warm-gray-600 hover:text-warm-gray-900 transition-colors link-underline text-sm tracking-wider">お問い合わせ</a>
+                </div>
+                <button class="lg:hidden" id="menu-toggle">
+                    <svg class="w-6 h-6 text-warm-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
             </div>
-
-            <!-- Mobile Menu Button -->
-            <button id="mobile-menu-btn" class="md:hidden text-warm-gray-700 focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
+            <div id="mobile-menu" class="lg:hidden py-4 space-y-4">
+                <a href="../../index.html#home" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">ホーム</a>
+                <a href="../../index.html#services" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">サービス</a>
+                <a href="../../index.html#solutions" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">ソリューション</a>
+                <a href="../../index.html#works" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">実績</a>
+                <a href="../../index.html#about" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">会社概要</a>
+                <a href="../ai-consulting.html" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">個人コンサル</a>
+                <a href="../../index.html#contact" class="block py-2 text-warm-gray-600 hover:text-warm-gray-900 transition-colors text-base tracking-wider">お問い合わせ</a>
+            </div>
         </nav>
-
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="mobile-menu fixed top-0 right-0 w-64 h-full bg-white shadow-2xl z-50 p-6">
-            <button id="mobile-menu-close" class="absolute top-4 right-4 text-warm-gray-700">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-            <div class="flex flex-col space-y-6 mt-12">
-                <a href="../../index.html#services" class="text-warm-gray-700 hover:text-rose-600 transition">サービス</a>
-                <a href="../../index.html#works" class="text-warm-gray-700 hover:text-rose-600 transition">実績</a>
-                <a href="../../index.html#about" class="text-warm-gray-700 hover:text-rose-600 transition">私たちについて</a>
-                <a href="../../index.html#contact" class="text-warm-gray-700 hover:text-rose-600 transition">お問い合わせ</a>
-            </div>
-        </div>
     </header>
 
     <!-- Breadcrumb -->
     <div class="bg-white border-b border-warm-gray-200">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex items-center space-x-2 text-sm text-warm-gray-600">
+        <div class="container mx-auto px-6 py-3">
+            <nav class="flex text-sm text-warm-gray-600">
                 <a href="../../index.html" class="hover:text-rose-600 transition">ホーム</a>
-                <span>/</span>
+                <span class="mx-2">/</span>
                 <a href="../../index.html#services" class="hover:text-rose-600 transition">サービス</a>
-                <span>/</span>
+                <span class="mx-2">/</span>
                 <a href="../reservation-system.html" class="hover:text-rose-600 transition">音楽教室管理システム</a>
-                <span>/</span>
+                <span class="mx-2">/</span>
                 <span class="text-warm-gray-800 font-medium">月謝管理</span>
-            </div>
+            </nav>
         </div>
     </div>
 
@@ -258,7 +240,7 @@
     </section>
 
     <!-- 先生の悩み -->
-    <section class="py-16 md:py-20 bg-white">
+    <section class="py-16 md:py-20 bg-white fade-in-section">
         <div class="container mx-auto px-4 max-w-4xl">
             <h2 class="text-3xl md:text-4xl font-elegant text-navy-900 text-center mb-12">
                 月謝管理は、先生の最大のストレス
@@ -310,7 +292,7 @@
     <div class="divider"><span>SOLUTION</span></div>
 
     <!-- 3つの管理ビュー -->
-    <section class="py-16 md:py-20 bg-gradient-to-br from-navy-50 via-white to-rose-50">
+    <section class="py-16 md:py-20 bg-gradient-to-br from-navy-50 via-white to-rose-50 fade-in-section">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl md:text-4xl font-elegant text-navy-900 text-center mb-6">
                 3つの管理ビューで、すべてが明確に
@@ -405,7 +387,7 @@
     </section>
 
     <!-- 月謝の自動生成 -->
-    <section class="py-16 md:py-20 bg-white">
+    <section class="py-16 md:py-20 bg-white fade-in-section">
         <div class="container mx-auto px-4 max-w-5xl">
             <h2 class="text-3xl md:text-4xl font-elegant text-navy-900 text-center mb-12">
                 月謝の自動生成
@@ -467,7 +449,7 @@
     </section>
 
     <!-- 未払いリマインダー -->
-    <section class="py-16 md:py-20 bg-gradient-to-br from-rose-50 to-white">
+    <section class="py-16 md:py-20 bg-gradient-to-br from-rose-50 to-white fade-in-section">
         <div class="container mx-auto px-4 max-w-5xl">
             <h2 class="text-3xl md:text-4xl font-elegant text-navy-900 text-center mb-12">
                 未払いリマインダー
@@ -528,7 +510,7 @@
     </section>
 
     <!-- 未払い超過表示 -->
-    <section class="py-16 md:py-20 bg-white">
+    <section class="py-16 md:py-20 bg-white fade-in-section">
         <div class="container mx-auto px-4 max-w-5xl">
             <h2 class="text-3xl md:text-4xl font-elegant text-navy-900 text-center mb-12">
                 未払い超過表示
@@ -585,7 +567,7 @@
     <div class="divider"><span>WORKFLOW</span></div>
 
     <!-- 運用フローのイメージ -->
-    <section class="py-16 md:py-20 bg-gradient-to-br from-navy-50 via-rose-50 to-white">
+    <section class="py-16 md:py-20 bg-gradient-to-br from-navy-50 via-rose-50 to-white fade-in-section">
         <div class="container mx-auto px-4 max-w-4xl">
             <h2 class="text-3xl md:text-4xl font-elegant text-navy-900 text-center mb-6">
                 運用フローのイメージ
@@ -710,32 +692,11 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-navy-900 text-warm-gray-300 py-12">
-        <div class="container mx-auto px-4">
-            <div class="grid md:grid-cols-3 gap-8 mb-8">
-                <div>
-                    <h3 class="text-white font-elegant text-xl mb-4">AYCC</h3>
-                    <p class="text-sm leading-relaxed">
-                        愛とAIで、あなたの変革を支援します
-                    </p>
-                </div>
-                <div>
-                    <h4 class="text-white font-semibold mb-4">サービス</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="../../index.html#services" class="hover:text-rose-400 transition">ホームページ制作</a></li>
-                        <li><a href="../../index.html#services" class="hover:text-rose-400 transition">業務効率化</a></li>
-                        <li><a href="../../index.html#services" class="hover:text-rose-400 transition">AI活用支援</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-semibold mb-4">お問い合わせ</h4>
-                    <p class="text-sm">
-                        <a href="../../index.html#contact" class="hover:text-rose-400 transition">お問い合わせフォーム</a>
-                    </p>
-                </div>
-            </div>
-            <div class="border-t border-navy-700 pt-8 text-center text-sm">
-                <p>&copy; 2026 AYCC (AI YASUDA CREATIVE & CONSULTING). All rights reserved.</p>
+    <footer class="bg-warm-gray-800 text-warm-gray-300 py-12">
+        <div class="container mx-auto px-6">
+            <div class="text-center">
+                <p class="text-sm tracking-wider mb-2">&copy; 2026 AYCC</p>
+                <p class="text-xs text-warm-gray-500">AI YASUDA CREATIVE & CONSULTING</p>
             </div>
         </div>
     </footer>
@@ -748,24 +709,10 @@
     <!-- Scripts -->
     <script>
         // Mobile Menu Toggle
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const menuToggle = document.getElementById('menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
-        const mobileMenuClose = document.getElementById('mobile-menu-close');
-
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.add('active');
-        });
-
-        mobileMenuClose.addEventListener('click', () => {
-            mobileMenu.classList.remove('active');
-        });
-
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                mobileMenu.classList.remove('active');
-            }
-        });
+        menuToggle.addEventListener('click', () => { mobileMenu.classList.toggle('menu-open'); });
+        mobileMenu.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { mobileMenu.classList.remove('menu-open'); }); });
 
         // Lightbox
         function openLightbox(img) {
@@ -780,19 +727,15 @@
             if (e.key === 'Escape') closeLightbox();
         });
 
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                const href = this.getAttribute('href');
-                if (href !== '#') {
-                    e.preventDefault();
-                    const target = document.querySelector(href);
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth' });
-                    }
+        // Fade-in Animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
                 }
             });
-        });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-in-section').forEach(el => observer.observe(el));
     </script>
 
 </body>
