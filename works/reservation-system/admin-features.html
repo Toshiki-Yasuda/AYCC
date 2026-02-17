@@ -92,25 +92,31 @@
         }
 
         /* Lightbox */
-        .lightbox {
+        .lightbox-overlay {
             display: none;
             position: fixed;
-            z-index: 9999;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 100;
+            cursor: zoom-out;
             justify-content: center;
             align-items: center;
         }
-        .lightbox.active {
+        .lightbox-overlay.active {
             display: flex;
         }
-        .lightbox img {
-            max-width: 90%;
-            max-height: 90%;
+        .lightbox-overlay img {
+            max-width: 90vw;
+            max-height: 90vh;
             object-fit: contain;
+            border-radius: 8px;
+        }
+        .screenshot-thumb {
+            cursor: zoom-in;
+            transition: box-shadow 0.2s ease;
+        }
+        .screenshot-thumb:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         }
 
         /* Details/Summary */
@@ -283,8 +289,8 @@
                         </li>
                     </ul>
                 </div>
-                <div>
-                    <img src="../../images/piano-app/admin/dashboard.png" alt="ダッシュボード画面" class="w-full rounded-lg border border-warm-gray-200 shadow-sm" loading="lazy">
+                <div class="flex justify-center">
+                    <img src="../../images/piano-app/mobile/dashboard.png" alt="ダッシュボード画面" class="screenshot-thumb w-full max-w-xs rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
                 </div>
             </div>
         </section>
@@ -294,8 +300,8 @@
         <!-- 2. 予約管理 -->
         <section class="mb-20">
             <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div class="order-2 md:order-1">
-                    <img src="../../images/piano-app/admin/reservations.png" alt="予約管理画面" class="w-full rounded-lg border border-warm-gray-200 shadow-sm" loading="lazy">
+                <div class="order-2 md:order-1 flex justify-center">
+                    <img src="../../images/piano-app/mobile/reservations.png" alt="予約管理画面" class="screenshot-thumb w-full max-w-xs rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
                 </div>
                 <div class="order-1 md:order-2">
                     <h2 class="font-elegant text-3xl text-navy-900 mb-4">
@@ -361,8 +367,8 @@
                         </li>
                     </ul>
                 </div>
-                <div>
-                    <img src="../../images/piano-app/admin/slots.png" alt="スロット管理画面" class="w-full rounded-lg border border-warm-gray-200 shadow-sm" loading="lazy">
+                <div class="flex justify-center">
+                    <img src="../../images/piano-app/mobile/slots.png" alt="スロット管理画面" class="screenshot-thumb w-full max-w-xs rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
                 </div>
             </div>
         </section>
@@ -372,8 +378,8 @@
         <!-- 4. 固定スケジュール -->
         <section class="mb-20">
             <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div class="order-2 md:order-1">
-                    <img src="../../images/piano-app/admin/schedule-regular.png" alt="固定スケジュール設定画面" class="w-full rounded-lg border border-warm-gray-200 shadow-sm" loading="lazy">
+                <div class="order-2 md:order-1 flex justify-center">
+                    <img src="../../images/piano-app/mobile/schedule-regular.png" alt="固定スケジュール設定画面" class="screenshot-thumb w-full max-w-xs rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
                 </div>
                 <div class="order-1 md:order-2">
                     <h2 class="font-elegant text-3xl text-navy-900 mb-4">
@@ -452,8 +458,8 @@
         <!-- 6. 生徒管理 -->
         <section class="mb-20">
             <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div class="order-2 md:order-1">
-                    <img src="../../images/piano-app/admin/students.png" alt="生徒管理画面" class="w-full rounded-lg border border-warm-gray-200 shadow-sm" loading="lazy">
+                <div class="order-2 md:order-1 flex justify-center">
+                    <img src="../../images/piano-app/mobile/students.png" alt="生徒管理画面" class="screenshot-thumb w-full max-w-xs rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
                 </div>
                 <div class="order-1 md:order-2">
                     <h2 class="font-elegant text-3xl text-navy-900 mb-4">
@@ -531,8 +537,8 @@
                         </li>
                     </ul>
                 </div>
-                <div>
-                    <img src="../../images/piano-app/admin/settings.png" alt="設定画面" class="w-full rounded-lg border border-warm-gray-200 shadow-sm" loading="lazy">
+                <div class="flex justify-center">
+                    <img src="../../images/piano-app/mobile/settings.png" alt="設定画面" class="screenshot-thumb w-full max-w-xs rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
                 </div>
             </div>
         </section>
@@ -542,8 +548,8 @@
         <!-- 8. 操作ログ -->
         <section class="mb-20">
             <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div class="order-2 md:order-1">
-                    <img src="../../images/piano-app/admin/logs.png" alt="操作ログ画面" class="w-full rounded-lg border border-warm-gray-200 shadow-sm" loading="lazy">
+                <div class="order-2 md:order-1 flex justify-center">
+                    <img src="../../images/piano-app/mobile/logs.png" alt="操作ログ画面" class="screenshot-thumb w-full max-w-xs rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
                 </div>
                 <div class="order-1 md:order-2">
                     <h2 class="font-elegant text-3xl text-navy-900 mb-4">
@@ -641,7 +647,7 @@
     </footer>
 
     <!-- Lightbox -->
-    <div id="lightbox" class="lightbox">
+    <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
         <img id="lightbox-img" src="" alt="">
     </div>
 
@@ -668,19 +674,16 @@
         });
 
         // Lightbox
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        const images = document.querySelectorAll('img[data-lightbox]');
-
-        images.forEach(img => {
-            img.addEventListener('click', () => {
-                lightboxImg.src = img.src;
-                lightbox.classList.add('active');
-            });
-        });
-
-        lightbox.addEventListener('click', () => {
-            lightbox.classList.remove('active');
+        function openLightbox(img) {
+            document.getElementById('lightbox-img').src = img.src;
+            document.getElementById('lightbox-img').alt = img.alt;
+            document.getElementById('lightbox').classList.add('active');
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLightbox();
         });
 
         // Smooth scroll for anchor links

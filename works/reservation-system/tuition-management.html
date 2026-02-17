@@ -101,23 +101,29 @@
             transform: scaleX(1);
         }
 
-        .lightbox {
+        .lightbox-overlay {
             display: none;
             position: fixed;
-            z-index: 9999;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            align-items: center;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 100;
+            cursor: zoom-out;
             justify-content: center;
+            align-items: center;
         }
-        .lightbox.active { display: flex; }
-        .lightbox img {
-            max-width: 90%;
-            max-height: 90%;
+        .lightbox-overlay.active { display: flex; }
+        .lightbox-overlay img {
+            max-width: 90vw;
+            max-height: 90vh;
             object-fit: contain;
+            border-radius: 8px;
+        }
+        .screenshot-thumb {
+            cursor: zoom-in;
+            transition: box-shadow 0.2s ease;
+        }
+        .screenshot-thumb:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         }
 
         details summary {
@@ -316,8 +322,8 @@
             <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                 <!-- 未払い一覧 -->
                 <div class="feature-card bg-white border-elegant rounded-lg p-6">
-                    <div class="mb-4">
-                        <img src="../../images/piano-app/admin/tuition.png" alt="未払い一覧画面" class="w-full rounded-lg border border-warm-gray-200 shadow-sm" loading="lazy">
+                    <div class="mb-4 flex justify-center">
+                        <img src="../../images/piano-app/mobile/tuition.png" alt="未払い一覧画面" class="screenshot-thumb w-full max-w-xs rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
                     </div>
                     <h3 class="text-xl font-semibold text-navy-800 mb-3">
                         未払い一覧
@@ -739,7 +745,7 @@
     </footer>
 
     <!-- Lightbox -->
-    <div id="lightbox" class="lightbox">
+    <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
         <img id="lightbox-img" src="" alt="">
     </div>
 
@@ -765,19 +771,17 @@
             }
         });
 
-        // Lightbox functionality
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-
-        document.querySelectorAll('.img-placeholder').forEach(img => {
-            img.addEventListener('click', function() {
-                // プレースホルダーなので実際には動作しない
-                // 実際の画像に置き換わったら有効化
-            });
-        });
-
-        lightbox.addEventListener('click', () => {
-            lightbox.classList.remove('active');
+        // Lightbox
+        function openLightbox(img) {
+            document.getElementById('lightbox-img').src = img.src;
+            document.getElementById('lightbox-img').alt = img.alt;
+            document.getElementById('lightbox').classList.add('active');
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLightbox();
         });
 
         // Smooth scroll for anchor links
