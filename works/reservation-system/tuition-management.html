@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>月謝管理 - 音楽教室管理システム | AYCC</title>
+    <meta name="description" content="催促の気まずさから先生を解放する月謝管理システム。未払い一覧、自動リマインダー、スマホでワンタップ記録。">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rose': {
+                            50:'#fdf2f4', 100:'#fce7eb', 200:'#f9d0d9', 300:'#f4a9ba',
+                            400:'#ec7a95', 500:'#d4a5a5', 600:'#b8848f', 700:'#9a6b75',
+                            800:'#7d5660', 900:'#5c4048'
+                        },
+                        'navy': {
+                            50:'#f5f7fa', 100:'#eaeef4', 200:'#d0dbe8', 300:'#a7bdd4',
+                            400:'#7899bc', 500:'#5a7ea5', 600:'#47658a', 700:'#3a5270',
+                            800:'#2d3e54', 900:'#1e2a3a'
+                        },
+                        'warm-gray': {
+                            50:'#fafaf9', 100:'#f5f5f4', 200:'#e7e5e4', 300:'#d6d3d1',
+                            400:'#a8a29e', 500:'#78716c', 600:'#57534e', 700:'#44403c',
+                            800:'#292524', 900:'#1c1917'
+                        }
+                    },
+                    fontFamily: {
+                        'serif': ['Noto Serif JP', 'serif'],
+                        'sans': ['Noto Sans JP', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Noto Sans JP', sans-serif; }
+
+        .font-elegant {
+            font-family: 'Noto Serif JP', serif;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .divider {
+            position: relative;
+            text-align: center;
+            margin: 3rem 0;
+        }
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #d6d3d1, transparent);
+        }
+        .divider span {
+            position: relative;
+            background: white;
+            padding: 0 1rem;
+            color: #78716c;
+            font-size: 0.875rem;
+        }
+
+        .border-elegant {
+            border: 1px solid #e7e5e4;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .link-underline {
+            position: relative;
+            text-decoration: none;
+        }
+        .link-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: currentColor;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .link-underline:hover::after {
+            transform: scaleX(1);
+        }
+
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            align-items: center;
+            justify-content: center;
+        }
+        .lightbox.active { display: flex; }
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        details summary {
+            cursor: pointer;
+            list-style: none;
+        }
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+        details summary::before {
+            content: '▶';
+            display: inline-block;
+            margin-right: 0.5rem;
+            transition: transform 0.3s;
+            color: #b8848f;
+        }
+        details[open] summary::before {
+            transform: rotate(90deg);
+        }
+
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        .img-placeholder {
+            background: linear-gradient(135deg, #f5f5f4 0%, #e7e5e4 100%);
+            border: 2px dashed #d6d3d1;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 12rem;
+        }
+
+        .step-number {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ec7a95 0%, #b8848f 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-warm-gray-50 text-warm-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="../../index.html" class="text-2xl font-elegant text-navy-800">AYCC</a>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="../../index.html#services" class="text-warm-gray-700 hover:text-rose-600 transition link-underline">サービス</a>
+                <a href="../../index.html#works" class="text-warm-gray-700 hover:text-rose-600 transition link-underline">実績</a>
+                <a href="../../index.html#about" class="text-warm-gray-700 hover:text-rose-600 transition link-underline">私たちについて</a>
+                <a href="../../index.html#contact" class="bg-gradient-to-r from-rose-500 to-rose-600 text-white px-6 py-2 rounded-full hover:shadow-lg transition">お問い合わせ</a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-warm-gray-700 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="mobile-menu fixed top-0 right-0 w-64 h-full bg-white shadow-2xl z-50 p-6">
+            <button id="mobile-menu-close" class="absolute top-4 right-4 text-warm-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <div class="flex flex-col space-y-6 mt-12">
+                <a href="../../index.html#services" class="text-warm-gray-700 hover:text-rose-600 transition">サービス</a>
+                <a href="../../index.html#works" class="text-warm-gray-700 hover:text-rose-600 transition">実績</a>
+                <a href="../../index.html#about" class="text-warm-gray-700 hover:text-rose-600 transition">私たちについて</a>
+                <a href="../../index.html#contact" class="text-warm-gray-700 hover:text-rose-600 transition">お問い合わせ</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="bg-white border-b border-warm-gray-200">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center space-x-2 text-sm text-warm-gray-600">
+                <a href="../../index.html" class="hover:text-rose-600 transition">ホーム</a>
+                <span>/</span>
+                <a href="../../index.html#services" class="hover:text-rose-600 transition">サービス</a>
+                <span>/</span>
+                <a href="../reservation-system.html" class="hover:text-rose-600 transition">音楽教室管理システム</a>
+                <span>/</span>
+                <span class="text-warm-gray-800 font-medium">月謝管理</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-rose-50 via-white to-navy-50 py-16 md:py-24">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-elegant text-navy-900 mb-4">
+                月謝管理
+            </h1>
+            <p class="text-lg md:text-xl text-navy-600 mb-6 font-light tracking-wide">
+                Tuition Management
+            </p>
+            <p class="text-2xl md:text-3xl text-rose-700 font-medium mt-8">
+                催促の気まずさから、先生を解放します。
+            </p>
+            <p class="text-lg text-warm-gray-700 mt-4">
+                スマホでワンタップ記録。未払いを見逃さない。
+            </p>
+        </div>
+    </section>
+
+    <!-- 先生の悩み -->
+    <section class="py-16 md:py-20 bg-white">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <h2 class="text-3xl md:text-4xl font-elegant text-navy-900 text-center mb-12">
+                月謝管理は、先生の最大のストレス
+            </h2>
+
+            <div class="bg-rose-50 border-l-4 border-rose-500 p-6 md:p-8 mb-12 rounded-r-lg">
+                <p class="text-lg text-warm-gray-800 leading-relaxed mb-4">
+                    ある調査によると、<strong class="text-rose-700">53%の個人教室の先生が「月謝管理」に悩んでいる</strong>という結果が出ています。
+                </p>
+                <p class="text-warm-gray-700 leading-relaxed">
+                    現金手渡しの場合、記録が曖昧になりがち。催促するのも気まずい。気づいたら半年分も滞納していた、なんてことも…。
+                </p>
+            </div>
+
+            <div class="space-y-6">
+                <div class="border-elegant bg-warm-gray-50 p-6 rounded-lg">
+                    <h3 class="text-xl font-semibold text-navy-800 mb-3 flex items-center">
+                        <span class="text-rose-500 mr-2">●</span>
+                        「誰が払っていないか」が分からない
+                    </h3>
+                    <p class="text-warm-gray-700 leading-relaxed ml-6">
+                        レッスンのたびに現金を受け取り、ノートにメモ。でも忙しいと記録が漏れたり、誰が未払いなのかパッと分からなかったり…。
+                    </p>
+                </div>
+
+                <div class="border-elegant bg-warm-gray-50 p-6 rounded-lg">
+                    <h3 class="text-xl font-semibold text-navy-800 mb-3 flex items-center">
+                        <span class="text-rose-500 mr-2">●</span>
+                        催促が気まずくてできない
+                    </h3>
+                    <p class="text-warm-gray-700 leading-relaxed ml-6">
+                        「お月謝、お願いします」と直接言うのは本当につらい。生徒や保護者との関係が気まずくなることもあります。
+                    </p>
+                </div>
+
+                <div class="border-elegant bg-warm-gray-50 p-6 rounded-lg">
+                    <h3 class="text-xl font-semibold text-navy-800 mb-3 flex items-center">
+                        <span class="text-rose-500 mr-2">●</span>
+                        長期滞納に気づかない
+                    </h3>
+                    <p class="text-warm-gray-700 leading-relaxed ml-6">
+                        毎月のことだからこそ、記録がおろそかに。気づいたときには数ヶ月分溜まっていて、もう請求しづらい…。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"><span>SOLUTION</span></div>
+
+    <!-- 3つの管理ビュー -->
+    <section class="py-16 md:py-20 bg-gradient-to-br from-navy-50 via-white to-rose-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-elegant text-navy-900 text-center mb-6">
+                3つの管理ビューで、すべてが明確に
+            </h2>
+            <p class="text-center text-warm-gray-700 mb-12 max-w-2xl mx-auto">
+                誰が払った、誰がまだ払っていない。スマホでいつでも確認できます。
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- 未払い一覧 -->
+                <div class="feature-card bg-white border-elegant rounded-lg p-6">
+                    <div class="mb-4">
+                        <div class="img-placeholder h-48">
+                            <span class="text-warm-gray-400 text-sm">未払い一覧画面</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold text-navy-800 mb-3">
+                        未払い一覧
+                    </h3>
+                    <p class="text-warm-gray-700 leading-relaxed mb-4">
+                        「誰が今月まだ払っていないか」がひと目で分かります。長期未払いは色で警告表示。
+                    </p>
+                    <ul class="space-y-2 text-sm text-warm-gray-600">
+                        <li class="flex items-start">
+                            <span class="text-rose-500 mr-2">✓</span>
+                            <span>生徒名と未払い月数を表示</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-rose-500 mr-2">✓</span>
+                            <span>長期滞納者を視覚的に警告</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-rose-500 mr-2">✓</span>
+                            <span>未払い合計額も一目瞭然</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 支払い済み一覧 -->
+                <div class="feature-card bg-white border-elegant rounded-lg p-6">
+                    <div class="mb-4">
+                        <div class="img-placeholder h-48">
+                            <span class="text-warm-gray-400 text-sm">支払い済み一覧画面</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold text-navy-800 mb-3">
+                        支払い済み一覧
+                    </h3>
+                    <p class="text-warm-gray-700 leading-relaxed mb-4">
+                        受領記録が時系列で確認できます。いつ誰からいくら受け取ったかが一目瞭然。
+                    </p>
+                    <ul class="space-y-2 text-sm text-warm-gray-600">
+                        <li class="flex items-start">
+                            <span class="text-rose-500 mr-2">✓</span>
+                            <span>日付・生徒名・金額を記録</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-rose-500 mr-2">✓</span>
+                            <span>時系列で履歴を確認</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-rose-500 mr-2">✓</span>
+                            <span>支払い方法も記録可能</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 引き落とし管理 -->
+                <div class="feature-card bg-white border-elegant rounded-lg p-6">
+                    <div class="mb-4">
+                        <div class="img-placeholder h-48">
+                            <span class="text-warm-gray-400 text-sm">引き落とし管理画面</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold text-navy-800 mb-3">
+                        引き落とし管理
+                    </h3>
+                    <p class="text-warm-gray-700 leading-relaxed mb-4">
+                        口座引き落としを利用している生徒は別枠で管理。自動処理の記録もシステムに残ります。
+                    </p>
+                    <ul class="space-y-2 text-sm text-warm-gray-600">
+                        <li class="flex items-start">
+                            <span class="text-rose-500 mr-2">✓</span>
+                            <span>引き落とし対象者を別管理</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-rose-500 mr-2">✓</span>
+                            <span>処理状況を一覧で確認</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-rose-500 mr-2">✓</span>
+                            <span>現金受領と混同しない</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 月謝の自動生成 -->
+    <section class="py-16 md:py-20 bg-white">
+        <div class="container mx-auto px-4 max-w-5xl">
+            <h2 class="text-3xl md:text-4xl font-elegant text-navy-900 text-center mb-12">
+                月謝の自動生成
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <div class="img-placeholder h-64 md:h-80">
+                        <span class="text-warm-gray-400 text-sm">月謝自動生成イメージ</span>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <p class="text-lg text-warm-gray-800 leading-relaxed">
+                        月初になると、システムが全生徒分の月謝を自動的に作成します。
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <span class="text-rose-500 text-2xl mr-3">●</span>
+                            <div>
+                                <h3 class="font-semibold text-navy-800 mb-1">生徒ごとの金額設定</h3>
+                                <p class="text-warm-gray-700 text-sm">
+                                    各生徒に設定された月謝額で自動生成。個別の調整も可能です。
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <span class="text-rose-500 text-2xl mr-3">●</span>
+                            <div>
+                                <h3 class="font-semibold text-navy-800 mb-1">手動作成の手間なし</h3>
+                                <p class="text-warm-gray-700 text-sm">
+                                    毎月、生徒数分の月謝レコードを作成する手間がゼロに。
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <span class="text-rose-500 text-2xl mr-3">●</span>
+                            <div>
+                                <h3 class="font-semibold text-navy-800 mb-1">同時実行耐性</h3>
+                                <p class="text-warm-gray-700 text-sm">
+                                    複数の処理が同時に走っても、二重生成を防ぐ仕組みで安心。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-navy-50 border-l-4 border-navy-500 p-4 mt-6">
+                        <p class="text-sm text-navy-800">
+                            <strong>月初の朝、先生がすることは何もありません。</strong><br>
+                            システムが自動的に今月分の月謝を全員分用意してくれます。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 未払いリマインダー -->
+    <section class="py-16 md:py-20 bg-gradient-to-br from-rose-50 to-white">
+        <div class="container mx-auto px-4 max-w-5xl">
+            <h2 class="text-3xl md:text-4xl font-elegant text-navy-900 text-center mb-12">
+                未払いリマインダー
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="order-2 md:order-1 space-y-6">
+                    <p class="text-lg text-warm-gray-800 leading-relaxed">
+                        未払いの保護者に、システムが自動でリマインダーメールを送信します。
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <span class="text-rose-500 text-2xl mr-3">●</span>
+                            <div>
+                                <h3 class="font-semibold text-navy-800 mb-1">自動送信</h3>
+                                <p class="text-warm-gray-700 text-sm">
+                                    未払い状態の保護者に、丁寧な文面でリマインドメールを送信。
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <span class="text-rose-500 text-2xl mr-3">●</span>
+                            <div>
+                                <h3 class="font-semibold text-navy-800 mb-1">重複送信防止</h3>
+                                <p class="text-warm-gray-700 text-sm">
+                                    一度送ったら、その月は再送しない仕組み。しつこくなりません。
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <span class="text-rose-500 text-2xl mr-3">●</span>
+                            <div>
+                                <h3 class="font-semibold text-navy-800 mb-1">先生は催促不要</h3>
+                                <p class="text-warm-gray-700 text-sm">
+                                    もう、保護者に直接「お月謝を…」と言わなくて大丈夫。システムが代わりに伝えます。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-rose-100 border-l-4 border-rose-500 p-4 mt-6">
+                        <p class="text-sm text-rose-900">
+                            <strong>「催促の気まずさ」から解放されることが、多くの先生にとって最大のメリットです。</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="order-1 md:order-2">
+                    <div class="img-placeholder h-64 md:h-80">
+                        <span class="text-warm-gray-400 text-sm">リマインダーメールイメージ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 未払い超過表示 -->
+    <section class="py-16 md:py-20 bg-white">
+        <div class="container mx-auto px-4 max-w-5xl">
+            <h2 class="text-3xl md:text-4xl font-elegant text-navy-900 text-center mb-12">
+                未払い超過表示
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <div class="img-placeholder h-64">
+                        <span class="text-warm-gray-400 text-sm">未払い警告表示</span>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <p class="text-lg text-warm-gray-800 leading-relaxed">
+                        長期未払いの生徒は、一覧画面で色分け表示されます。
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <span class="text-rose-500 text-2xl mr-3">●</span>
+                            <div>
+                                <h3 class="font-semibold text-navy-800 mb-1">視覚的な警告</h3>
+                                <p class="text-warm-gray-700 text-sm">
+                                    2ヶ月以上未払いの場合、背景色が変わり、見逃しを防ぎます。
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <span class="text-rose-500 text-2xl mr-3">●</span>
+                            <div>
+                                <h3 class="font-semibold text-navy-800 mb-1">ダッシュボードにも表示</h3>
+                                <p class="text-warm-gray-700 text-sm">
+                                    管理画面のトップにも「要注意」として表示され、早めの対応を促します。
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <span class="text-rose-500 text-2xl mr-3">●</span>
+                            <div>
+                                <h3 class="font-semibold text-navy-800 mb-1">未払い総額も表示</h3>
+                                <p class="text-warm-gray-700 text-sm">
+                                    現在の未払い総額がいくらなのか、すぐに把握できます。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"><span>WORKFLOW</span></div>
+
+    <!-- 運用フローのイメージ -->
+    <section class="py-16 md:py-20 bg-gradient-to-br from-navy-50 via-rose-50 to-white">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <h2 class="text-3xl md:text-4xl font-elegant text-navy-900 text-center mb-6">
+                運用フローのイメージ
+            </h2>
+            <p class="text-center text-warm-gray-700 mb-12">
+                月初から月末まで、システムが先生をサポートします
+            </p>
+
+            <div class="space-y-8">
+                <!-- ステップ1 -->
+                <div class="flex items-start gap-4">
+                    <div class="step-number">1</div>
+                    <div class="flex-1 bg-white border-elegant rounded-lg p-6">
+                        <h3 class="text-xl font-semibold text-navy-800 mb-2">
+                            月初：月謝が全生徒分自動生成される
+                        </h3>
+                        <p class="text-warm-gray-700 leading-relaxed">
+                            先生は何もしなくて大丈夫。システムが自動的に今月分の月謝を全員分作成してくれます。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- ステップ2 -->
+                <div class="flex items-start gap-4">
+                    <div class="step-number">2</div>
+                    <div class="flex-1 bg-white border-elegant rounded-lg p-6">
+                        <h3 class="text-xl font-semibold text-navy-800 mb-2">
+                            レッスン時：受領をスマホでワンタップ記録
+                        </h3>
+                        <p class="text-warm-gray-700 leading-relaxed">
+                            月謝を受け取ったら、スマホでワンタップ。生徒を選んで「受領」ボタンを押すだけ。記録は即座にクラウドに保存されます。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- ステップ3 -->
+                <div class="flex items-start gap-4">
+                    <div class="step-number">3</div>
+                    <div class="flex-1 bg-white border-elegant rounded-lg p-6">
+                        <h3 class="text-xl font-semibold text-navy-800 mb-2">
+                            月中：未払い一覧をいつでもスマホで確認
+                        </h3>
+                        <p class="text-warm-gray-700 leading-relaxed">
+                            「誰がまだ払っていないか」を、いつでもスマホから確認できます。ノートを探す必要はありません。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- ステップ4 -->
+                <div class="flex items-start gap-4">
+                    <div class="step-number">4</div>
+                    <div class="flex-1 bg-white border-elegant rounded-lg p-6">
+                        <h3 class="text-xl font-semibold text-navy-800 mb-2">
+                            月末：未払い者にリマインダー自動送信
+                        </h3>
+                        <p class="text-warm-gray-700 leading-relaxed">
+                            システムが未払いの保護者に自動でメール送信。先生が直接催促する必要はありません。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- ステップ5 -->
+                <div class="flex items-start gap-4">
+                    <div class="step-number">5</div>
+                    <div class="flex-1 bg-white border-elegant rounded-lg p-6">
+                        <h3 class="text-xl font-semibold text-navy-800 mb-2">
+                            翌月：記録は蓄積され、履歴がいつでも確認可能
+                        </h3>
+                        <p class="text-warm-gray-700 leading-relaxed">
+                            過去の受領記録はすべて残ります。「あの月、この生徒は払ったっけ？」という疑問も、すぐに解決できます。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-rose-100 to-navy-100 rounded-lg p-8 mt-12 text-center">
+                <p class="text-xl text-navy-900 font-medium">
+                    これまで手書きノートと記憶に頼っていた月謝管理が、<br class="hidden md:inline">
+                    <span class="text-rose-700">すべてスマホひとつで完結します。</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ページ内ナビゲーション -->
+    <section class="py-12 bg-warm-gray-100 border-t border-warm-gray-200">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center justify-between max-w-4xl mx-auto gap-6">
+                <a href="./admin-features.html" class="flex items-center text-navy-700 hover:text-rose-600 transition group">
+                    <svg class="w-5 h-5 mr-2 group-hover:-translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    <span class="link-underline">管理者向け機能</span>
+                </a>
+
+                <span class="text-warm-gray-400 hidden md:inline">|</span>
+
+                <a href="./student-features.html" class="flex items-center text-navy-700 hover:text-rose-600 transition group">
+                    <span class="link-underline">生徒・保護者向け機能</span>
+                    <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 md:py-20 bg-gradient-to-br from-rose-500 to-navy-600 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-4xl font-elegant mb-6">
+                催促の気まずさから、解放されませんか？
+            </h2>
+            <p class="text-lg md:text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+                月謝管理のストレスを減らし、レッスンに集中できる環境を。<br>
+                まずはお気軽にお問い合わせください。
+            </p>
+            <a href="../../index.html#contact" class="inline-block bg-white text-rose-600 px-8 py-4 rounded-full font-semibold text-lg hover:shadow-2xl transition transform hover:scale-105">
+                お問い合わせ
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-navy-900 text-warm-gray-300 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="text-white font-elegant text-xl mb-4">AYCC</h3>
+                    <p class="text-sm leading-relaxed">
+                        愛とAIで、あなたの変革を支援します
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-4">サービス</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="../../index.html#services" class="hover:text-rose-400 transition">ホームページ制作</a></li>
+                        <li><a href="../../index.html#services" class="hover:text-rose-400 transition">業務効率化</a></li>
+                        <li><a href="../../index.html#services" class="hover:text-rose-400 transition">AI活用支援</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-4">お問い合わせ</h4>
+                    <p class="text-sm">
+                        <a href="../../index.html#contact" class="hover:text-rose-400 transition">お問い合わせフォーム</a>
+                    </p>
+                </div>
+            </div>
+            <div class="border-t border-navy-700 pt-8 text-center text-sm">
+                <p>&copy; 2026 AYCC (AI YASUDA CREATIVE & CONSULTING). All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <img id="lightbox-img" src="" alt="">
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuClose = document.getElementById('mobile-menu-close');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+        });
+
+        mobileMenuClose.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                mobileMenu.classList.remove('active');
+            }
+        });
+
+        // Lightbox functionality
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+
+        document.querySelectorAll('.img-placeholder').forEach(img => {
+            img.addEventListener('click', function() {
+                // プレースホルダーなので実際には動作しない
+                // 実際の画像に置き換わったら有効化
+            });
+        });
+
+        lightbox.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
