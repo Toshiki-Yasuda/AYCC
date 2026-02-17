@@ -1,20 +1,19 @@
 <!DOCTYPE html>
-<html lang="ja" class="scroll-smooth">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理者向け機能 - 音楽教室管理システム | AYCC</title>
-    <meta name="description" content="教室運営に必要なすべてを、ひとつの画面から。ダッシュボード、予約管理、スロット管理、固定スケジュール、休講日管理、生徒管理など、スマホで完結する管理機能をご紹介します。">
+    <meta name="description" content="AYCC - 音楽教室管理システム 管理者向け機能。教室運営に必要なすべてを、ひとつの画面から。">
+    <title>管理者向け機能 | 音楽教室管理システム | AYCC</title>
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="../../images/favicon.png">
+    <link rel="apple-touch-icon" href="../../images/favicon.png">
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 
-    <!-- Tailwind Config -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -31,135 +30,27 @@
     </script>
 
     <style>
-        /* Base Styles */
-        body {
-            font-family: 'Noto Sans JP', sans-serif;
-            scroll-behavior: smooth;
-        }
-
-        /* Typography */
-        .font-elegant {
-            font-family: 'Noto Serif JP', serif;
-            letter-spacing: 0.05em;
-        }
-
-        /* Decorative Elements */
-        .divider { width: 60px; height: 1px; background: linear-gradient(90deg, #d4a5a5, #a7bdd4); margin: 2rem auto; }
-
-        .border-elegant {
-            border: 1px solid #e7e5e4;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        /* Link Styles */
-        .link-underline {
-            position: relative;
-            text-decoration: none;
-        }
-        .link-underline::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: currentColor;
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-        .link-underline:hover::after {
-            transform: scaleX(1);
-        }
-
-        /* Lightbox */
-        .lightbox-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.8);
-            z-index: 100;
-            cursor: zoom-out;
-            justify-content: center;
-            align-items: center;
-        }
-        .lightbox-overlay.active {
-            display: flex;
-        }
-        .lightbox-overlay img {
-            max-width: 90vw;
-            max-height: 90vh;
-            object-fit: contain;
-            border-radius: 8px;
-        }
-        .screenshot-thumb {
-            cursor: zoom-in;
-            transition: box-shadow 0.2s ease;
-        }
-        .screenshot-thumb:hover {
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        }
-
-        /* Details/Summary */
-        details summary {
-            cursor: pointer;
-            list-style: none;
-        }
-        details summary::-webkit-details-marker {
-            display: none;
-        }
-        details summary::before {
-            content: '▶';
-            display: inline-block;
-            margin-right: 0.5rem;
-            transition: transform 0.3s;
-            color: #b8848f;
-        }
-        details[open] summary::before {
-            transform: rotate(90deg);
-        }
-
-        /* Mobile Menu */
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Noto Sans JP', sans-serif; color: #44403c; letter-spacing: 0.02em; }
+        .font-elegant { font-family: 'Noto Serif JP', serif; }
+        .divider { width: 60px; height: 1px; background: linear-gradient(90deg, #d4a5a5, #a7bdd4); margin: 0 auto; }
+        .border-elegant { border: 1px solid rgba(168, 162, 158, 0.3); }
+        .link-underline { position: relative; }
+        .link-underline::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px; background: currentColor; transition: width 0.3s ease; }
+        .link-underline:hover::after { width: 100%; }
+        .lightbox-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; cursor: zoom-out; justify-content: center; align-items: center; }
+        .lightbox-overlay.active { display: flex; }
+        .lightbox-overlay img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 8px; }
+        .screenshot-thumb { cursor: zoom-in; transition: box-shadow 0.2s ease; }
+        .screenshot-thumb:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+        .badge-new { display: inline-block; background: linear-gradient(135deg, #ec7a95 0%, #d4a5a5 100%); color: white; font-size: 0.625rem; font-weight: 700; padding: 0.125rem 0.375rem; border-radius: 0.25rem; margin-left: 0.5rem; vertical-align: middle; letter-spacing: 0.05em; }
         #mobile-menu { position: absolute; top: 100%; left: 0; right: 0; max-height: 0; opacity: 0; overflow: hidden; background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: max-height 0.6s ease-out, opacity 0.6s ease-out; padding-left: 1.5rem; padding-right: 1.5rem; }
         #mobile-menu.menu-open { max-height: 500px; opacity: 1; }
-
-        /* Fade-in Animation */
-        .fade-in-section { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
-        .fade-in-section.visible { opacity: 1; transform: translateY(0); }
-
-        /* Placeholder Image */
-        .img-placeholder {
-            background: linear-gradient(135deg, #f5f5f4 0%, #e7e5e4 100%);
-            border: 2px dashed #d6d3d1;
-            border-radius: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Noto Sans JP', sans-serif;
-        }
-
-        /* Badge */
-        .badge-new {
-            display: inline-block;
-            background: linear-gradient(135deg, #ec7a95 0%, #d4a5a5 100%);
-            color: white;
-            font-size: 0.625rem;
-            font-weight: 700;
-            padding: 0.125rem 0.375rem;
-            border-radius: 0.25rem;
-            margin-left: 0.5rem;
-            vertical-align: middle;
-            letter-spacing: 0.05em;
-        }
-
-        /* Smooth Scroll */
-        html {
-            scroll-behavior: smooth;
-        }
     </style>
 </head>
-<body class="bg-warm-gray-50 text-warm-gray-900">
+<body class="bg-warm-gray-50">
 
-    <!-- Header -->
+    <!-- ヘッダー -->
     <header class="bg-white/90 backdrop-blur-sm border-b border-warm-gray-200 sticky top-0 z-50">
         <nav class="container mx-auto pl-2 pr-6 py-3 md:py-5 relative">
             <div class="flex justify-between items-center">
@@ -193,396 +84,347 @@
         </nav>
     </header>
 
-    <!-- Breadcrumb -->
-    <div class="bg-white border-b border-warm-gray-200">
-        <div class="container mx-auto px-6 py-3">
-            <nav class="flex text-sm text-warm-gray-600">
-                <a href="../../index.html" class="hover:text-rose-600 transition-colors">ホーム</a>
+    <!-- メイン -->
+    <main class="py-16 md:py-24">
+        <div class="container mx-auto px-6">
+
+            <!-- パンくず -->
+            <nav class="mb-8 text-sm text-warm-gray-500">
+                <a href="../../index.html" class="hover:text-warm-gray-700">ホーム</a>
                 <span class="mx-2">/</span>
-                <a href="../../index.html#services" class="hover:text-rose-600 transition-colors">サービス</a>
+                <a href="../../index.html#services" class="hover:text-warm-gray-700">サービス</a>
                 <span class="mx-2">/</span>
-                <a href="../reservation-system.html" class="hover:text-rose-600 transition-colors">音楽教室管理システム</a>
+                <a href="../reservation-system.html" class="hover:text-warm-gray-700">音楽教室管理システム</a>
                 <span class="mx-2">/</span>
-                <span class="text-warm-gray-900">管理者向け機能</span>
+                <span class="text-warm-gray-700">管理者向け機能</span>
             </nav>
-        </div>
-    </div>
 
-    <!-- Hero Section -->
-    <section class="bg-gradient-to-br from-rose-50 via-white to-navy-50 py-16 md:py-24">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="font-elegant text-4xl md:text-5xl text-navy-900 mb-4">
-                管理者向け機能
-            </h1>
-            <p class="text-xl text-warm-gray-600 mb-6">Admin Features</p>
-            <p class="text-2xl md:text-3xl text-rose-700 font-medium">
-                教室運営に必要なすべてを、ひとつの画面から。
-            </p>
-            <div class="mt-8 inline-block bg-rose-100 text-rose-800 px-6 py-3 rounded-full font-bold text-lg">
-                📱 スマホで完結 — ほぼ全ての操作がスマートフォンから可能
+            <!-- タイトル -->
+            <div class="text-center mb-16">
+                <h1 class="font-elegant text-2xl md:text-3xl text-warm-gray-800 mb-2">管理者向け機能</h1>
+                <p class="text-sm text-warm-gray-400 tracking-wider mb-4">Admin Features</p>
+                <div class="divider"></div>
             </div>
-        </div>
-    </section>
 
-    <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white p-8 md:p-12 border-elegant">
 
-        <!-- 1. ダッシュボード -->
-        <section class="mb-20 fade-in-section">
-            <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div>
-                    <h2 class="font-elegant text-3xl text-navy-900 mb-4">
-                        <span class="text-rose-600">01.</span> ダッシュボード
-                    </h2>
-                    <p class="text-warm-gray-700 mb-6 leading-relaxed">
-                        月間カレンダーで予定を一目で確認。直近の予約一覧、通知センターでは生徒の誕生日通知も表示されます。教室の状況をひと目で把握できるホーム画面です。
-                    </p>
-                    <ul class="space-y-2 text-warm-gray-700">
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    <!-- キャッチ -->
+                    <div class="bg-rose-50 border border-rose-200 rounded-lg p-5 md:p-6 mb-10 text-center">
+                        <div class="flex items-center justify-center gap-2 mb-2">
+                            <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
-                            <span>月間カレンダー表示</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>直近の予約一覧</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>通知センター（誕生日通知を含む）</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="flex justify-center md:justify-start">
-                    <img src="../../images/piano-app/mobile/dashboard.png" alt="ダッシュボード画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
-                </div>
-            </div>
-        </section>
-
-        <div class="divider"></div>
-
-        <!-- 2. 予約管理 -->
-        <section class="mb-20 fade-in-section">
-            <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div class="order-2 md:order-1 flex justify-center md:justify-end">
-                    <img src="../../images/piano-app/mobile/reservations.png" alt="予約管理画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
-                </div>
-                <div class="order-1 md:order-2">
-                    <h2 class="font-elegant text-3xl text-navy-900 mb-4">
-                        <span class="text-rose-600">02.</span> 予約管理
-                    </h2>
-                    <p class="text-warm-gray-700 mb-6 leading-relaxed">
-                        予約の一覧表示、承認、キャンセル処理がワンタップで完了。振替処理もスムーズなワークフローで対応できます。予約状況の確認から対応まで、すべてスマホで。
-                    </p>
-                    <ul class="space-y-2 text-warm-gray-700">
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>予約一覧・承認・キャンセル</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>振替処理のワークフロー</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>ワンタップで操作完了</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <div class="divider"></div>
-
-        <!-- 3. スロット管理 -->
-        <section class="mb-20 fade-in-section">
-            <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div>
-                    <h2 class="font-elegant text-3xl text-navy-900 mb-4">
-                        <span class="text-rose-600">03.</span> スロット管理
-                    </h2>
-                    <p class="text-warm-gray-700 mb-6 leading-relaxed">
-                        レッスン枠の作成・削除を直感的に操作。日時、講師、レッスン内容を設定するだけで、新しいスロットが生成されます。スケジュール変更も柔軟に対応できます。
-                    </p>
-                    <ul class="space-y-2 text-warm-gray-700">
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>レッスン枠の作成・削除</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>日時・講師・内容の設定</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>柔軟なスケジュール変更</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="flex justify-center md:justify-start">
-                    <img src="../../images/piano-app/mobile/slots.png" alt="スロット管理画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
-                </div>
-            </div>
-        </section>
-
-        <div class="divider"></div>
-
-        <!-- 4. 固定スケジュール -->
-        <section class="mb-20 fade-in-section">
-            <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div class="order-2 md:order-1 flex justify-center md:justify-end">
-                    <img src="../../images/piano-app/mobile/schedule-regular.png" alt="固定スケジュール設定画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
-                </div>
-                <div class="order-1 md:order-2">
-                    <h2 class="font-elegant text-3xl text-navy-900 mb-4">
-                        <span class="text-rose-600">04.</span> 固定スケジュール
-                    </h2>
-                    <p class="text-warm-gray-700 mb-6 leading-relaxed">
-                        曜日固定のレッスンを設定すれば、毎週自動的にスロットが反映されます。定期レッスンの管理がシンプルになり、スケジュール作成の手間を大幅に削減できます。
-                    </p>
-                    <ul class="space-y-2 text-warm-gray-700">
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>曜日固定レッスンの設定</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>定期レッスンの自動反映</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>スケジュール作成の手間を削減</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <div class="divider"></div>
-
-        <!-- 5. 休講日管理 -->
-        <section class="mb-20 fade-in-section">
-            <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div>
-                    <h2 class="font-elegant text-3xl text-navy-900 mb-4">
-                        <span class="text-rose-600">05.</span> 休講日管理
-                    </h2>
-                    <p class="text-warm-gray-700 mb-6 leading-relaxed">
-                        祝日や教室の都合による休講日を設定。該当日のスロットは自動的に非表示となり、生徒への影響を最小限に抑えます。休講日の一括管理で運営がスムーズに。
-                    </p>
-                    <ul class="space-y-2 text-warm-gray-700">
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>休講日の設定</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>該当日のスロット自動非表示</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>生徒への影響を最小限に</span>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <div class="flex justify-center">
-                        <img src="../../images/piano-app/mobile/closed-dates.png" alt="休講日管理画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
+                            <p class="font-elegant text-rose-800 text-base md:text-lg">教室運営に必要なすべてを、ひとつの画面から。</p>
+                        </div>
+                        <p class="text-warm-gray-600 text-sm leading-relaxed">
+                            スマホで完結 — ほぼ全ての操作がスマートフォンから可能です。
+                        </p>
                     </div>
+
+                    <!-- 1. ダッシュボード (flex-row: image right) -->
+                    <div class="mb-12">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
+                            ダッシュボード
+                        </h2>
+
+                        <div class="flex flex-col md:flex-row gap-6 items-center mb-6">
+                            <div class="flex-1">
+                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
+                                    月間カレンダーで予定を一目で確認。直近の予約一覧、通知センターでは生徒の誕生日通知も表示されます。教室の状況をひと目で把握できるホーム画面です。
+                                </p>
+                                <div class="space-y-2">
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">月間カレンダー表示</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">直近の予約一覧</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">通知センター（誕生日通知を含む）</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-40 flex-shrink-0 flex justify-center">
+                                <img src="../../images/piano-app/mobile/dashboard.png" alt="ダッシュボード画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. 予約管理 (flex-row-reverse: image left) -->
+                    <div class="mb-12">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
+                            予約管理
+                        </h2>
+
+                        <div class="flex flex-col md:flex-row-reverse gap-6 items-center mb-6">
+                            <div class="flex-1">
+                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
+                                    予約の一覧表示、承認、キャンセル処理がワンタップで完了。振替処理もスムーズなワークフローで対応できます。予約状況の確認から対応まで、すべてスマホで。
+                                </p>
+                                <div class="space-y-2">
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">予約一覧・承認・キャンセル</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">振替処理のワークフロー</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">ワンタップで操作完了</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-40 flex-shrink-0 flex justify-center">
+                                <img src="../../images/piano-app/mobile/reservations.png" alt="予約管理画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. スロット管理 (flex-row: image right) -->
+                    <div class="mb-12">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
+                            スロット管理
+                        </h2>
+
+                        <div class="flex flex-col md:flex-row gap-6 items-center mb-6">
+                            <div class="flex-1">
+                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
+                                    レッスン枠の作成・削除を直感的に操作。日時、講師、レッスン内容を設定するだけで、新しいスロットが生成されます。スケジュール変更も柔軟に対応できます。
+                                </p>
+                                <div class="space-y-2">
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">レッスン枠の作成・削除</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">日時・講師・内容の設定</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">柔軟なスケジュール変更</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-40 flex-shrink-0 flex justify-center">
+                                <img src="../../images/piano-app/mobile/slots.png" alt="スロット管理画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. 固定スケジュール (flex-row-reverse: image left) -->
+                    <div class="mb-12">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
+                            固定スケジュール
+                        </h2>
+
+                        <div class="flex flex-col md:flex-row-reverse gap-6 items-center mb-6">
+                            <div class="flex-1">
+                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
+                                    曜日固定のレッスンを設定すれば、毎週自動的にスロットが反映されます。定期レッスンの管理がシンプルになり、スケジュール作成の手間を大幅に削減できます。
+                                </p>
+                                <div class="space-y-2">
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">曜日固定レッスンの設定</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">定期レッスンの自動反映</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">スケジュール作成の手間を削減</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-40 flex-shrink-0 flex justify-center">
+                                <img src="../../images/piano-app/mobile/schedule-regular.png" alt="固定スケジュール設定画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. 休講日管理 (flex-row: image right) -->
+                    <div class="mb-12">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
+                            休講日管理
+                        </h2>
+
+                        <div class="flex flex-col md:flex-row gap-6 items-center mb-6">
+                            <div class="flex-1">
+                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
+                                    祝日や教室の都合による休講日を設定。該当日のスロットは自動的に非表示となり、生徒への影響を最小限に抑えます。休講日の一括管理で運営がスムーズに。
+                                </p>
+                                <div class="space-y-2">
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">休講日の設定</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">該当日のスロット自動非表示</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">生徒への影響を最小限に</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-40 flex-shrink-0 flex justify-center">
+                                <img src="../../images/piano-app/mobile/closed-dates.png" alt="休講日管理画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. 生徒管理 (flex-row-reverse: image left) with NEW badge -->
+                    <div class="mb-12">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
+                            生徒管理<span class="badge-new">NEW</span>
+                        </h2>
+
+                        <div class="flex flex-col md:flex-row-reverse gap-6 items-center mb-6">
+                            <div class="flex-1">
+                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
+                                    生徒情報の登録・編集、メール送信が一元管理できます。男女で色分けされたカード表示で視認性が向上。誕生日通知機能も新たに追加され、生徒一人ひとりへのきめ細やかな対応が可能に。
+                                </p>
+                                <div class="space-y-2">
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">生徒情報の登録・編集</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">メール送信機能</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">男女カード色分け表示</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">誕生日通知機能<span class="badge-new">NEW</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-40 flex-shrink-0 flex justify-center">
+                                <img src="../../images/piano-app/mobile/students.png" alt="生徒管理画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 7. 設定 (flex-row: image right) -->
+                    <div class="mb-12">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
+                            設定
+                        </h2>
+
+                        <div class="flex flex-col md:flex-row gap-6 items-center mb-6">
+                            <div class="flex-1">
+                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
+                                    教室の基本情報、利用規約の編集、プレビュー機能を備えた3つのタブで構成。変更内容はリアルタイムでプレビューできるため、安心して設定を更新できます。
+                                </p>
+                                <div class="space-y-2">
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">基本情報タブ</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">利用規約タブ</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">プレビュータブ</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">リアルタイムプレビュー</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-40 flex-shrink-0 flex justify-center">
+                                <img src="../../images/piano-app/mobile/settings.png" alt="設定画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 8. 操作ログ (flex-row-reverse: image left) -->
+                    <div class="mb-12">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
+                            操作ログ
+                        </h2>
+
+                        <div class="flex flex-col md:flex-row-reverse gap-6 items-center mb-6">
+                            <div class="flex-1">
+                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
+                                    システム内のすべての操作履歴を記録。エラーレベル表示により、問題の早期発見と対応が可能です。トラブルシューティングや運用改善に役立つ機能です。
+                                </p>
+                                <div class="space-y-2">
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">操作履歴の確認</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">エラーレベル表示</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">問題の早期発見</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-40 flex-shrink-0 flex justify-center">
+                                <img src="../../images/piano-app/mobile/logs.png" alt="操作ログ画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="text-center py-8 border-t border-warm-gray-200">
+                        <p class="text-warm-gray-600 text-sm mb-6">
+                            管理者向け機能の詳細をご案内します。お気軽にお問い合わせください。
+                        </p>
+                        <a href="../../index.html#contact" class="inline-block border border-warm-gray-400 text-warm-gray-700 px-8 py-3 text-sm tracking-wider hover:bg-warm-gray-800 hover:text-white hover:border-warm-gray-800 transition-all duration-300">
+                            お問い合わせ
+                        </a>
+                    </div>
+
+                    <!-- ページナビゲーション -->
+                    <div class="flex justify-between items-center pt-6 border-t border-warm-gray-100">
+                        <a href="../reservation-system.html" class="text-warm-gray-500 hover:text-warm-gray-700 text-sm inline-flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                            音楽教室管理システム トップ
+                        </a>
+                        <a href="tuition-management.html" class="text-warm-gray-500 hover:text-warm-gray-700 text-sm inline-flex items-center">
+                            月謝管理
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- 戻るリンク -->
+                <div class="mt-10 text-center">
+                    <a href="../reservation-system.html" class="text-warm-gray-500 hover:text-warm-gray-700 text-sm inline-flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        音楽教室管理システム トップに戻る
+                    </a>
                 </div>
             </div>
-        </section>
-
-        <div class="divider"></div>
-
-        <!-- 6. 生徒管理 -->
-        <section class="mb-20 fade-in-section">
-            <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div class="order-2 md:order-1 flex justify-center md:justify-end">
-                    <img src="../../images/piano-app/mobile/students.png" alt="生徒管理画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
-                </div>
-                <div class="order-1 md:order-2">
-                    <h2 class="font-elegant text-3xl text-navy-900 mb-4">
-                        <span class="text-rose-600">06.</span> 生徒管理<span class="badge-new">NEW</span>
-                    </h2>
-                    <p class="text-warm-gray-700 mb-6 leading-relaxed">
-                        生徒情報の登録・編集、メール送信が一元管理できます。男女で色分けされたカード表示で視認性が向上。誕生日通知機能も新たに追加され、生徒一人ひとりへのきめ細やかな対応が可能に。
-                    </p>
-                    <ul class="space-y-2 text-warm-gray-700">
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>生徒情報の登録・編集</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>メール送信機能</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>男女カード色分け表示</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>誕生日通知機能<span class="badge-new">NEW</span></span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <div class="divider"></div>
-
-        <!-- 7. 設定 -->
-        <section class="mb-20 fade-in-section">
-            <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div>
-                    <h2 class="font-elegant text-3xl text-navy-900 mb-4">
-                        <span class="text-rose-600">07.</span> 設定
-                    </h2>
-                    <p class="text-warm-gray-700 mb-6 leading-relaxed">
-                        教室の基本情報、利用規約の編集、プレビュー機能を備えた3つのタブで構成。変更内容はリアルタイムでプレビューできるため、安心して設定を更新できます。
-                    </p>
-                    <ul class="space-y-2 text-warm-gray-700">
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>基本情報タブ</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>利用規約タブ</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>プレビュータブ</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>リアルタイムプレビュー</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="flex justify-center md:justify-start">
-                    <img src="../../images/piano-app/mobile/settings.png" alt="設定画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
-                </div>
-            </div>
-        </section>
-
-        <div class="divider"></div>
-
-        <!-- 8. 操作ログ -->
-        <section class="mb-20 fade-in-section">
-            <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div class="order-2 md:order-1 flex justify-center md:justify-end">
-                    <img src="../../images/piano-app/mobile/logs.png" alt="操作ログ画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
-                </div>
-                <div class="order-1 md:order-2">
-                    <h2 class="font-elegant text-3xl text-navy-900 mb-4">
-                        <span class="text-rose-600">08.</span> 操作ログ
-                    </h2>
-                    <p class="text-warm-gray-700 mb-6 leading-relaxed">
-                        システム内のすべての操作履歴を記録。エラーレベル表示により、問題の早期発見と対応が可能です。トラブルシューティングや運用改善に役立つ機能です。
-                    </p>
-                    <ul class="space-y-2 text-warm-gray-700">
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>操作履歴の確認</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>エラーレベル表示</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-rose-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span>問題の早期発見</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- CTA -->
-        <div class="bg-gradient-to-br from-rose-100 via-white to-navy-100 rounded-2xl p-8 md:p-12 text-center mt-20">
-            <h3 class="font-elegant text-2xl md:text-3xl text-navy-900 mb-4">
-                管理者向け機能の詳細をご案内します
-            </h3>
-            <p class="text-warm-gray-700 mb-8 max-w-2xl mx-auto">
-                デモ画面のご覧になりたい方、カスタマイズのご相談など、お気軽にお問い合わせください。
-            </p>
-            <a href="../../index.html#contact" class="inline-block bg-gradient-to-r from-rose-600 to-rose-500 text-white px-8 py-4 rounded-full font-bold hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                お問い合わせ
-            </a>
         </div>
-
-        <!-- Page Navigation -->
-        <div class="flex justify-between items-center mt-16 pt-8 border-t border-warm-gray-200">
-            <a href="../reservation-system.html" class="link-underline text-navy-700 hover:text-rose-600 transition-colors flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                </svg>
-                音楽教室管理システム トップ
-            </a>
-            <a href="./tuition-management.html" class="link-underline text-navy-700 hover:text-rose-600 transition-colors flex items-center">
-                月謝管理
-                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
-            </a>
-        </div>
-
     </main>
 
-    <!-- Footer -->
+    <!-- フッター -->
     <footer class="bg-warm-gray-800 text-warm-gray-300 py-12">
         <div class="container mx-auto px-6">
             <div class="text-center">
@@ -597,9 +439,7 @@
         <img id="lightbox-img" src="" alt="">
     </div>
 
-    <!-- JavaScript -->
     <script>
-        // Mobile Menu Toggle
         const menuToggle = document.getElementById('menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
         menuToggle.addEventListener('click', () => { mobileMenu.classList.toggle('menu-open'); });
@@ -617,17 +457,6 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeLightbox();
         });
-
-        // Fade-in Animation
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.fade-in-section').forEach(el => observer.observe(el));
     </script>
-
 </body>
 </html>
