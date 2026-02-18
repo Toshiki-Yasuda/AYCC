@@ -400,109 +400,59 @@
                         </div>
                     </div>
 
-                    <!-- 他のサービスとの違い -->
+                    <!-- なぜこのシステムを作ったのか -->
                     <div class="mb-10">
                         <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
-                            他のサービスとの違い
+                            なぜこのシステムを作ったのか
                         </h2>
 
-                        <!-- できること -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 mb-8">
-                            <div class="flex items-start gap-2">
-                                <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                <p class="text-warm-gray-600 text-sm">保護者がスマホで空き枠を選んで予約 ── <span class="font-medium text-warm-gray-700">振替調整ゼロ</span></p>
+                        <p class="text-warm-gray-600 text-sm leading-relaxed mb-6">
+                            音楽教室に特化した管理システムは、国内外を調査してもほとんど存在しません。<br>
+                            多くの先生は、汎用ツールを組み合わせて日々の運営をこなしています。
+                        </p>
+
+                        <!-- 今の方法 vs このシステム -->
+                        <div class="space-y-3 mb-6">
+                            <div class="flex items-center gap-3 bg-white rounded-lg border border-warm-gray-200 p-4">
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-warm-gray-400 text-xs mb-1">今の方法</p>
+                                    <p class="text-warm-gray-600 text-sm">LINEで振替の日程を何度もやりとり</p>
+                                </div>
+                                <span class="text-navy-400 flex-shrink-0">→</span>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-navy-500 text-xs mb-1">このシステム</p>
+                                    <p class="text-warm-gray-700 text-sm font-medium">保護者が空き枠を選択、先生はワンタップ</p>
+                                </div>
                             </div>
-                            <div class="flex items-start gap-2">
-                                <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                <p class="text-warm-gray-600 text-sm">月謝の自動生成と未払い管理 ── <span class="font-medium text-warm-gray-700">催促不要</span></p>
+                            <div class="flex items-center gap-3 bg-white rounded-lg border border-warm-gray-200 p-4">
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-warm-gray-400 text-xs mb-1">今の方法</p>
+                                    <p class="text-warm-gray-600 text-sm">手帳やExcelで月謝を手動管理</p>
+                                </div>
+                                <span class="text-navy-400 flex-shrink-0">→</span>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-navy-500 text-xs mb-1">このシステム</p>
+                                    <p class="text-warm-gray-700 text-sm font-medium">毎月自動生成、未払いも一覧で把握</p>
+                                </div>
                             </div>
-                            <div class="flex items-start gap-2">
-                                <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                <p class="text-warm-gray-600 text-sm">前日に自動リマインダーメール ── <span class="font-medium text-warm-gray-700">無断欠席防止</span></p>
-                            </div>
-                            <div class="flex items-start gap-2">
-                                <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                <p class="text-warm-gray-600 text-sm">生徒の誕生日を自動通知 ── <span class="font-medium text-warm-gray-700">きめ細かい配慮</span></p>
-                            </div>
-                            <div class="flex items-start gap-2">
-                                <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                <p class="text-warm-gray-600 text-sm">教室専用ホームページ制作 ── <span class="font-medium text-warm-gray-700">集客と信頼感</span></p>
-                            </div>
-                            <div class="flex items-start gap-2">
-                                <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                <p class="text-warm-gray-600 text-sm">利用規約の掲示と同意フロー ── <span class="font-medium text-warm-gray-700">トラブル予防</span></p>
+                            <div class="flex items-center gap-3 bg-white rounded-lg border border-warm-gray-200 p-4">
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-warm-gray-400 text-xs mb-1">今の方法</p>
+                                    <p class="text-warm-gray-600 text-sm">口頭やLINEでレッスン日を連絡</p>
+                                </div>
+                                <span class="text-navy-400 flex-shrink-0">→</span>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-navy-500 text-xs mb-1">このシステム</p>
+                                    <p class="text-warm-gray-700 text-sm font-medium">前日リマインダーを自動送信</p>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- 比較表 -->
-                        <div class="overflow-x-auto mb-6">
-                            <table class="w-full text-sm">
-                                <thead>
-                                    <tr class="border-b border-warm-gray-200">
-                                        <th class="text-left py-2 text-warm-gray-700 font-medium"></th>
-                                        <th class="text-center py-2 text-warm-gray-500 font-normal text-xs">一般的な<br>予約サービス</th>
-                                        <th class="text-center py-2 text-warm-gray-500 font-normal text-xs">教室向け<br>アプリ</th>
-                                        <th class="text-center py-2 text-navy-700 font-medium text-xs">AYCC</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="border-b border-warm-gray-100">
-                                        <td class="py-2 text-warm-gray-600">振替の自動調整</td>
-                                        <td class="text-center text-warm-gray-400">△</td>
-                                        <td class="text-center text-warm-gray-300">×</td>
-                                        <td class="text-center text-rose-500 font-medium">◎</td>
-                                    </tr>
-                                    <tr class="border-b border-warm-gray-100">
-                                        <td class="py-2 text-warm-gray-600">月謝管理・自動生成</td>
-                                        <td class="text-center text-warm-gray-400">△</td>
-                                        <td class="text-center text-warm-gray-300">×</td>
-                                        <td class="text-center text-rose-500 font-medium">◎</td>
-                                    </tr>
-                                    <tr class="border-b border-warm-gray-100">
-                                        <td class="py-2 text-warm-gray-600">リマインダー</td>
-                                        <td class="text-center text-navy-500">○</td>
-                                        <td class="text-center text-warm-gray-300">×</td>
-                                        <td class="text-center text-rose-500 font-medium">◎</td>
-                                    </tr>
-                                    <tr class="border-b border-warm-gray-100">
-                                        <td class="py-2 text-warm-gray-600">誕生日通知</td>
-                                        <td class="text-center text-warm-gray-300">×</td>
-                                        <td class="text-center text-warm-gray-300">×</td>
-                                        <td class="text-center text-rose-500 font-medium">◎</td>
-                                    </tr>
-                                    <tr class="border-b border-warm-gray-100">
-                                        <td class="py-2 text-warm-gray-600">規約管理</td>
-                                        <td class="text-center text-warm-gray-300">×</td>
-                                        <td class="text-center text-warm-gray-300">×</td>
-                                        <td class="text-center text-rose-500 font-medium">◎</td>
-                                    </tr>
-                                    <tr class="border-b border-warm-gray-100">
-                                        <td class="py-2 text-warm-gray-600">教室ホームページ</td>
-                                        <td class="text-center text-warm-gray-300">×</td>
-                                        <td class="text-center text-warm-gray-400">△</td>
-                                        <td class="text-center text-rose-500 font-medium">◎</td>
-                                    </tr>
-                                    <tr class="border-b border-warm-gray-100">
-                                        <td class="py-2 text-warm-gray-600">スマホ完全対応</td>
-                                        <td class="text-center text-navy-500">○</td>
-                                        <td class="text-center text-warm-gray-400">△</td>
-                                        <td class="text-center text-rose-500 font-medium">◎</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-2 text-warm-gray-600">音楽教室特化</td>
-                                        <td class="text-center text-warm-gray-300">×</td>
-                                        <td class="text-center text-warm-gray-400">△</td>
-                                        <td class="text-center text-rose-500 font-medium">◎</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- 差別化メッセージ + HP画像 -->
+                        <!-- HP連携メッセージ + HP画像 -->
                         <div class="bg-warm-gray-50 p-5 rounded-lg flex flex-col md:flex-row gap-5 items-center">
                             <div class="flex-1">
                                 <p class="text-warm-gray-600 text-sm leading-relaxed">
-                                    音楽教室の現場を知る私たちが、先生のために設計しました。<br>
+                                    既存のサービスでは足りない部分を、音楽教室の現場を知る私たちがゼロから設計しました。<br>
                                     教室専用のホームページも制作し、管理システムと連携します。
                                 </p>
                             </div>
