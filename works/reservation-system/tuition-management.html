@@ -154,226 +154,99 @@
                         </div>
                     </div>
 
-                    <!-- 2. 未払い一覧 -->
+                    <!-- 2. 未払い管理 -->
                     <div class="mb-12">
                         <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
-                            未払い一覧
+                            未払い管理
                         </h2>
 
                         <div class="flex flex-col md:flex-row gap-6 items-center mb-6">
                             <div class="flex-1">
                                 <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
-                                    「誰が今月まだ払っていないか」がひと目で分かります。長期未払いは色で警告表示。
+                                    「誰が今月まだ払っていないか」がひと目で分かります。長期未払いは色で警告表示され、見逃しを防ぎます。
                                 </p>
                                 <div class="space-y-2">
                                     <div class="flex items-start gap-2">
                                         <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <p class="text-warm-gray-600 text-sm">生徒名と未払い月数を表示</p>
+                                        <p class="text-warm-gray-600 text-sm">生徒名・未払い月数・未払い総額を一覧表示</p>
                                     </div>
                                     <div class="flex items-start gap-2">
                                         <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <p class="text-warm-gray-600 text-sm">長期滞納者を視覚的に警告</p>
+                                        <p class="text-warm-gray-600 text-sm">2ヶ月以上の未払いは背景色で視覚的に警告</p>
                                     </div>
                                     <div class="flex items-start gap-2">
                                         <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <p class="text-warm-gray-600 text-sm">未払い合計額も一目瞭然</p>
+                                        <p class="text-warm-gray-600 text-sm">ダッシュボードにも「要注意」として表示</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="md:w-40 flex-shrink-0 flex justify-center">
-                                <img src="../../images/piano-app/mobile/tuition.png" alt="未払い一覧画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
+                                <img src="../../images/piano-app/mobile/tuition.png" alt="未払い管理画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
                             </div>
                         </div>
                     </div>
 
-                    <!-- 3. 支払い済み一覧 -->
+                    <!-- 3. 支払い記録 -->
                     <div class="mb-12">
                         <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
-                            支払い済み一覧
+                            支払い記録
                         </h2>
 
-                        <div class="flex flex-col md:flex-row-reverse gap-6 items-center mb-6">
-                            <div class="flex-1">
-                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
-                                    受領記録が時系列で確認できます。いつ誰からいくら受け取ったかが一目瞭然。
-                                </p>
-                                <div class="space-y-2">
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <p class="text-warm-gray-600 text-sm">日付・生徒名・金額を記録</p>
-                                    </div>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <p class="text-warm-gray-600 text-sm">時系列で履歴を確認</p>
-                                    </div>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <p class="text-warm-gray-600 text-sm">支払い方法も記録可能</p>
-                                    </div>
-                                </div>
+                        <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
+                            現金受領と口座引き落としの両方に対応。受領記録が時系列で確認でき、いつ誰からいくら受け取ったかが一目瞭然です。
+                        </p>
+                        <div class="space-y-2 mb-6">
+                            <div class="flex items-start gap-2">
+                                <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                <p class="text-warm-gray-600 text-sm">日付・生徒名・金額・支払い方法を記録</p>
                             </div>
-                            <div class="md:w-40 flex-shrink-0 flex justify-center">
-                                <img src="../../images/piano-app/mobile/tuition-paid.png" alt="支払い済み一覧画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
+                            <div class="flex items-start gap-2">
+                                <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                <p class="text-warm-gray-600 text-sm">引き落とし対象者は別枠で管理、現金受領と混同しない</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                <p class="text-warm-gray-600 text-sm">時系列の履歴でいつでも確認可能</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 justify-center">
+                            <div class="text-center">
+                                <img src="../../images/piano-app/mobile/tuition-paid.png" alt="支払い済み一覧画面" class="screenshot-thumb max-w-[130px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
+                                <p class="text-warm-gray-400 text-xs mt-1">支払い済み一覧</p>
+                            </div>
+                            <div class="text-center">
+                                <img src="../../images/piano-app/mobile/tuition-bank.png" alt="引き落とし管理画面" class="screenshot-thumb max-w-[130px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
+                                <p class="text-warm-gray-400 text-xs mt-1">引き落とし管理</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 4. 引き落とし管理 -->
+                    <!-- 4. 自動化との連携 -->
                     <div class="mb-12">
                         <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
-                            引き落とし管理
+                            自動化との連携
                         </h2>
 
-                        <div class="flex flex-col md:flex-row gap-6 items-center mb-6">
-                            <div class="flex-1">
-                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
-                                    口座引き落としを利用している生徒は別枠で管理。自動処理の記録もシステムに残ります。
-                                </p>
-                                <div class="space-y-2">
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <p class="text-warm-gray-600 text-sm">引き落とし対象者を別管理</p>
-                                    </div>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <p class="text-warm-gray-600 text-sm">処理状況を一覧で確認</p>
-                                    </div>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <p class="text-warm-gray-600 text-sm">現金受領と混同しない</p>
-                                    </div>
-                                </div>
+                        <p class="text-warm-gray-600 text-sm leading-relaxed mb-6">
+                            月謝に関する手間を自動化機能がサポートします。先生は確認するだけで、面倒な作業は不要です。
+                        </p>
+
+                        <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                            <div class="bg-warm-gray-50 rounded-lg p-5">
+                                <p class="text-warm-gray-700 text-sm font-medium mb-2">月謝自動生成</p>
+                                <p class="text-warm-gray-500 text-xs leading-relaxed mb-2">毎月1日に全生徒分の月謝を自動作成。二重生成を防ぐ仕組みで安心です。</p>
                             </div>
-                            <div class="md:w-40 flex-shrink-0 flex justify-center">
-                                <img src="../../images/piano-app/mobile/tuition-bank.png" alt="引き落とし管理画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
+                            <div class="bg-warm-gray-50 rounded-lg p-5">
+                                <p class="text-warm-gray-700 text-sm font-medium mb-2">未払いリマインダー</p>
+                                <p class="text-warm-gray-500 text-xs leading-relaxed mb-2">未払いの保護者に自動でリマインドメールを送信。先生が直接催促する必要はありません。</p>
                             </div>
                         </div>
+                        <p class="text-center">
+                            <a href="automation-security.html" class="text-navy-600 hover:text-navy-800 text-sm underline">自動化機能の詳細はこちら →</a>
+                        </p>
                     </div>
 
-                    <!-- 5. 月謝の自動生成 -->
-                    <div class="mb-12">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
-                            月謝の自動生成
-                        </h2>
-
-                        <div class="flex flex-col md:flex-row-reverse gap-6 items-center mb-6">
-                            <div class="flex-1">
-                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
-                                    月初になると、システムが全生徒分の月謝を自動的に作成します。先生は何もしなくて大丈夫。
-                                </p>
-                                <div class="space-y-2">
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <div class="flex-1">
-                                            <p class="text-warm-gray-700 text-sm font-medium">生徒ごとの金額設定</p>
-                                            <p class="text-warm-gray-600 text-xs">各生徒に設定された月謝額で自動生成</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <div class="flex-1">
-                                            <p class="text-warm-gray-700 text-sm font-medium">手動作成の手間なし</p>
-                                            <p class="text-warm-gray-600 text-xs">毎月の月謝レコード作成が不要に</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <div class="flex-1">
-                                            <p class="text-warm-gray-700 text-sm font-medium">同時実行耐性</p>
-                                            <p class="text-warm-gray-600 text-xs">二重生成を防ぐ仕組みで安心</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="md:w-40 flex-shrink-0 flex justify-center">
-                                <img src="../../images/piano-app/mobile/tuition.png" alt="月謝管理画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 6. 未払いリマインダー -->
-                    <div class="mb-12">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
-                            未払いリマインダー
-                        </h2>
-
-                        <div class="flex flex-col md:flex-row gap-6 items-center mb-6">
-                            <div class="flex-1">
-                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
-                                    未払いの保護者に、システムが自動でリマインダーメールを送信します。
-                                </p>
-                                <div class="space-y-2">
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <div class="flex-1">
-                                            <p class="text-warm-gray-700 text-sm font-medium">自動送信</p>
-                                            <p class="text-warm-gray-600 text-xs">未払い状態の保護者に丁寧な文面でリマインド</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <div class="flex-1">
-                                            <p class="text-warm-gray-700 text-sm font-medium">重複送信防止</p>
-                                            <p class="text-warm-gray-600 text-xs">一度送ったらその月は再送しない</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <div class="flex-1">
-                                            <p class="text-warm-gray-700 text-sm font-medium">先生は催促不要</p>
-                                            <p class="text-warm-gray-600 text-xs">システムが代わりに伝えます</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="md:w-40 flex-shrink-0 flex justify-center">
-                                <img src="../../images/piano-app/mobile/tuition-paid.png" alt="月謝管理画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 7. 未払い超過表示 -->
-                    <div class="mb-12">
-                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
-                            未払い超過表示
-                        </h2>
-
-                        <div class="flex flex-col md:flex-row-reverse gap-6 items-center mb-6">
-                            <div class="flex-1">
-                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
-                                    長期未払いの生徒は、一覧画面で色分け表示されます。
-                                </p>
-                                <div class="space-y-2">
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <div class="flex-1">
-                                            <p class="text-warm-gray-700 text-sm font-medium">視覚的な警告</p>
-                                            <p class="text-warm-gray-600 text-xs">2ヶ月以上未払いの場合、背景色が変わる</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <div class="flex-1">
-                                            <p class="text-warm-gray-700 text-sm font-medium">ダッシュボードにも表示</p>
-                                            <p class="text-warm-gray-600 text-xs">「要注意」として早めの対応を促す</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-start gap-2">
-                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
-                                        <div class="flex-1">
-                                            <p class="text-warm-gray-700 text-sm font-medium">未払い総額も表示</p>
-                                            <p class="text-warm-gray-600 text-xs">現在の未払い総額がすぐに把握可能</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="md:w-40 flex-shrink-0 flex justify-center">
-                                <img src="../../images/piano-app/mobile/tuition.png" alt="未払い警告表示" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 8. 運用フローのイメージ -->
+                    <!-- 5. 運用フローのイメージ -->
                     <div class="mb-12">
                         <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
                             運用フローのイメージ

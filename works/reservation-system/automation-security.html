@@ -6,6 +6,9 @@
     <title>自動化・セキュリティ - 音楽教室管理システム | AYCC</title>
     <meta name="description" content="手間なく、安心して運用できる仕組み。リマインドメール自動送信、月謝自動生成、誕生日通知など、先生の負担を軽減する自動化機能と、万全のセキュリティ対策。">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="../../images/favicon.png">
+    <link rel="apple-touch-icon" href="../../images/favicon.png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
@@ -39,19 +42,6 @@
         .lightbox-overlay.active { display: flex; }
         .lightbox-overlay img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 8px; }
 
-        .badge-new {
-            display: inline-block;
-            background: linear-gradient(135deg, #ec7a95 0%, #d4a5a5 100%);
-            color: white;
-            font-size: 0.625rem;
-            font-weight: 700;
-            padding: 0.125rem 0.375rem;
-            border-radius: 0.25rem;
-            margin-left: 0.5rem;
-            vertical-align: middle;
-            letter-spacing: 0.05em;
-        }
-
         .tech-card {
             background: linear-gradient(135deg, rgba(252, 231, 235, 0.3), rgba(208, 219, 232, 0.3));
             border: 1px solid rgba(216, 180, 254, 0.2);
@@ -76,8 +66,6 @@
         #mobile-menu { position: absolute; top: 100%; left: 0; right: 0; max-height: 0; opacity: 0; overflow: hidden; background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: max-height 0.6s ease-out, opacity 0.6s ease-out; padding-left: 1.5rem; padding-right: 1.5rem; }
         #mobile-menu.menu-open { max-height: 500px; opacity: 1; }
 
-        .fade-in-section { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
-        .fade-in-section.visible { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body class="bg-warm-gray-50 text-warm-gray-800">
@@ -146,7 +134,7 @@
                         <p class="font-elegant text-rose-800 text-base md:text-lg mb-2">手間なく、安心して運用できる仕組み。</p>
                         <p class="text-warm-gray-600 text-sm leading-relaxed">
                             先生の負担を減らし、生徒さんとの時間をもっと大切にできるように。<br class="hidden sm:inline">
-                            システムが自動で行う3つの機能をご紹介します。
+                            システムが自動で行う主な自動化機能をご紹介します。
                         </p>
                     </div>
 
@@ -200,12 +188,31 @@
                             </p>
                         </div>
 
+                        <!-- 未払いリマインダー -->
+                        <div class="mb-8">
+                            <h3 class="text-warm-gray-700 font-medium text-sm mb-3">未払いリマインダー</h3>
+                            <div class="space-y-2 mb-3">
+                                <div class="flex items-start gap-2">
+                                    <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                    <p class="text-warm-gray-600 text-sm">未払い状態の保護者に丁寧な文面で自動リマインド</p>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                    <p class="text-warm-gray-600 text-sm">一度送ったらその月は再送しない重複防止機能</p>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
+                                    <p class="text-warm-gray-600 text-sm">先生が直接催促する必要なし</p>
+                                </div>
+                            </div>
+                            <p class="text-warm-gray-500 text-xs leading-relaxed">
+                                月末に未払いの保護者へ自動でリマインダーメールを送信。「お月謝のお支払いについて」と丁寧にお知らせし、先生の心理的な負担を解消します。
+                            </p>
+                        </div>
+
                         <!-- 誕生日通知 -->
                         <div class="mb-8">
-                            <div class="flex items-center gap-2 mb-3">
-                                <h3 class="text-warm-gray-700 font-medium text-sm">誕生日通知</h3>
-                                <span class="badge-new">NEW</span>
-                            </div>
+                            <h3 class="text-warm-gray-700 font-medium text-sm mb-3">誕生日通知</h3>
                             <div class="space-y-2 mb-3">
                                 <div class="flex items-start gap-2">
                                     <span class="text-rose-400 text-sm mt-px flex-shrink-0">✓</span>
@@ -452,9 +459,10 @@
         mobileMenu.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { mobileMenu.classList.remove('menu-open'); }); });
 
         // Lightbox
-        function openLightbox(src) {
+        function openLightbox(img) {
+            document.getElementById('lightbox-img').src = img.src;
+            document.getElementById('lightbox-img').alt = img.alt;
             document.getElementById('lightbox').classList.add('active');
-            document.getElementById('lightbox-img').src = src;
         }
         function closeLightbox() {
             document.getElementById('lightbox').classList.remove('active');
@@ -463,15 +471,6 @@
             if (e.key === 'Escape') closeLightbox();
         });
 
-        // Fade-in Animation
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.fade-in-section').forEach(el => observer.observe(el));
     </script>
 
 </body>
