@@ -143,7 +143,7 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         }
 
-        /* アコーディオン */
+        /* 技術仕様の折りたたみ */
         details summary::-webkit-details-marker { display: none; }
         details[open] summary svg { transform: rotate(180deg); }
         details summary svg { transition: transform 0.2s ease; }
@@ -291,88 +291,30 @@
                         本システムは、教室の<span class="font-medium text-warm-gray-700">ホームページ制作</span>から<span class="font-medium text-warm-gray-700">予約・生徒・月謝の管理</span>まで、<br class="hidden sm:inline">教室運営をワンストップで支えるために作りました。
                     </p>
 
-                    <!-- 先生の悩み（アコーディオン） -->
-                    <div class="mb-10 space-y-3">
-
-                        <details class="bg-white rounded-lg border border-warm-gray-200">
-                            <summary class="px-5 py-4 cursor-pointer list-none flex items-center justify-between hover:bg-warm-gray-50 transition-colors rounded-lg">
-                                <span class="font-elegant text-warm-gray-800">振替レッスンの調整に、毎回30分以上かかる</span>
-                                <svg class="w-4 h-4 text-warm-gray-400 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </summary>
-                            <div class="px-5 pb-5">
-                                <div class="bg-warm-gray-50 border-l-4 border-rose-300 pl-4 py-3 mb-3">
-                                    <p class="text-warm-gray-600 text-sm italic">「振替がなければどれだけ楽か」</p>
-                                    <p class="text-warm-gray-600 text-sm italic mt-1">「空いている日を聞かれて提案しても、『その日は無理です』の繰り返し」</p>
-                                </div>
-                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
-                                    振替の調整は「先生の空き枠の確認 → 保護者への提案 → 返答待ち → 再提案」の繰り返し。LINEで1件ずつやりとりするため、1件に30分から数時間かかることも。年間レッスンの3割が振替になるケースもあります。
-                                </p>
-                                <div class="bg-navy-50 rounded-lg p-4">
-                                    <p class="text-navy-700 text-sm font-medium mb-1">→ システムでできること</p>
-                                    <p class="text-warm-gray-600 text-sm leading-relaxed">
-                                        保護者がスマホで空き枠を直接確認し、希望の日時を選択。先生もスマホでワンタップ承認するだけ。やりとりの往復がなくなり、振替調整が数分で完了します。
-                                    </p>
-                                </div>
+                    <!-- 先生の悩み → 解決（コンパクト対比） -->
+                    <div class="mb-12 space-y-3">
+                        <div class="flex items-start gap-3 bg-white rounded-lg border border-warm-gray-200 p-4">
+                            <span class="text-rose-400 mt-0.5 flex-shrink-0">●</span>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-warm-gray-700 text-sm font-medium">振替調整に毎回30分以上</p>
+                                <p class="text-warm-gray-500 text-xs mt-1">→ 保護者がスマホで空き枠を選択、先生はワンタップ承認</p>
                             </div>
-                        </details>
-
-                        <details class="bg-white rounded-lg border border-warm-gray-200">
-                            <summary class="px-5 py-4 cursor-pointer list-none flex items-center justify-between hover:bg-warm-gray-50 transition-colors rounded-lg">
-                                <span class="font-elegant text-warm-gray-800">月謝の管理が、実は一番のストレス</span>
-                                <svg class="w-4 h-4 text-warm-gray-400 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </summary>
-                            <div class="px-5 pb-5">
-                                <div class="bg-warm-gray-50 border-l-4 border-rose-300 pl-4 py-3 mb-3">
-                                    <p class="text-warm-gray-600 text-sm italic">「催促が本当につらい」</p>
-                                    <p class="text-warm-gray-600 text-sm italic mt-1">「半年滞納に気づかなかった」</p>
-                                </div>
-                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
-                                    個人教室では現金手渡しが主流です。受け取りの記録が曖昧になりやすく、確認や催促は先生自身がやるしかありません。調査では<span class="font-medium">53%の先生が「お金の管理が一番の悩み」</span>と回答しています。
-                                </p>
-                                <div class="bg-navy-50 rounded-lg p-4">
-                                    <p class="text-navy-700 text-sm font-medium mb-1">→ システムでできること</p>
-                                    <p class="text-warm-gray-600 text-sm leading-relaxed">
-                                        月謝を毎月自動生成し、受領をスマホでワンタップ記録。「誰が今月未払いか」が一覧で分かり、長期未払いは自動で通知。記憶やメモに頼る必要がなくなります。
-                                        <a href="reservation-system/tuition-management.html" class="text-navy-600 hover:text-navy-800 underline ml-1">月謝管理の詳細 →</a>
-                                    </p>
-                                </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-white rounded-lg border border-warm-gray-200 p-4">
+                            <span class="text-rose-400 mt-0.5 flex-shrink-0">●</span>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-warm-gray-700 text-sm font-medium">月謝の催促がつらい、未払いに気づけない</p>
+                                <p class="text-warm-gray-500 text-xs mt-1">→ 月謝を自動生成、未払いは一覧表示＋自動リマインド</p>
                             </div>
-                        </details>
-
-                        <details class="bg-white rounded-lg border border-warm-gray-200">
-                            <summary class="px-5 py-4 cursor-pointer list-none flex items-center justify-between hover:bg-warm-gray-50 transition-colors rounded-lg">
-                                <span class="font-elegant text-warm-gray-800">「明日レッスンでしたっけ？」── 忘れられる予約</span>
-                                <svg class="w-4 h-4 text-warm-gray-400 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </summary>
-                            <div class="px-5 pb-5">
-                                <div class="bg-warm-gray-50 border-l-4 border-rose-300 pl-4 py-3 mb-3">
-                                    <p class="text-warm-gray-600 text-sm italic">「連絡なしの欠席が月に1〜2件ある」</p>
-                                    <p class="text-warm-gray-600 text-sm italic mt-1">「空いた時間がもったいない」</p>
-                                </div>
-                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-3">
-                                    保護者の日常は忙しく、毎週のレッスン日をうっかり忘れてしまうことがあります。特にフレックス制の場合、日時が毎回異なるため忘れやすくなります。
-                                </p>
-                                <div class="bg-navy-50 rounded-lg p-4">
-                                    <p class="text-navy-700 text-sm font-medium mb-1">→ システムでできること</p>
-                                    <p class="text-warm-gray-600 text-sm leading-relaxed">
-                                        レッスン前日に自動でリマインダーメールを送信。「明日○時からレッスンです」という通知で、うっかり忘れを防ぎます。教室の規約もアプリ上に掲載し、入会時に保護者が確認・同意するフローで「聞いていなかった」というトラブルも未然に防ぎます。
-                                    </p>
-                                </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-white rounded-lg border border-warm-gray-200 p-4">
+                            <span class="text-rose-400 mt-0.5 flex-shrink-0">●</span>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-warm-gray-700 text-sm font-medium">連絡なしの欠席、予約忘れ</p>
+                                <p class="text-warm-gray-500 text-xs mt-1">→ 前日にリマインダーメールを自動送信</p>
                             </div>
-                        </details>
-
+                        </div>
                     </div>
-
-                    <!-- まとめ → 機能ハイライトへの橋渡し -->
-                    <div class="bg-warm-gray-50 p-6 rounded-lg mb-4 text-center">
-                        <p class="text-warm-gray-600 text-sm leading-relaxed">
-                            これらの課題は、先生の努力不足ではなく、<span class="font-medium text-warm-gray-700">仕組みがないことが原因</span>です。<br>
-                            適切なシステムがあれば、先生は本来の仕事──レッスン──に集中できるようになります。
-                        </p>
-                    </div>
-                    <p class="text-warm-gray-400 text-sm text-center mb-12 font-elegant">
-                        私たちが作ったのは、まさにその仕組みです。
-                    </p>
 
                     <!-- 機能ハイライト（4カード） -->
                     <div class="mb-12">
