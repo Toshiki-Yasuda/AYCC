@@ -1,0 +1,2184 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>堀江由希子 | Saxophone Artist — Pattern B: Story-First</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@300;400;500;700&family=Noto+Serif+JP:wght@200;300;400;600&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       CSS CUSTOM PROPERTIES — Warm Natural
+    ============================================================ */
+    :root {
+      --bg-primary:    #faf7f2;
+      --bg-section:    #f0ede4;
+      --bg-card:       #ffffff;
+      --accent:        #4a7c59;
+      --accent-dark:   #345e3f;
+      --accent-light:  #e3ece6;
+      --gold:          #9e8563;
+      --earth:         #8b7355;
+      --text-primary:  #2c2c2c;
+      --text-secondary:#666666;
+      --border:        rgba(74, 124, 89, 0.15);
+
+      --font-display:  'Noto Serif JP', serif;
+      --font-body:     'Zen Maru Gothic', sans-serif;
+
+      --ease-main:     cubic-bezier(0.25, 0.8, 0.25, 1);
+      --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+
+      --shadow-sm: 0 2px 8px rgba(74,124,89,0.08), 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 8px 24px rgba(74,124,89,0.12), 0 2px 8px rgba(0,0,0,0.08);
+      --shadow-lg: 0 20px 48px rgba(74,124,89,0.16), 0 6px 16px rgba(0,0,0,0.10);
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-weight: 400;
+      color: var(--text-primary);
+      background-color: var(--bg-primary);
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-feature-settings: "palt", "kern";
+      overflow-x: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* ============================================================
+       NOISE TEXTURE OVERLAY
+    ============================================================ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      background-size: 300px 300px;
+    }
+
+    /* ============================================================
+       CUSTOM SCROLLBAR
+    ============================================================ */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--earth); }
+
+    ::selection {
+      background-color: var(--accent);
+      color: #fff;
+    }
+
+    /* ============================================================
+       TEST NOTE BAR
+    ============================================================ */
+    .test-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 13px;
+      text-align: center;
+      padding: 8px 16px;
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       PAGE LOADER
+    ============================================================ */
+    #page-loader {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-primary);
+      z-index: 9997;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s var(--ease-main), visibility 0.8s;
+    }
+
+    #page-loader.loaded {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loader-leaf {
+      animation: loaderSpin 1.4s linear infinite;
+    }
+
+    @keyframes loaderSpin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* ============================================================
+       NAVIGATION
+    ============================================================ */
+    .site-nav {
+      position: fixed;
+      top: 29px; /* test-bar height (8+13+8=29) */
+      left: 0;
+      right: 0;
+      height: 64px;
+      z-index: 1000;
+      background: transparent;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      transition: background 0.3s var(--ease-main), box-shadow 0.3s var(--ease-main);
+    }
+
+    .site-nav.scrolled {
+      background: rgba(250,247,242,0.96);
+      box-shadow: 0 1px 20px rgba(0,0,0,0.08);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      transition: color 0.25s var(--ease-main);
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.3s var(--ease-main);
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      gap: 6px;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--text-primary);
+      transition: all 0.35s var(--ease-main);
+      transform-origin: center;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+    /* Mobile nav panel */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      top: 93px; /* 29 + 64 */
+      left: 0;
+      right: 0;
+      background: rgba(250,247,242,0.98);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 999;
+      padding: 24px 0 32px;
+      transform: translateY(-10px);
+      opacity: 0;
+      transition: transform 0.35s var(--ease-main), opacity 0.35s var(--ease-main);
+      pointer-events: none;
+    }
+
+    .mobile-nav.open {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .mobile-nav ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .mobile-nav ul a {
+      display: block;
+      padding: 12px 32px;
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      color: var(--text-primary);
+      transition: color 0.25s;
+    }
+
+    .mobile-nav ul a:hover { color: var(--accent); }
+
+    /* ============================================================
+       REVEAL ANIMATIONS
+    ============================================================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s var(--ease-main), transform 0.6s var(--ease-main);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.10s; }
+    .reveal-delay-2 { transition-delay: 0.20s; }
+    .reveal-delay-3 { transition-delay: 0.30s; }
+    .reveal-delay-4 { transition-delay: 0.40s; }
+
+    /* ============================================================
+       SECTION COMMON
+    ============================================================ */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .section-label::after {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.4;
+    }
+
+    .section-heading {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 2.8vw, 30px);
+      font-weight: 300;
+      color: var(--text-primary);
+      letter-spacing: 0.06em;
+      line-height: 1.4;
+    }
+
+    .more-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      transition: gap 0.25s var(--ease-main), color 0.25s;
+    }
+
+    .more-link:hover {
+      color: var(--accent-dark);
+      gap: 10px;
+    }
+
+    /* ============================================================
+       HERO SECTION
+    ============================================================ */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+      padding-top: 93px; /* test-bar + nav */
+    }
+
+    .hero-left {
+      flex: 0 0 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 64px 80px 80px;
+      background: var(--bg-primary);
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-right {
+      flex: 0 0 50%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-right img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      animation: heroZoomOut 15s ease-out forwards;
+    }
+
+    @keyframes heroZoomOut {
+      from { transform: scale(1.06); }
+      to   { transform: scale(1.00); }
+    }
+
+    .hero-right-fade {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100px;
+      height: 100%;
+      background: linear-gradient(to right, var(--bg-primary), transparent);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .hero-main-copy {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 3.4vw, 46px);
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--text-primary);
+      letter-spacing: 0.04em;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeInUp 0.75s 0.5s var(--ease-main) forwards;
+    }
+
+    .hero-sub {
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      color: var(--gold);
+      margin-bottom: 44px;
+      opacity: 0;
+      animation: fadeInUp 0.7s 0.8s var(--ease-main) forwards;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--accent);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      padding: 13px 30px;
+      border-radius: 9999px;
+      border: 1.5px solid var(--accent);
+      transition: background 0.3s var(--ease-main), color 0.3s, transform 0.3s var(--ease-spring), box-shadow 0.3s;
+      opacity: 0;
+      animation: fadeInUp 0.7s 1.0s var(--ease-main) forwards;
+      align-self: flex-start;
+    }
+
+    .hero-cta:hover {
+      background: var(--accent);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .hero-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--accent);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      padding: 13px 30px;
+      border-radius: 9999px;
+      border: 1.5px solid var(--accent);
+      transition: background 0.3s var(--ease-main), color 0.3s, transform 0.3s var(--ease-spring), box-shadow 0.3s;
+      opacity: 0;
+      animation: fadeInUp 0.7s 1.1s var(--ease-main) forwards;
+      align-self: flex-start;
+    }
+
+    .hero-btn-secondary:hover {
+      background: var(--accent);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 32px;
+      left: 25%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 10;
+      opacity: 0;
+      animation: fadeInUp 0.7s 1.4s var(--ease-main) forwards;
+    }
+
+    .scroll-indicator span {
+      font-family: var(--font-body);
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    .scroll-arrow {
+      animation: bounce 1.8s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(6px); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
+       PROFILE INTRO
+    ============================================================ */
+    #profile {
+      background: var(--bg-primary);
+      padding: 96px 80px;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 55fr 45fr;
+      gap: 64px;
+      align-items: center;
+      margin-top: 48px;
+    }
+
+    .profile-text {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 2.0;
+      color: var(--text-primary);
+    }
+
+    .profile-text p + p { margin-top: 20px; }
+
+    .profile-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    .badge {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      background: var(--accent-light);
+    }
+
+    .profile-photo {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .profile-photo img {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+
+    /* ============================================================
+       UPCOMING LIVE
+    ============================================================ */
+    #live {
+      background: var(--bg-section);
+      padding: 96px 80px;
+    }
+
+    .live-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 40px;
+    }
+
+    .live-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      border-left: 4px solid var(--accent);
+      transition: transform 0.3s var(--ease-main), box-shadow 0.3s;
+    }
+
+    .live-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .live-card-main {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      flex: 1;
+    }
+
+    .live-date-block { min-width: 100px; }
+
+    .live-date {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+
+    .live-time {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      letter-spacing: 0.06em;
+    }
+
+    .live-info { flex: 1; }
+
+    .live-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .live-venue {
+      font-size: 12px;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+    }
+
+    .live-card-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .status-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 3px 10px;
+      border-radius: 9999px;
+    }
+
+    .status-badge.on-sale {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .status-badge.coming-soon {
+      background: var(--bg-section);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .ticket-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      padding: 9px 20px;
+      border-radius: 9999px;
+      transition: background 0.3s var(--ease-main), transform 0.3s var(--ease-spring);
+    }
+
+    .ticket-btn:hover {
+      background: var(--accent-dark);
+      transform: translateY(-1px);
+    }
+
+    /* ============================================================
+       INSTAGRAM FEED
+    ============================================================ */
+    #instagram {
+      background: var(--bg-primary);
+      padding: 96px 80px;
+    }
+
+    .insta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 40px;
+      margin-bottom: 28px;
+    }
+
+    .insta-cell {
+      aspect-ratio: 1;
+      position: relative;
+      overflow: hidden;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform 0.35s var(--ease-main);
+    }
+
+    .insta-cell:hover {
+      transform: scale(1.02);
+      box-shadow: var(--shadow-md);
+      z-index: 1;
+    }
+
+    .insta-cell-bg {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .insta-cell:nth-child(1) .insta-cell-bg { background: url('images/insta-1.png') center/cover; }
+    .insta-cell:nth-child(2) .insta-cell-bg { background: url('images/insta-2.png') center/cover; }
+    .insta-cell:nth-child(3) .insta-cell-bg { background: url('images/insta-3.png') center/cover; }
+    .insta-cell:nth-child(4) .insta-cell-bg { background: url('images/insta-4.png') center/cover; }
+    .insta-cell:nth-child(5) .insta-cell-bg { background: url('images/insta-5.png') center/cover; }
+    .insta-cell:nth-child(6) .insta-cell-bg { background: url('images/insta-6.png') center/cover; }
+
+    .insta-icon {
+      opacity: 0.18;
+    }
+
+    .insta-follow-wrap {
+      text-align: center;
+    }
+
+    .insta-follow-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      padding: 13px 28px;
+      border-radius: 9999px;
+      transition: background 0.3s var(--ease-main), transform 0.3s var(--ease-spring);
+    }
+
+    .insta-follow-btn:hover {
+      background: var(--accent-dark);
+      transform: translateY(-2px);
+    }
+
+    /* ============================================================
+       MUSIC
+    ============================================================ */
+    #music {
+      background: var(--bg-section);
+      padding: 96px 80px;
+    }
+
+    .album-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+
+    .album-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      width: 160px;
+      transition: transform 0.3s var(--ease-main);
+    }
+
+    .album-item:hover { transform: translateY(-4px); }
+
+    .album-item img {
+      width: 160px;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .album-meta { text-align: center; }
+
+    .album-title {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+
+    .album-artist {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      font-weight: 300;
+    }
+
+    .spotify-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #1DB954;
+      color: #000;
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 9px 20px;
+      border-radius: 9999px;
+      margin-top: 12px;
+      transition: background 0.25s, transform 0.25s var(--ease-spring);
+    }
+
+    .spotify-btn:hover {
+      background: #1ed760;
+      transform: translateY(-1px);
+    }
+
+    .youtube-mock {
+      margin-top: 48px;
+    }
+
+    .youtube-mock-label {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .youtube-player {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      max-width: 640px;
+      margin: 0 auto;
+      border-radius: 12px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #2c2c2c 0%, #4a7c59 60%, #345e3f 100%);
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .youtube-player-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .yt-play-btn {
+      width: 64px;
+      height: 64px;
+      background: rgba(255,255,255,0.92);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s var(--ease-spring), background 0.3s;
+    }
+
+    .youtube-player:hover .yt-play-btn {
+      transform: scale(1.1);
+      background: #fff;
+    }
+
+    .yt-title {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 0.08em;
+    }
+
+    /* ============================================================
+       NEWS
+    ============================================================ */
+    #news {
+      background: var(--bg-primary);
+      padding: 96px 80px;
+    }
+
+    .news-list {
+      margin-top: 40px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .news-item {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      padding: 20px 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.3s var(--ease-main), padding-left 0.3s var(--ease-main), box-shadow 0.3s;
+    }
+
+    .news-item:hover {
+      transform: translateX(4px);
+      padding-left: 16px;
+      box-shadow: -3px 0 0 var(--accent);
+    }
+
+    .news-date {
+      font-family: monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .news-cat {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 2px 7px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+
+    .news-title {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .news-arrow {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%) translateX(-6px);
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s var(--ease-main);
+      color: var(--accent);
+    }
+
+    .news-item:hover .news-arrow {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+
+    /* ============================================================
+       GET TO KNOW YUKIKO
+    ============================================================ */
+    #vlog {
+      background: var(--bg-section);
+      padding: 96px 80px;
+    }
+
+    .vlog-subtitle {
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      margin-bottom: 40px;
+    }
+
+    .vlog-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .vlog-card {
+      background: var(--bg-card);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.4s var(--ease-main), box-shadow 0.4s;
+      cursor: pointer;
+    }
+
+    .vlog-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .vlog-thumb {
+      aspect-ratio: 16 / 9;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .vlog-thumb-bg {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+      transition: transform 0.5s var(--ease-main);
+    }
+
+    .vlog-card:hover .vlog-thumb-bg { transform: scale(1.04); }
+
+    .vlog-card:nth-child(1) .vlog-thumb-bg { background: url('https://img.youtube.com/vi/-efMX9IxRr0/hqdefault.jpg') center/cover; }
+    .vlog-card:nth-child(2) .vlog-thumb-bg { background: url('https://img.youtube.com/vi/aYj7cazX-CU/hqdefault.jpg') center/cover; }
+    .vlog-card:nth-child(3) .vlog-thumb-bg { background: url('https://img.youtube.com/vi/FNcIu145hEs/hqdefault.jpg') center/cover; }
+    .vlog-card:nth-child(4) .vlog-thumb-bg { background: url('https://img.youtube.com/vi/vcy2D_5tVBQ/hqdefault.jpg') center/cover; }
+
+    .vlog-play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 52px;
+      height: 52px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transition: transform 0.3s var(--ease-spring), background 0.3s;
+    }
+
+    .vlog-card:hover .vlog-play-btn {
+      transform: translate(-50%, -50%) scale(1.12);
+      background: #fff;
+    }
+
+    .vlog-body {
+      padding: 18px 20px 20px;
+    }
+
+    .vlog-theme {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .vlog-title {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 7px;
+      line-height: 1.5;
+    }
+
+    .vlog-desc {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ============================================================
+       CONTACT CTA
+    ============================================================ */
+    #contact {
+      background: var(--accent-light);
+      padding: 100px 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-botanical {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.06;
+    }
+
+    .contact-deco {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .contact-deco-line {
+      width: 60px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.4;
+    }
+
+    .contact-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 300;
+      color: var(--text-primary);
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .contact-sub {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 48px;
+      letter-spacing: 0.04em;
+    }
+
+    .contact-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      color: var(--accent);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      padding: 15px 28px;
+      border-radius: 9999px;
+      border: 1.5px solid var(--accent);
+      transition: background 0.3s var(--ease-main), color 0.3s, transform 0.3s var(--ease-spring), box-shadow 0.3s;
+    }
+
+    .contact-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .site-footer {
+      background: #2a2a2a;
+      padding: 52px 80px 32px;
+      position: relative;
+    }
+
+    .site-footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(to right, var(--accent), var(--gold), var(--accent));
+    }
+
+    .footer-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      flex-wrap: wrap;
+    }
+
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 300;
+      letter-spacing: 0.22em;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .footer-tagline {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+    }
+
+    .footer-sns {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-sns-btn {
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s var(--ease-main), transform 0.3s var(--ease-spring);
+      color: rgba(255,255,255,0.6);
+    }
+
+    .footer-sns-btn:hover {
+      transform: translateY(-2px);
+      color: #fff;
+    }
+
+    .footer-sns-btn.instagram:hover { background: #e1306c; }
+    .footer-sns-btn.youtube:hover   { background: #ff0000; }
+    .footer-sns-btn.twitter:hover   { background: #1da1f2; }
+    .footer-sns-btn.spotify:hover   { background: #1DB954; }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 28px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer-copy {
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.06em;
+    }
+
+    /* ============================================================
+       RESPONSIVE — 768px
+    ============================================================ */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .mobile-nav { display: block; }
+      .site-nav { padding: 0 24px; }
+
+      #hero {
+        flex-direction: column;
+        min-height: auto;
+        padding-top: 93px;
+      }
+
+      .hero-left {
+        flex: none;
+        order: 2;
+        padding: 48px 24px 56px;
+      }
+
+      .hero-right {
+        flex: none;
+        order: 1;
+        width: 100%;
+        height: 60vw;
+        min-height: 240px;
+      }
+
+      .hero-right-fade {
+        width: 100%;
+        height: 60px;
+        top: auto;
+        bottom: 0;
+        background: linear-gradient(to top, var(--bg-primary), transparent);
+      }
+
+      .hero-main-copy { font-size: clamp(22px, 5.5vw, 30px); }
+      .scroll-indicator { display: none; }
+
+      #profile, #live, #instagram, #music, #news, #vlog, #contact {
+        padding: 64px 24px;
+      }
+
+      .profile-grid { grid-template-columns: 1fr; gap: 36px; }
+      .profile-photo { order: -1; }
+      .profile-photo img { aspect-ratio: 4 / 3; }
+
+      .live-card { flex-direction: column; align-items: flex-start; }
+      .live-card-right { align-items: flex-start; }
+
+      .insta-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .album-row { gap: 20px; }
+      .album-item { width: 120px; }
+      .album-item img { width: 120px; height: 120px; }
+
+      .vlog-grid { grid-template-columns: 1fr; }
+
+      .contact-buttons { flex-direction: column; align-items: center; }
+
+      .footer-top { flex-direction: column; gap: 24px; }
+      .site-footer { padding: 48px 24px 28px; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 10px; }
+
+      #daily-live {
+        padding: 72px 24px;
+      }
+
+      .daily-live-card {
+        grid-template-columns: 1fr;
+        padding: 32px 24px;
+        gap: 28px;
+      }
+
+      .daily-live-cta-wrap {
+        align-items: stretch;
+      }
+
+      .daily-live-cta {
+        text-align: center;
+        justify-content: center;
+      }
+    }
+
+    /* ============================================================
+       RESPONSIVE — 480px
+    ============================================================ */
+    @media (max-width: 480px) {
+      .hero-main-copy { font-size: 20px; }
+      .section-heading { font-size: 20px; }
+      #profile, #live, #instagram, #music, #news, #vlog, #contact {
+        padding: 52px 18px;
+      }
+      .insta-grid { gap: 4px; }
+    }
+
+    /* =====================================================
+       DAILY LIVE — Pococha配信案内
+    ===================================================== */
+    #daily-live {
+      background: var(--bg-section);
+      padding: 96px 80px;
+    }
+
+    .daily-live-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .daily-live-head .section-label {
+      /* 既存の .section-label スタイルを継承 */
+    }
+
+    .daily-live-title {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 2.8vw, 36px);
+      font-weight: 300;
+      color: var(--text-primary);
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+
+    .daily-live-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 48px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 48px;
+      align-items: start;
+      margin-top: 40px;
+    }
+
+    .daily-live-app-name {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .daily-live-app-sub {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text-secondary);
+    }
+
+    .daily-live-app-desc {
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 2;
+      margin-top: 12px;
+      margin-bottom: 32px;
+    }
+
+    .daily-live-points {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .daily-live-point {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text-primary);
+      letter-spacing: 0.04em;
+    }
+
+    .daily-live-point-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--accent-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .daily-live-point-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 1.8;
+    }
+
+    .daily-live-free {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .daily-live-cta-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .daily-live-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      padding: 15px 32px;
+      border-radius: 9999px;
+      text-decoration: none;
+      transition: background 0.3s ease, transform 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .daily-live-cta:hover {
+      background: var(--accent-dark);
+      transform: translateY(-2px);
+    }
+
+    .daily-live-cta-note {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      text-align: center;
+      max-width: 260px;
+    }
+
+    a.vlog-card {
+      display: block;
+      color: inherit;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       TEST NOTE BAR
+  ============================================================ -->
+  <div class="test-bar">Pattern B: Story-First × Warm Natural — 構造とトーンは独立して選択可能です</div>
+
+  <!-- ============================================================
+       PAGE LOADER
+  ============================================================ -->
+  <div id="page-loader">
+    <svg class="loader-leaf" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 4C18 4 8 10 8 20C8 26.627 12.477 32 18 32C23.523 32 28 26.627 28 20C28 10 18 4 18 4Z" fill="#4a7c59" opacity="0.7"/>
+      <path d="M18 4L18 32" stroke="#345e3f" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+      <path d="M14 14L18 18" stroke="#345e3f" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+      <path d="M22 17L18 21" stroke="#345e3f" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+    </svg>
+  </div>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <nav class="site-nav" id="site-nav">
+    <a href="#" class="nav-logo">YUKIKO HORIE</a>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#profile">Profile</a></li>
+      <li><a href="#live">Schedule</a></li>
+      <li><a href="#music">Media</a></li>
+      <li><a href="#">Lessons</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="メニューを開く" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobile-nav">
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#profile">Profile</a></li>
+      <li><a href="#live">Schedule</a></li>
+      <li><a href="#music">Media</a></li>
+      <li><a href="#">Lessons</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+
+  <!-- ============================================================
+       HERO
+  ============================================================ -->
+  <main>
+  <section id="hero">
+    <div class="hero-left">
+      <h1 class="hero-main-copy">
+        「こんなに笑顔で演奏する人を、<br>初めて見た。」
+      </h1>
+      <p class="hero-sub">堀江由希子 ― サックス奏者</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
+        <a href="#profile" class="hero-cta">
+          この人を知る
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#live" class="hero-btn-secondary">スケジュール</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <img
+        src="images/hero.jpeg"
+        alt="堀江由希子 — 笑顔のポートレート"
+        width="900" height="1200">
+      <div class="hero-right-fade"></div>
+    </div>
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <svg class="scroll-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M8 2v12M3 9l5 5 5-5" stroke="#666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PROFILE INTRO
+  ============================================================ -->
+  <section id="profile">
+    <div class="reveal">
+      <div class="section-label">About Yukiko</div>
+      <h2 class="section-heading">堀江由希子という人</h2>
+    </div>
+
+    <div class="profile-grid">
+      <div class="reveal reveal-delay-1">
+        <div class="profile-text">
+          <p>中学校の吹奏楽部で、たまたま最初に音が出た楽器がサックスだった。それが全ての始まり。大阪音楽大学でクラシックを学び、卒業後は演奏活動に打ち込む日々。転機は、北新地のミュージックバーで出会ったキャンディ・ダルファーの音楽。「これだ」と思った瞬間、ジャンルの壁が溶けた。</p>
+          <p>以来、FUNK・SOUL・R&B・POPSと、心が動く音楽に正直に活動を広げてきた。NHK紅白歌合戦のステージも、老人ホームでの演奏も、同じ気持ちで吹いている。</p>
+        </div>
+        <div class="profile-badges">
+          <span class="badge">NHK紅白歌合戦</span>
+          <span class="badge">日本武道館</span>
+          <span class="badge">ポルノグラフィティ</span>
+          <span class="badge">ブルーノート</span>
+          <span class="badge">USJ</span>
+        </div>
+        <div style="margin-top: 24px;">
+          <a href="#" class="more-link">
+            もっと知る →
+          </a>
+        </div>
+      </div>
+
+      <div class="profile-photo reveal reveal-delay-2">
+        <img
+          src="images/profile.jpeg"
+          alt="堀江由希子 — 草原でサックス演奏"
+          loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       UPCOMING LIVE
+  ============================================================ -->
+  <section id="live">
+    <div class="reveal">
+      <div class="section-label">Upcoming Live</div>
+      <h2 class="section-heading">ライブスケジュール</h2>
+    </div>
+
+    <div class="live-cards">
+      <div class="live-card reveal reveal-delay-1">
+        <div class="live-card-main">
+          <div class="live-date-block">
+            <div class="live-date">2026.03.15 SAT</div>
+            <div class="live-time">18:00 OPEN / 18:30 START</div>
+          </div>
+          <div class="live-info">
+            <div class="live-title">Yukiko Horie Quartet Live</div>
+            <div class="live-venue">Blue Note Tokyo</div>
+          </div>
+        </div>
+        <div class="live-card-right">
+          <span class="status-badge on-sale">チケット発売中</span>
+          <a href="#" class="ticket-btn">チケットを予約する →</a>
+        </div>
+      </div>
+
+      <div class="live-card reveal reveal-delay-2">
+        <div class="live-card-main">
+          <div class="live-date-block">
+            <div class="live-date">2026.04.05 SAT</div>
+            <div class="live-time">14:00 START</div>
+          </div>
+          <div class="live-info">
+            <div class="live-title">Spring Jazz Festival 2026</div>
+            <div class="live-venue">横浜赤レンガ倉庫</div>
+          </div>
+        </div>
+        <div class="live-card-right">
+          <span class="status-badge coming-soon">詳細近日公開</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 28px;" class="reveal">
+      <a href="#" class="more-link">すべてのスケジュール →</a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       INSTAGRAM FEED
+  ============================================================ -->
+  <section id="instagram">
+    <div class="reveal">
+      <div class="section-label">Instagram</div>
+      <h2 class="section-heading">日々のこと</h2>
+    </div>
+
+    <div class="insta-grid reveal reveal-delay-1">
+      <a href="#" class="insta-cell" aria-label="Instagram投稿">
+        <div class="insta-cell-bg">
+          <svg class="insta-icon" width="40" height="40" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="2" width="20" height="20" rx="5" stroke="#4a7c59" stroke-width="1.5"/>
+            <circle cx="12" cy="12" r="5" stroke="#4a7c59" stroke-width="1.5"/>
+            <circle cx="17.5" cy="6.5" r="1.2" fill="#4a7c59"/>
+          </svg>
+        </div>
+      </a>
+      <a href="#" class="insta-cell" aria-label="Instagram投稿">
+        <div class="insta-cell-bg">
+          <svg class="insta-icon" width="40" height="40" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="2" width="20" height="20" rx="5" stroke="#4a7c59" stroke-width="1.5"/>
+            <circle cx="12" cy="12" r="5" stroke="#4a7c59" stroke-width="1.5"/>
+            <circle cx="17.5" cy="6.5" r="1.2" fill="#4a7c59"/>
+          </svg>
+        </div>
+      </a>
+      <a href="#" class="insta-cell" aria-label="Instagram投稿">
+        <div class="insta-cell-bg">
+          <svg class="insta-icon" width="40" height="40" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="2" width="20" height="20" rx="5" stroke="#4a7c59" stroke-width="1.5"/>
+            <circle cx="12" cy="12" r="5" stroke="#4a7c59" stroke-width="1.5"/>
+            <circle cx="17.5" cy="6.5" r="1.2" fill="#4a7c59"/>
+          </svg>
+        </div>
+      </a>
+      <a href="#" class="insta-cell" aria-label="Instagram投稿">
+        <div class="insta-cell-bg">
+          <svg class="insta-icon" width="40" height="40" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="2" width="20" height="20" rx="5" stroke="#4a7c59" stroke-width="1.5"/>
+            <circle cx="12" cy="12" r="5" stroke="#4a7c59" stroke-width="1.5"/>
+            <circle cx="17.5" cy="6.5" r="1.2" fill="#4a7c59"/>
+          </svg>
+        </div>
+      </a>
+      <a href="#" class="insta-cell" aria-label="Instagram投稿">
+        <div class="insta-cell-bg">
+          <svg class="insta-icon" width="40" height="40" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="2" width="20" height="20" rx="5" stroke="#4a7c59" stroke-width="1.5"/>
+            <circle cx="12" cy="12" r="5" stroke="#4a7c59" stroke-width="1.5"/>
+            <circle cx="17.5" cy="6.5" r="1.2" fill="#4a7c59"/>
+          </svg>
+        </div>
+      </a>
+      <a href="#" class="insta-cell" aria-label="Instagram投稿">
+        <div class="insta-cell-bg">
+          <svg class="insta-icon" width="40" height="40" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="2" width="20" height="20" rx="5" stroke="#4a7c59" stroke-width="1.5"/>
+            <circle cx="12" cy="12" r="5" stroke="#4a7c59" stroke-width="1.5"/>
+            <circle cx="17.5" cy="6.5" r="1.2" fill="#4a7c59"/>
+          </svg>
+        </div>
+      </a>
+    </div>
+
+    <div class="insta-follow-wrap reveal reveal-delay-2">
+      <a href="#" class="insta-follow-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="1.8"/>
+          <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.8"/>
+          <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/>
+        </svg>
+        @yukikohorie_sax をフォロー
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       MUSIC
+  ============================================================ -->
+  <section id="music">
+    <div class="reveal">
+      <div class="section-label">Music</div>
+      <h2 class="section-heading">ディスコグラフィー</h2>
+    </div>
+
+    <div class="album-row reveal reveal-delay-1">
+      <div class="album-item">
+        <img
+          src="images/album-tokiwotumugu.jpg"
+          alt="時を紡ぐ アルバムジャケット"
+          loading="lazy">
+        <div class="album-meta">
+          <div class="album-title">時を紡ぐ</div>
+          <div class="album-artist">Yukiko Horie · 2021</div>
+        </div>
+      </div>
+      <div class="album-item">
+        <img
+          src="images/album-makeitmove.jpeg"
+          alt="Make it Move アルバムジャケット"
+          loading="lazy">
+        <div class="album-meta">
+          <div class="album-title">Make it Move</div>
+          <div class="album-artist">sax triplets · 2019</div>
+        </div>
+      </div>
+      <div class="album-item">
+        <img
+          src="images/album-amenomukougawa.png"
+          alt="雨の向こう側 シングルジャケット"
+          loading="lazy">
+        <div class="album-meta">
+          <div class="album-title">雨の向こう側</div>
+          <div class="album-artist">Yukiko Horie · 2022</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;" class="reveal reveal-delay-2">
+      <a href="#" class="spotify-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 14.36c-.2.32-.61.42-.93.22-2.55-1.56-5.76-1.91-9.54-1.04-.36.08-.72-.14-.8-.5-.09-.36.14-.72.5-.8 4.14-.95 7.7-.54 10.57 1.19.32.2.42.61.2.93zm1.24-2.76c-.25.4-.77.52-1.17.28-2.92-1.8-7.38-2.32-10.84-1.27-.44.13-.91-.11-1.05-.55-.13-.44.11-.91.55-1.05 3.95-1.2 8.86-.62 12.21 1.44.41.25.53.78.3 1.15zm.11-2.87C14.7 9 9.83 8.82 6.92 9.69c-.53.16-1.09-.13-1.25-.66-.16-.53.13-1.09.66-1.25 3.34-1.01 8.9-.82 12.41 1.44.47.28.62.88.34 1.35-.28.47-.89.62-1.35.34z"/>
+        </svg>
+        Spotifyで聴く
+      </a>
+    </div>
+
+    <div class="reveal reveal-delay-2" style="margin:32px 0;">
+      <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/0yzuaFLscHz8WOmjZmd7np?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+
+    <div class="youtube-mock reveal reveal-delay-3">
+      <div class="youtube-mock-label">Latest Video</div>
+      <a href="https://www.youtube.com/watch?v=-efMX9IxRr0" target="_blank" rel="noopener" style="display:block;position:relative;width:100%;max-width:800px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;margin:0 auto;background:url('https://img.youtube.com/vi/-efMX9IxRr0/hqdefault.jpg') center/cover;background-color:#f0ede4;">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.25);transition:background 0.3s;">
+          <svg width="68" height="48" viewBox="0 0 68 48"><path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.64 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="red"/><path d="M45 24L27 14v20" fill="white"/></svg>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       DAILY LIVE — ポコチャ配信案内
+  ============================================================ -->
+  <section id="daily-live">
+    <div class="daily-live-inner">
+      <div class="daily-live-head reveal">
+        <div class="section-label">Daily Live</div>
+        <h2 class="daily-live-title">毎日、会えます。</h2>
+      </div>
+      <div class="daily-live-card reveal">
+        <div class="daily-live-info">
+          <p class="daily-live-app-name">Pococha <span class="daily-live-app-sub">（ポコチャ）</span></p>
+          <p class="daily-live-app-desc">
+            DeNAが運営するライブ配信アプリ。<br>
+            堀江由希子が<strong>毎日</strong>サックス演奏をライブ配信しています。
+          </p>
+          <ul class="daily-live-points">
+            <li class="daily-live-point">
+              <span class="daily-live-point-icon">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </span>
+              毎日 <strong>18:00〜21:00</strong>
+            </li>
+            <li class="daily-live-point">
+              <span class="daily-live-point-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+              </span>
+              <span><strong class="daily-live-free">無料</strong>で視聴できます</span>
+            </li>
+            <li class="daily-live-point">
+              <span class="daily-live-point-icon">
+                <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+              </span>
+              アプリをダウンロードするだけですぐ視聴OK
+            </li>
+            <li class="daily-live-point">
+              <span class="daily-live-point-icon">
+                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </span>
+              リアルタイムでコメント・応援できる
+            </li>
+          </ul>
+        </div>
+        <div class="daily-live-cta-wrap">
+          <a href="https://www.pococha.com/en-us/app/users/e61da3c5-23c3-414d-be14-2e2d5144a229" class="daily-live-cta" target="_blank" rel="noopener">今日の配信を見る →</a>
+          <p class="daily-live-cta-note">※ Pocochaアプリが開きます（App Store / Google Playで無料ダウンロード）</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       NEWS
+  ============================================================ -->
+  <section id="news">
+    <div class="reveal">
+      <div class="section-label">News</div>
+      <h2 class="section-heading">最新情報</h2>
+    </div>
+
+    <ul class="news-list">
+      <li class="news-item reveal reveal-delay-1">
+        <span class="news-date">2026.02.18</span>
+        <span class="news-cat">LIVE</span>
+        <span class="news-title">3月15日 Blue Note Tokyo公演の詳細が決定しました</span>
+        <svg class="news-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2 7h10M8 3l4 4-4 4" stroke="#4a7c59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </li>
+      <li class="news-item reveal reveal-delay-2">
+        <span class="news-date">2026.02.10</span>
+        <span class="news-cat">MEDIA</span>
+        <span class="news-title">YouTube Vlog「In the Park」#75 公開</span>
+        <svg class="news-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2 7h10M8 3l4 4-4 4" stroke="#4a7c59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </li>
+      <li class="news-item reveal reveal-delay-3">
+        <span class="news-date">2026.01.28</span>
+        <span class="news-cat">RELEASE</span>
+        <span class="news-title">新曲「雨の向こう側」配信スタート</span>
+        <svg class="news-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2 7h10M8 3l4 4-4 4" stroke="#4a7c59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </li>
+    </ul>
+
+    <div style="margin-top: 28px;" class="reveal">
+      <a href="#" class="more-link">すべてのニュース →</a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       GET TO KNOW YUKIKO
+  ============================================================ -->
+  <section id="vlog">
+    <div class="reveal">
+      <div class="section-label">Get to Know Yukiko</div>
+      <h2 class="section-heading">素顔の堀江由希子</h2>
+      <p class="vlog-subtitle">Vlog "In the Park" から — 堀江由希子の素顔</p>
+    </div>
+
+    <div class="vlog-grid">
+      <a href="https://www.youtube.com/@yukikohorie" target="_blank" rel="noopener" class="vlog-card reveal reveal-delay-1">
+        <div class="vlog-thumb">
+          <div class="vlog-thumb-bg"></div>
+          <div class="vlog-play-btn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M7 5l9 5-9 5V5z" fill="#4a7c59"/>
+            </svg>
+          </div>
+        </div>
+        <div class="vlog-body">
+          <div class="vlog-theme">原点</div>
+          <div class="vlog-title">サックスとの出会い #69</div>
+          <div class="vlog-desc">クラシックからの転機。キャンディ・ダルファーに出会った日のこと。</div>
+        </div>
+      </a>
+
+      <a href="https://www.youtube.com/@yukikohorie" target="_blank" rel="noopener" class="vlog-card reveal reveal-delay-2">
+        <div class="vlog-thumb">
+          <div class="vlog-thumb-bg"></div>
+          <div class="vlog-play-btn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M7 5l9 5-9 5V5z" fill="#4a7c59"/>
+            </svg>
+          </div>
+        </div>
+        <div class="vlog-body">
+          <div class="vlog-theme">音楽への想い</div>
+          <div class="vlog-title">なぜサックスを続けるか ep.05</div>
+          <div class="vlog-desc">おばあちゃんのエピソード。なぜサックスを吹き続けるのか。</div>
+        </div>
+      </a>
+
+      <a href="https://www.youtube.com/@yukikohorie" target="_blank" rel="noopener" class="vlog-card reveal reveal-delay-3">
+        <div class="vlog-thumb">
+          <div class="vlog-thumb-bg"></div>
+          <div class="vlog-play-btn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M7 5l9 5-9 5V5z" fill="#4a7c59"/>
+            </svg>
+          </div>
+        </div>
+        <div class="vlog-body">
+          <div class="vlog-theme">哲学・人柄</div>
+          <div class="vlog-title">7つのルール #22</div>
+          <div class="vlog-desc">HSP気質の自己開示。堀江由希子が大切にしていること。</div>
+        </div>
+      </a>
+
+      <a href="https://www.youtube.com/@yukikohorie" target="_blank" rel="noopener" class="vlog-card reveal reveal-delay-4">
+        <div class="vlog-thumb">
+          <div class="vlog-thumb-bg"></div>
+          <div class="vlog-play-btn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M7 5l9 5-9 5V5z" fill="#4a7c59"/>
+            </svg>
+          </div>
+        </div>
+        <div class="vlog-body">
+          <div class="vlog-theme">成長の軌跡</div>
+          <div class="vlog-title">手作りCD250枚から現在 #43</div>
+          <div class="vlog-desc">手作りCD250枚から始まった。「今が最高」と言い切れる理由。</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CONTACT CTA
+  ============================================================ -->
+  <section id="contact">
+    <!-- Botanical SVG decoration — copied from pattern-a-yorisoi.html -->
+    <svg class="contact-botanical" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <circle cx="80" cy="80" r="60" fill="none" stroke="#4a7c59" stroke-width="1"/>
+      <circle cx="80" cy="80" r="30" fill="none" stroke="#4a7c59" stroke-width="0.5"/>
+      <circle cx="720" cy="420" r="80" fill="none" stroke="#4a7c59" stroke-width="1"/>
+      <circle cx="720" cy="420" r="40" fill="none" stroke="#4a7c59" stroke-width="0.5"/>
+      <path d="M400 50 Q420 100 400 150 Q380 100 400 50Z" fill="#4a7c59"/>
+      <path d="M420 60 Q460 90 440 130 Q400 110 420 60Z" fill="#4a7c59"/>
+      <path d="M380 60 Q340 90 360 130 Q400 110 380 60Z" fill="#4a7c59"/>
+      <circle cx="200" cy="380" r="50" fill="none" stroke="#9e8563" stroke-width="0.8"/>
+      <circle cx="600" cy="100" r="40" fill="none" stroke="#9e8563" stroke-width="0.8"/>
+    </svg>
+
+    <div class="contact-deco reveal">
+      <div class="contact-deco-line"></div>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2C12 2 6 8 6 14C6 17.314 8.686 20 12 20C15.314 20 18 17.314 18 14C18 8 12 2 12 2Z" fill="#4a7c59" opacity="0.7"/>
+        <path d="M12 2L12 20" stroke="#345e3f" stroke-width="0.8" opacity="0.5"/>
+      </svg>
+      <div class="contact-deco-line"></div>
+    </div>
+
+    <h2 class="contact-title reveal">Contact</h2>
+    <p class="contact-sub reveal reveal-delay-1">お気軽にお問い合わせください</p>
+
+    <div class="contact-buttons reveal reveal-delay-2">
+      <a href="#" class="contact-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+          <path d="M9 19V6l12-3v13M9 19c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm12-3c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        出演・演奏のご依頼
+      </a>
+      <a href="#" class="contact-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+          <path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.8"/>
+          <circle cx="18" cy="16" r="3" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        レッスンのお申し込み
+      </a>
+      <a href="#" class="contact-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+          <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M22 6l-10 7L2 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        その他のお問い合わせ
+      </a>
+    </div>
+  </section>
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">YUKIKO HORIE</div>
+        <div class="footer-tagline">Saxophone Artist</div>
+      </div>
+      <div class="footer-sns">
+        <a href="#" class="footer-sns-btn instagram" aria-label="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="1.8"/>
+            <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.8"/>
+            <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/>
+          </svg>
+        </a>
+        <a href="#" class="footer-sns-btn youtube" aria-label="YouTube">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" stroke="currentColor" stroke-width="1.8"/>
+            <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#" class="footer-sns-btn twitter" aria-label="X (Twitter)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+        <a href="#" class="footer-sns-btn spotify" aria-label="Spotify">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 14.36c-.2.32-.61.42-.93.22-2.55-1.56-5.76-1.91-9.54-1.04-.36.08-.72-.14-.8-.5-.09-.36.14-.72.5-.8 4.14-.95 7.7-.54 10.57 1.19.32.2.42.61.2.93zm1.24-2.76c-.25.4-.77.52-1.17.28-2.92-1.8-7.38-2.32-10.84-1.27-.44.13-.91-.11-1.05-.55-.13-.44.11-.91.55-1.05 3.95-1.2 8.86-.62 12.21 1.44.41.25.53.78.3 1.15zm.11-2.87C14.7 9 9.83 8.82 6.92 9.69c-.53.16-1.09-.13-1.25-.66-.16-.53.13-1.09.66-1.25 3.34-1.01 8.9-.82 12.41 1.44.47.28.62.88.34 1.35-.28.47-.89.62-1.35.34z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div style="display:flex;gap:24px;justify-content:center;margin-bottom:16px;font-size:12px;letter-spacing:0.04em;">
+        <a href="#" style="color:var(--text-muted, #999);transition:color 0.3s ease;">Links</a>
+        <a href="#" style="color:var(--text-muted, #999);transition:color 0.3s ease;">Privacy Policy</a>
+        <a href="#" style="color:var(--text-muted, #999);transition:color 0.3s ease;">Sitemap</a>
+      </div>
+      <p class="footer-copy">© 2026 Yukiko Horie. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       JAVASCRIPT
+  ============================================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ----------------------------------------------------------
+         PAGE LOADER
+      ---------------------------------------------------------- */
+      window.addEventListener('load', function () {
+        var loader = document.getElementById('page-loader');
+        if (!loader) return;
+        setTimeout(function () {
+          loader.classList.add('loaded');
+        }, 400);
+      });
+
+      /* ----------------------------------------------------------
+         NAVIGATION — scroll + hamburger
+      ---------------------------------------------------------- */
+      var nav       = document.getElementById('site-nav');
+      var hamburger = document.getElementById('hamburger');
+      var mobileNav = document.getElementById('mobile-nav');
+
+      window.addEventListener('scroll', function () {
+        if (window.scrollY > 60) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }, { passive: true });
+
+      if (hamburger && mobileNav) {
+        hamburger.addEventListener('click', function () {
+          var isOpen = hamburger.classList.toggle('open');
+          mobileNav.classList.toggle('open', isOpen);
+          document.body.style.overflow = isOpen ? 'hidden' : '';
+          hamburger.setAttribute('aria-expanded', String(isOpen));
+        });
+
+        mobileNav.querySelectorAll('a').forEach(function (link) {
+          link.addEventListener('click', function () {
+            hamburger.classList.remove('open');
+            mobileNav.classList.remove('open');
+            document.body.style.overflow = '';
+            hamburger.setAttribute('aria-expanded', 'false');
+          });
+        });
+      }
+
+      /* ----------------------------------------------------------
+         SCROLL REVEAL (IntersectionObserver)
+      ---------------------------------------------------------- */
+      var revealEls = document.querySelectorAll('.reveal');
+
+      var observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12 }
+      );
+
+      revealEls.forEach(function (el) { observer.observe(el); });
+
+      /* ----------------------------------------------------------
+         SMOOTH ANCHOR SCROLL
+      ---------------------------------------------------------- */
+      document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+        anchor.addEventListener('click', function (e) {
+          var href = this.getAttribute('href');
+          if (href === '#') return;
+          var target = document.querySelector(href);
+          if (!target) return;
+          e.preventDefault();
+          var offset = 93;
+          var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top: top, behavior: 'smooth' });
+        });
+      });
+
+    }());
+  </script>
+
+</body>
+</html>
