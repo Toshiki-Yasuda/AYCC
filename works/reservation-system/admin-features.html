@@ -45,6 +45,7 @@
         .screenshot-thumb:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
         #mobile-menu { position: absolute; top: 100%; left: 0; right: 0; max-height: 0; opacity: 0; overflow: hidden; background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: max-height 0.6s ease-out, opacity 0.6s ease-out; padding-left: 1.5rem; padding-right: 1.5rem; }
         #mobile-menu.menu-open { max-height: 500px; opacity: 1; }
+        .img-placeholder { background: linear-gradient(135deg, #f5f5f4 0%, #e7e5e4 100%); display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; border: 1px solid rgba(168, 162, 158, 0.3); }
     </style>
 </head>
 <body class="bg-warm-gray-50">
@@ -145,6 +146,10 @@
                                     <div class="flex items-start gap-2">
                                         <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
                                         <p class="text-warm-gray-600 text-sm">通知センターで重要なお知らせを表示</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">統計カードタップで通知連動アニメーション</p>
                                     </div>
                                 </div>
                             </div>
@@ -291,7 +296,7 @@
                         <div class="flex flex-col md:flex-row-reverse gap-6 items-center mb-6">
                             <div class="flex-1">
                                 <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
-                                    生徒情報の登録・編集、メール送信が一元管理できます。男女で色分けされたカード表示で視認性が向上。誕生日通知機能により、生徒一人ひとりへのきめ細やかな対応が可能です。
+                                    生徒情報の登録・編集、メール送信が一元管理できます。有効な生徒と無効な生徒がセクション分割され、ふりがな対応で検索もスムーズ。男女で色分けされたカード表示で視認性が向上。誕生日通知機能により、生徒一人ひとりへのきめ細やかな対応が可能です。
                                 </p>
                                 <div class="space-y-2">
                                     <div class="flex items-start gap-2">
@@ -310,6 +315,14 @@
                                         <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
                                         <p class="text-warm-gray-600 text-sm">誕生日通知機能</p>
                                     </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">有効/無効セクション分割</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">ふりがな対応（生徒名・保護者名）</p>
+                                    </div>
                                 </div>
                             </div>
                             <div class="md:w-40 flex-shrink-0 flex justify-center">
@@ -327,7 +340,7 @@
                         <div class="flex flex-col md:flex-row gap-6 items-center mb-6">
                             <div class="flex-1">
                                 <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
-                                    教室の基本情報、利用規約の編集、プレビュー機能を備えた3つのタブで構成。変更内容はリアルタイムでプレビューできるため、安心して設定を更新できます。
+                                    教室の基本情報、利用規約の編集、プレビュー機能、ガイドを備えた4つのタブで構成。変更内容はリアルタイムでプレビューできるため、安心して設定を更新できます。
                                 </p>
                                 <div class="space-y-2">
                                     <div class="flex items-start gap-2">
@@ -345,6 +358,10 @@
                                     <div class="flex items-start gap-2">
                                         <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
                                         <p class="text-warm-gray-600 text-sm">リアルタイムプレビュー</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">ガイドタブ（操作マニュアル）</p>
                                     </div>
                                 </div>
                             </div>
@@ -382,6 +399,142 @@
                             </div>
                             <div class="md:w-40 flex-shrink-0 flex justify-center">
                                 <img src="../../images/piano-app/mobile/logs.png" alt="操作ログ画面" class="screenshot-thumb max-w-[140px] rounded-lg border border-warm-gray-200 shadow-sm cursor-pointer" onclick="openLightbox(this)" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 9. 生徒検索 (flex-row: image right) -->
+                    <div class="mb-12">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
+                            生徒検索
+                        </h2>
+
+                        <div class="flex flex-col md:flex-row gap-6 items-center mb-6">
+                            <div class="flex-1">
+                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
+                                    生徒の名前・ふりがな・保護者名で素早く検索。大人数の教室でも、目的の生徒をすぐに見つけることができます。
+                                </p>
+                                <div class="space-y-2">
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">名前・ふりがな・保護者名で検索</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">リアルタイム絞り込み</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">有効・無効を分けて表示</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-40 flex-shrink-0 flex justify-center">
+                                <div class="img-placeholder max-w-[140px] w-full aspect-[9/16] rounded-lg">
+                                    <span class="text-warm-gray-400 text-xs">準備中</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 10. キャンセル追跡・通知 (flex-row-reverse: image left) -->
+                    <div class="mb-12">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
+                            キャンセル追跡・通知
+                        </h2>
+
+                        <div class="flex flex-col md:flex-row-reverse gap-6 items-center mb-6">
+                            <div class="flex-1">
+                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
+                                    生徒ごとのキャンセル回数を自動カウント。回数に応じた段階的なカラー警告で、キャンセルが多い生徒をひと目で把握できます。
+                                </p>
+                                <div class="space-y-2">
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">キャンセル回数の自動カウント</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">段階的カラー警告で視覚的に把握</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">ダッシュボード通知との連動</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-40 flex-shrink-0 flex justify-center">
+                                <div class="img-placeholder max-w-[140px] w-full aspect-[9/16] rounded-lg">
+                                    <span class="text-warm-gray-400 text-xs">準備中</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 11. アプリ内ガイド (flex-row: image right) -->
+                    <div class="mb-12">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
+                            アプリ内ガイド
+                        </h2>
+
+                        <div class="flex flex-col md:flex-row gap-6 items-center mb-6">
+                            <div class="flex-1">
+                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
+                                    9つのセクションとフロー図で、システムの使い方をアプリ内で丁寧に解説。先生目線の日常語で書かれているので、マニュアルを読む感覚なく自然に理解できます。
+                                </p>
+                                <div class="space-y-2">
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">9セクション + フロー図の充実した内容</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">先生目線の日常語でやさしく解説</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">設定画面のガイドタブからいつでもアクセス</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-40 flex-shrink-0 flex justify-center">
+                                <div class="img-placeholder max-w-[140px] w-full aspect-[9/16] rounded-lg">
+                                    <span class="text-warm-gray-400 text-xs">準備中</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 12. カレンダー改善 (flex-row-reverse: image left) -->
+                    <div class="mb-12">
+                        <h2 class="font-elegant text-lg text-warm-gray-800 mb-6 pb-2 border-b border-warm-gray-200">
+                            カレンダー改善
+                        </h2>
+
+                        <div class="flex flex-col md:flex-row-reverse gap-6 items-center mb-6">
+                            <div class="flex-1">
+                                <p class="text-warm-gray-600 text-sm leading-relaxed mb-4">
+                                    カレンダーは日曜始まりに統一。簡易表示と詳細表示のトグル切り替え、スマホでのピンチズームに対応し、より直感的に操作できるようになりました。
+                                </p>
+                                <div class="space-y-2">
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">日曜始まりに統一</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">簡易/詳細トグルで表示切り替え</p>
+                                    </div>
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-rose-400 text-sm mt-px flex-shrink-0">&#10003;</span>
+                                        <p class="text-warm-gray-600 text-sm">スマホでのピンチズーム対応</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-40 flex-shrink-0 flex justify-center">
+                                <div class="img-placeholder max-w-[140px] w-full aspect-[9/16] rounded-lg">
+                                    <span class="text-warm-gray-400 text-xs">準備中</span>
+                                </div>
                             </div>
                         </div>
                     </div>
