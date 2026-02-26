@@ -533,9 +533,8 @@
 
     .profile-grid {
       display: grid;
-      grid-template-columns: 55fr 45fr;
-      gap: 64px;
-      align-items: center;
+      grid-template-columns: 1fr;
+      gap: 48px;
       margin-top: 48px;
     }
 
@@ -544,6 +543,9 @@
       font-weight: 300;
       line-height: 2.0;
       color: var(--text-primary);
+      max-width: 640px;
+      margin: 0 auto;
+      text-align: center;
     }
 
     .profile-text p + p { margin-top: 20px; }
@@ -553,6 +555,7 @@
       flex-wrap: wrap;
       gap: 8px;
       margin-top: 24px;
+      justify-content: center;
     }
 
     .badge {
@@ -569,14 +572,17 @@
 
     .profile-photo {
       position: relative;
-      border-radius: 16px;
+      border-radius: 20px;
       overflow: hidden;
       box-shadow: var(--shadow-lg);
+      order: -1;
+      max-width: none;
+      width: 100%;
     }
 
     .profile-photo img {
       width: 100%;
-      aspect-ratio: 3 / 4;
+      aspect-ratio: 3 / 2;
       object-fit: cover;
       object-position: center top;
       display: block;
@@ -711,10 +717,9 @@
 
     .insta-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      border-radius: 4px;
-      overflow: hidden;
+      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 12px;
       margin-top: 40px;
       margin-bottom: 28px;
     }
@@ -723,13 +728,26 @@
       aspect-ratio: 1;
       position: relative;
       overflow: hidden;
-      border-radius: 4px;
+      border-radius: 8px;
+      box-shadow: var(--shadow-sm);
       cursor: pointer;
-      transition: transform 0.35s var(--ease-main);
+      transition: transform 0.35s var(--ease-main), box-shadow 0.35s;
     }
 
+    .insta-cell:nth-child(1) {
+      grid-row: span 2;
+      aspect-ratio: 3/4;
+      transform: rotate(-1deg);
+    }
+
+    .insta-cell:nth-child(2) { transform: rotate(1.5deg); }
+    .insta-cell:nth-child(3) { transform: rotate(-0.5deg); }
+    .insta-cell:nth-child(4) { transform: rotate(0.8deg); }
+    .insta-cell:nth-child(5) { transform: rotate(-1.2deg); }
+    .insta-cell:nth-child(6) { transform: rotate(0.5deg); }
+
     .insta-cell:hover {
-      transform: scale(1.02);
+      transform: rotate(0deg) translateY(-4px);
       box-shadow: var(--shadow-md);
       z-index: 1;
     }
@@ -920,25 +938,30 @@
     }
 
     .news-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
       margin-top: 40px;
-      border-top: 1px solid rgba(0,0,0,0.06);
     }
 
     .news-item {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
       display: flex;
-      align-items: baseline;
-      gap: 16px;
-      padding: 20px 12px;
-      border-bottom: 1px solid rgba(0,0,0,0.06);
+      flex-direction: column;
+      gap: 12px;
+      border: none;
       cursor: pointer;
       position: relative;
-      transition: transform 0.3s var(--ease-main), padding-left 0.3s var(--ease-main), box-shadow 0.3s;
+      transition: transform 0.3s var(--ease-main), box-shadow 0.3s;
+      list-style: none;
     }
 
     .news-item:hover {
-      transform: translateX(4px);
-      padding-left: 16px;
-      box-shadow: -3px 0 0 var(--accent);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
     }
 
     .news-date {
@@ -946,41 +969,30 @@
       font-size: 12px;
       color: var(--text-secondary);
       white-space: nowrap;
-      flex-shrink: 0;
+      align-self: flex-end;
+      margin-top: auto;
     }
 
     .news-cat {
-      font-size: 9px;
-      font-weight: 700;
+      font-size: 10px;
+      font-weight: 500;
       letter-spacing: 0.08em;
       background: var(--accent-light);
       color: var(--accent);
-      padding: 2px 7px;
-      border-radius: 3px;
-      flex-shrink: 0;
-      border: 1px solid var(--border);
+      padding: 3px 12px;
+      border-radius: 9999px;
+      align-self: flex-start;
     }
 
     .news-title {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 400;
       color: var(--text-primary);
       line-height: 1.6;
     }
 
     .news-arrow {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%) translateX(-6px);
-      opacity: 0;
-      transition: opacity 0.3s, transform 0.3s var(--ease-main);
-      color: var(--accent);
-    }
-
-    .news-item:hover .news-arrow {
-      opacity: 1;
-      transform: translateY(-50%) translateX(0);
+      display: none;
     }
 
     /* ============================================================
@@ -1001,28 +1013,47 @@
     }
 
     .vlog-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
     }
 
     .vlog-card {
-      background: var(--bg-card);
-      border-radius: 8px;
-      overflow: hidden;
-      transition: transform 0.4s var(--ease-main), box-shadow 0.4s;
+      display: grid;
+      grid-template-columns: 80px 200px 1fr;
+      gap: 24px;
+      align-items: center;
+      padding: 28px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      box-shadow: none;
+      overflow: visible;
+      background: transparent;
       cursor: pointer;
+      transition: none;
     }
 
-    .vlog-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-lg);
+    .vlog-chapter {
+      font-family: var(--font-display);
+      font-size: 40px;
+      font-weight: 200;
+      color: rgba(74,124,89,0.2);
+      text-align: center;
+      line-height: 1;
+      transition: color 0.3s var(--ease-main);
+    }
+
+    .vlog-card:hover .vlog-chapter {
+      color: var(--accent);
     }
 
     .vlog-thumb {
+      width: 200px;
       aspect-ratio: 16 / 9;
       position: relative;
       overflow: hidden;
+      border-radius: 8px;
+      flex-shrink: 0;
     }
 
     .vlog-thumb-bg {
@@ -1033,7 +1064,7 @@
       transition: transform 0.5s var(--ease-main);
     }
 
-    .vlog-card:hover .vlog-thumb-bg { transform: scale(1.04); }
+    .vlog-card:hover .vlog-thumb-bg { transform: scale(1.03); }
 
     .vlog-card:nth-child(1) .vlog-thumb-bg { background: url('https://img.youtube.com/vi/-efMX9IxRr0/hqdefault.jpg') center/cover; }
     .vlog-card:nth-child(2) .vlog-thumb-bg { background: url('https://img.youtube.com/vi/aYj7cazX-CU/hqdefault.jpg') center/cover; }
@@ -1045,8 +1076,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 52px;
-      height: 52px;
+      width: 36px;
+      height: 36px;
       background: rgba(255,255,255,0.9);
       border-radius: 50%;
       display: flex;
@@ -1062,7 +1093,7 @@
     }
 
     .vlog-body {
-      padding: 18px 20px 20px;
+      padding: 0;
     }
 
     .vlog-theme {
@@ -1307,17 +1338,24 @@
       .profile-grid { grid-template-columns: 1fr; gap: 36px; }
       .profile-photo { order: -1; }
       .profile-photo img { aspect-ratio: 4 / 3; }
+      .profile-text { text-align: center; }
 
       .live-card { flex-direction: column; align-items: flex-start; }
       .live-card-right { align-items: flex-start; }
 
-      .insta-grid { grid-template-columns: repeat(2, 1fr); }
+      .insta-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+      .insta-cell:nth-child(1) { grid-row: span 1; aspect-ratio: 1; }
 
       .album-row { gap: 20px; }
       .album-item { width: 120px; }
       .album-item img { width: 120px; height: 120px; }
 
-      .vlog-grid { grid-template-columns: 1fr; }
+      .news-list { grid-template-columns: 1fr; }
+
+      .vlog-grid { flex-direction: column; }
+      .vlog-card { grid-template-columns: 1fr; gap: 16px; padding: 24px 0; }
+      .vlog-chapter { display: none; }
+      .vlog-thumb { width: 100%; }
 
       .contact-buttons { flex-direction: column; align-items: center; }
 
@@ -1331,8 +1369,12 @@
 
       .daily-live-card {
         grid-template-columns: 1fr;
-        padding: 32px 24px;
+        padding: 40px 24px;
         gap: 28px;
+      }
+
+      .daily-live-points {
+        grid-template-columns: 1fr 1fr;
       }
 
       .daily-live-cta-wrap {
@@ -1385,14 +1427,21 @@
 
     .daily-live-card {
       background: var(--bg-card);
-      border-radius: 16px;
-      padding: 48px;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+      border-radius: 20px;
+      padding: 56px 48px;
+      box-shadow: var(--shadow-lg);
       display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 48px;
+      grid-template-columns: 1fr;
+      gap: 40px;
       align-items: start;
       margin-top: 40px;
+      position: relative;
+    }
+
+    .daily-live-stamp {
+      position: absolute;
+      top: -16px;
+      right: 24px;
     }
 
     .daily-live-app-name {
@@ -1422,26 +1471,31 @@
 
     .daily-live-points {
       list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
     }
 
     .daily-live-point {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 14px;
+      text-align: center;
+      gap: 8px;
       font-family: var(--font-body);
       font-size: 14px;
       font-weight: 300;
       color: var(--text-primary);
       letter-spacing: 0.04em;
+      background: var(--accent-light);
+      border-radius: 12px;
+      padding: 20px;
     }
 
     .daily-live-point-icon {
       width: 36px;
       height: 36px;
-      background: var(--accent-light);
+      background: var(--bg-card);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -1468,6 +1522,7 @@
       flex-direction: column;
       align-items: center;
       gap: 12px;
+      padding-top: 8px;
     }
 
     .daily-live-cta {
@@ -1596,13 +1651,20 @@
        PROFILE INTRO
   ============================================================ -->
   <section id="profile">
-    <div class="reveal">
-      <div class="section-label">About Yukiko</div>
+    <div class="reveal" style="text-align: center;">
+      <div class="section-label" style="justify-content: center;">About Yukiko</div>
       <h2 class="section-heading">堀江由希子という人</h2>
     </div>
 
     <div class="profile-grid">
-      <div class="reveal reveal-delay-1">
+      <div class="profile-photo reveal reveal-delay-1">
+        <img
+          src="images/profile.jpeg"
+          alt="堀江由希子 — 草原でサックス演奏"
+          loading="lazy">
+      </div>
+
+      <div class="reveal reveal-delay-2">
         <div class="profile-text">
           <p>中学校の吹奏楽部で、たまたま最初に音が出た楽器がサックスだった。それが全ての始まり。大阪音楽大学でクラシックを学び、卒業後は演奏活動に打ち込む日々。転機は、北新地のミュージックバーで出会ったキャンディ・ダルファーの音楽。「これだ」と思った瞬間、ジャンルの壁が溶けた。</p>
           <p>以来、FUNK・SOUL・R&B・POPSと、心が動く音楽に正直に活動を広げてきた。NHK紅白歌合戦のステージも、老人ホームでの演奏も、同じ気持ちで吹いている。</p>
@@ -1614,18 +1676,11 @@
           <span class="badge">ブルーノート</span>
           <span class="badge">USJ</span>
         </div>
-        <div style="margin-top: 24px;">
-          <a href="#" class="more-link">
+        <div style="margin-top: 24px; text-align: center;">
+          <a href="#" class="more-link" style="display: inline-flex;">
             もっと知る →
           </a>
         </div>
-      </div>
-
-      <div class="profile-photo reveal reveal-delay-2">
-        <img
-          src="images/profile.jpeg"
-          alt="堀江由希子 — 草原でサックス演奏"
-          loading="lazy">
       </div>
     </div>
   </section>
@@ -1832,6 +1887,12 @@
         <h2 class="daily-live-title">毎日、会えます。</h2>
       </div>
       <div class="daily-live-card reveal">
+        <div class="daily-live-stamp">
+          <svg width="48" height="48" viewBox="0 0 48 48">
+            <rect x="4" y="4" width="40" height="40" rx="2" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="3 2"/>
+            <text x="24" y="28" text-anchor="middle" fill="var(--accent)" font-family="var(--font-display)" font-size="16">♪</text>
+          </svg>
+        </div>
         <div class="daily-live-info">
           <p class="daily-live-app-name">Pococha <span class="daily-live-app-sub">（ポコチャ）</span></p>
           <p class="daily-live-app-desc">
@@ -1884,28 +1945,19 @@
 
     <ul class="news-list">
       <li class="news-item reveal reveal-delay-1">
-        <span class="news-date">2026.02.18</span>
         <span class="news-cat">LIVE</span>
         <span class="news-title">3月15日 Blue Note Tokyo公演の詳細が決定しました</span>
-        <svg class="news-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M2 7h10M8 3l4 4-4 4" stroke="#4a7c59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <span class="news-date">2026.02.18</span>
       </li>
       <li class="news-item reveal reveal-delay-2">
-        <span class="news-date">2026.02.10</span>
         <span class="news-cat">MEDIA</span>
         <span class="news-title">YouTube Vlog「In the Park」#75 公開</span>
-        <svg class="news-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M2 7h10M8 3l4 4-4 4" stroke="#4a7c59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <span class="news-date">2026.02.10</span>
       </li>
       <li class="news-item reveal reveal-delay-3">
-        <span class="news-date">2026.01.28</span>
         <span class="news-cat">RELEASE</span>
         <span class="news-title">新曲「雨の向こう側」配信スタート</span>
-        <svg class="news-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M2 7h10M8 3l4 4-4 4" stroke="#4a7c59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <span class="news-date">2026.01.28</span>
       </li>
     </ul>
 
@@ -1926,10 +1978,11 @@
 
     <div class="vlog-grid">
       <a href="https://www.youtube.com/@yukikohorie" target="_blank" rel="noopener" class="vlog-card reveal reveal-delay-1">
+        <div class="vlog-chapter">01</div>
         <div class="vlog-thumb">
           <div class="vlog-thumb-bg"></div>
           <div class="vlog-play-btn">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
               <path d="M7 5l9 5-9 5V5z" fill="#4a7c59"/>
             </svg>
           </div>
@@ -1942,10 +1995,11 @@
       </a>
 
       <a href="https://www.youtube.com/@yukikohorie" target="_blank" rel="noopener" class="vlog-card reveal reveal-delay-2">
+        <div class="vlog-chapter">02</div>
         <div class="vlog-thumb">
           <div class="vlog-thumb-bg"></div>
           <div class="vlog-play-btn">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
               <path d="M7 5l9 5-9 5V5z" fill="#4a7c59"/>
             </svg>
           </div>
@@ -1958,10 +2012,11 @@
       </a>
 
       <a href="https://www.youtube.com/@yukikohorie" target="_blank" rel="noopener" class="vlog-card reveal reveal-delay-3">
+        <div class="vlog-chapter">03</div>
         <div class="vlog-thumb">
           <div class="vlog-thumb-bg"></div>
           <div class="vlog-play-btn">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
               <path d="M7 5l9 5-9 5V5z" fill="#4a7c59"/>
             </svg>
           </div>
@@ -1974,10 +2029,11 @@
       </a>
 
       <a href="https://www.youtube.com/@yukikohorie" target="_blank" rel="noopener" class="vlog-card reveal reveal-delay-4">
+        <div class="vlog-chapter">04</div>
         <div class="vlog-thumb">
           <div class="vlog-thumb-bg"></div>
           <div class="vlog-play-btn">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
               <path d="M7 5l9 5-9 5V5z" fill="#4a7c59"/>
             </svg>
           </div>

@@ -650,6 +650,7 @@
       .about-inner{grid-template-columns:1fr;padding:0 40px}
       .about-text{padding-right:0;margin-bottom:48px}
       .about-photo-wrap{max-width:480px}
+      .about-inner-new{padding:0 40px}
     }
     @media(max-width:768px){
       .test-bar{font-size:11px;padding:6px 16px}
@@ -668,41 +669,38 @@
         gap:16px;
       }
       .live-cta-wrap{align-items:flex-start}
-      .insta-grid{grid-template-columns:repeat(2,1fr)}
-      .about-inner{grid-template-columns:1fr}
-      .about-text{padding-right:0;margin-bottom:48px}
-      .vlog-grid{grid-template-columns:1fr}
+      .insta-roll .insta-cell{flex:0 0 calc((100% - 8px) / 2)}
+      .about-inner-new{padding:0 24px}
+      .about-photo-wrap-new{position:relative;width:100%;height:280px;margin-top:40px}
+      .about-photo-new{opacity:0.5}
+      .about-text-new{padding:0;max-width:100%}
+      .about-inner-new::after{display:none}
+      .vlog-featured{aspect-ratio:16/9}
+      .vlog-featured-overlay{width:60%;padding:20px}
+      .vlog-others{grid-template-columns:1fr}
+      .news-item-new{grid-template-columns:80px 1fr auto;gap:20px}
+      .news-day{font-size:24px}
+      .daily-live-frames{grid-template-columns:repeat(2,1fr)}
       .contact-btns{flex-direction:column;align-items:center}
       .contact-btn{width:100%;max-width:320px;justify-content:center}
       .live-head,.news-head,.insta-head{flex-direction:column;align-items:flex-start;gap:16px}
-      .daily-live-card {
-        grid-template-columns: 1fr;
-        padding: 32px 24px;
-        gap: 32px;
-      }
-
-      .daily-live-cta-wrap {
-        align-items: stretch;
-      }
-
-      .daily-live-cta {
-        text-align: center;
-      }
     }
     @media(max-width:480px){
       .test-bar{font-size:11px}
-      .insta-grid{grid-template-columns:repeat(2,1fr)}
       .hero-title{font-size:22px}
       .hero-ctas{flex-direction:column;align-items:center}
       .hero-btn{width:220px;text-align:center}
-      .news-item{grid-template-columns:1fr;gap:8px}
+      .news-item-new{grid-template-columns:1fr;gap:8px}
+      .news-arrow{display:none}
+      .daily-live-frames{grid-template-columns:1fr}
+      .vlog-featured-overlay{width:100%;background:linear-gradient(to top,rgba(10,10,20,0.9),transparent)}
     }
 
     /* =====================================================
-       DAILY LIVE — Pococha配信案内
+       DAILY LIVE — フィルムストリップ・ステージ
     ===================================================== */
     .daily-live {
-      background: var(--bg-primary);
+      background: radial-gradient(ellipse at 50% 60%, rgba(196,162,101,0.08) 0%, var(--bg-primary) 70%);
     }
 
     .daily-live-title {
@@ -714,91 +712,83 @@
       margin-bottom: 8px;
     }
 
-    .daily-live-card {
-      background: var(--bg-card);
-      border: 1px solid var(--accent-border);
-      padding: 48px;
+    .daily-live-app-caption {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      letter-spacing: 0.1em;
+      margin-bottom: 40px;
+    }
+
+    .daily-live-frames {
       display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 48px;
-      align-items: start;
-      margin-top: 40px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
     }
 
-    .daily-live-app-name {
-      font-family: var(--font-display);
-      font-size: 22px;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      color: var(--accent);
-      margin-bottom: 4px;
-    }
-
-    .daily-live-app-sub {
-      font-family: var(--font-body);
-      font-size: 13px;
-      font-weight: 300;
-      color: var(--text-secondary);
-    }
-
-    .daily-live-app-desc {
-      font-family: var(--font-body);
-      font-size: 14px;
-      font-weight: 300;
-      color: var(--text-secondary);
-      line-height: 2;
-      margin-top: 12px;
-      margin-bottom: 32px;
-    }
-
-    .daily-live-points {
-      list-style: none;
+    .daily-live-frame {
       display: flex;
       flex-direction: column;
-      gap: 20px;
-    }
-
-    .daily-live-point {
-      display: flex;
       align-items: center;
-      gap: 14px;
-      font-family: var(--font-body);
-      font-size: 14px;
-      font-weight: 300;
-      color: var(--text-primary);
-      letter-spacing: 0.04em;
+      text-align: center;
+      border: 1px solid var(--accent-border);
+      padding: 32px 20px;
+      background: var(--bg-card);
     }
 
-    .daily-live-point-icon {
-      width: 36px;
-      height: 36px;
+    .daily-live-frame-icon {
+      width: 48px;
+      height: 48px;
       border: 1px solid var(--accent-border);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-bottom: 20px;
       flex-shrink: 0;
     }
 
-    .daily-live-point-icon svg {
-      width: 16px;
-      height: 16px;
+    .daily-live-frame-icon svg {
+      width: 20px;
+      height: 20px;
       stroke: var(--accent);
       fill: none;
       stroke-width: 1.5;
     }
 
-    .daily-live-free {
+    .daily-live-frame-label {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
       color: var(--accent);
-      font-weight: 500;
-      font-size: 16px;
+      margin-bottom: 8px;
     }
 
-    .daily-live-cta-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
+    .daily-live-frame-text {
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text-primary);
+      letter-spacing: 0.04em;
+      line-height: 1.7;
+    }
+
+    .daily-live-frame-text strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .daily-live-cta-outer {
+      text-align: center;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(196,162,101,0.2); }
+      50% { box-shadow: 0 0 40px rgba(196,162,101,0.4); }
     }
 
     .daily-live-cta {
@@ -806,13 +796,14 @@
       font-family: var(--font-body);
       font-size: 13px;
       font-weight: 400;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
       color: var(--bg-primary);
       background: var(--accent);
-      padding: 16px 36px;
+      padding: 18px 56px;
       text-decoration: none;
+      animation: pulseGlow 2.5s ease-in-out infinite;
       transition: opacity 0.3s ease;
-      white-space: nowrap;
     }
 
     .daily-live-cta:hover {
@@ -824,14 +815,294 @@
       font-size: 11px;
       font-weight: 300;
       color: var(--text-secondary);
-      text-align: center;
-      max-width: 240px;
+      margin-top: 12px;
     }
 
     a.vlog-card {
       display: block;
       color: inherit;
       text-decoration: none;
+    }
+
+    /* =====================================================
+       INSTAGRAM — フィルムロール
+    ===================================================== */
+    .insta-film-strip {
+      position: relative;
+      margin-bottom: 32px;
+    }
+
+    .insta-film-strip::before,
+    .insta-film-strip::after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 8px;
+      background: repeating-linear-gradient(90deg, var(--accent-border) 0px, var(--accent-border) 6px, transparent 6px, transparent 16px);
+      margin: 4px 0;
+    }
+
+    .insta-roll {
+      display: flex;
+      gap: 4px;
+      overflow: hidden;
+    }
+
+    .insta-roll .insta-cell {
+      flex: 0 0 calc((100% - 20px) / 4);
+      aspect-ratio: 4/5;
+    }
+
+    /* =====================================================
+       NEWS — コンサートプログラム
+    ===================================================== */
+    .news-item-new {
+      display: grid;
+      grid-template-columns: 120px 1fr auto;
+      gap: 32px;
+      padding: 32px 0;
+      border-bottom: 1px solid var(--accent-border);
+      border-left: 3px solid transparent;
+      padding-left: 16px;
+      margin-left: -16px;
+      align-items: center;
+      transition: border-left-color 0.3s var(--ease), background 0.3s var(--ease);
+      cursor: pointer;
+    }
+
+    .news-item-new:hover {
+      border-left-color: var(--accent);
+      background: rgba(196,162,101,0.03);
+    }
+
+    .news-date-block {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .news-year {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--text-secondary);
+      display: block;
+      margin-bottom: 4px;
+      font-family: var(--font-body);
+      font-weight: 300;
+    }
+
+    .news-day {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 300;
+      line-height: 1;
+      color: var(--text-primary);
+      letter-spacing: 0.03em;
+      transition: color 0.3s var(--ease);
+    }
+
+    .news-item-new:hover .news-day {
+      color: var(--accent);
+    }
+
+    .news-content-block {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .news-arrow {
+      opacity: 0;
+      transition: opacity 0.3s var(--ease);
+      flex-shrink: 0;
+    }
+
+    .news-item-new:hover .news-arrow {
+      opacity: 1;
+    }
+
+    .news-arrow svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 1.5;
+    }
+
+    /* =====================================================
+       VLOG — シアタースクリーン
+    ===================================================== */
+    .vlog-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .vlog-featured {
+      aspect-ratio: 21/9;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      border: 1px solid transparent;
+      background: var(--bg-card);
+      cursor: pointer;
+      transition: border-color 0.35s var(--ease);
+    }
+
+    .vlog-featured:hover {
+      border-color: var(--accent);
+    }
+
+    .vlog-featured .vlog-thumb-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.5s var(--ease);
+    }
+
+    .vlog-featured:hover .vlog-thumb-bg {
+      transform: scale(1.03);
+    }
+
+    .vlog-featured-overlay {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 40%;
+      padding: 32px;
+      background: linear-gradient(to left, rgba(10,10,20,0.85), transparent);
+    }
+
+    .vlog-featured-overlay .vlog-theme {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .vlog-featured-overlay .vlog-title {
+      font-family: var(--font-body);
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      letter-spacing: 0.03em;
+    }
+
+    .vlog-featured-overlay .vlog-desc {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      letter-spacing: 0.04em;
+      line-height: 1.8;
+    }
+
+    .vlog-featured .vlog-play-wrap {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    .vlog-featured .vlog-play {
+      width: 72px;
+      height: 72px;
+      border: 1px solid rgba(196,162,101,0.45);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s var(--ease), border-color 0.3s var(--ease);
+    }
+
+    .vlog-featured:hover .vlog-play {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .vlog-featured .vlog-play svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--accent);
+      margin-left: 4px;
+      transition: fill 0.3s var(--ease);
+    }
+
+    .vlog-featured:hover .vlog-play svg {
+      fill: var(--bg-primary);
+    }
+
+    .vlog-others {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .vlog-others .vlog-card .vlog-desc {
+      display: none;
+    }
+
+    /* =====================================================
+       ABOUT — スポットライト・モノグラフ
+    ===================================================== */
+    .about-inner-new {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 64px;
+      display: block;
+      position: relative;
+      overflow: hidden;
+      min-height: 480px;
+    }
+
+    .about-inner-new::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 40%;
+      width: 200px;
+      height: 100%;
+      background: linear-gradient(to right, var(--bg-section), transparent);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .about-photo-wrap-new {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 50%;
+      height: 100%;
+    }
+
+    .about-photo-new {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.35;
+      filter: saturate(0.6);
+      aspect-ratio: auto;
+      display: block;
+    }
+
+    .about-text-new {
+      position: relative;
+      z-index: 2;
+      max-width: 600px;
+      padding: 80px 64px 80px 0;
+    }
+
+    .about-inner-new .about-badge {
+      background: var(--accent);
+      color: var(--bg-primary);
+      border: none;
+      padding: 5px 16px;
     }
   </style>
 </head>
@@ -1020,49 +1291,33 @@
         </div>
         <a href="#" class="insta-handle">@yukikohorie_sax</a>
       </div>
-      <div class="insta-grid reveal d1">
-        <a href="#" class="insta-cell" aria-label="Instagram投稿を見る">
-          <div class="insta-bg insta-bg-1"></div>
-          <div class="insta-icon">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          </div>
-          <div class="insta-hover"><span class="insta-hover-text">View on Instagram</span></div>
-        </a>
-        <a href="#" class="insta-cell" aria-label="Instagram投稿を見る">
-          <div class="insta-bg insta-bg-2"></div>
-          <div class="insta-icon">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          </div>
-          <div class="insta-hover"><span class="insta-hover-text">View on Instagram</span></div>
-        </a>
-        <a href="#" class="insta-cell" aria-label="Instagram投稿を見る">
-          <div class="insta-bg insta-bg-3"></div>
-          <div class="insta-icon">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          </div>
-          <div class="insta-hover"><span class="insta-hover-text">View on Instagram</span></div>
-        </a>
-        <a href="#" class="insta-cell" aria-label="Instagram投稿を見る">
-          <div class="insta-bg insta-bg-4"></div>
-          <div class="insta-icon">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          </div>
-          <div class="insta-hover"><span class="insta-hover-text">View on Instagram</span></div>
-        </a>
-        <a href="#" class="insta-cell" aria-label="Instagram投稿を見る">
-          <div class="insta-bg insta-bg-5"></div>
-          <div class="insta-icon">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          </div>
-          <div class="insta-hover"><span class="insta-hover-text">View on Instagram</span></div>
-        </a>
-        <a href="#" class="insta-cell" aria-label="Instagram投稿を見る">
-          <div class="insta-bg insta-bg-6"></div>
-          <div class="insta-icon">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          </div>
-          <div class="insta-hover"><span class="insta-hover-text">View on Instagram</span></div>
-        </a>
+      <div class="insta-film-strip reveal d1">
+        <div class="insta-roll">
+          <a href="#" class="insta-cell" aria-label="Instagram投稿を見る">
+            <div class="insta-bg insta-bg-1"></div>
+            <div class="insta-hover"><span class="insta-hover-text">View on Instagram</span></div>
+          </a>
+          <a href="#" class="insta-cell" aria-label="Instagram投稿を見る">
+            <div class="insta-bg insta-bg-2"></div>
+            <div class="insta-hover"><span class="insta-hover-text">View on Instagram</span></div>
+          </a>
+          <a href="#" class="insta-cell" aria-label="Instagram投稿を見る">
+            <div class="insta-bg insta-bg-3"></div>
+            <div class="insta-hover"><span class="insta-hover-text">View on Instagram</span></div>
+          </a>
+          <a href="#" class="insta-cell" aria-label="Instagram投稿を見る">
+            <div class="insta-bg insta-bg-4"></div>
+            <div class="insta-hover"><span class="insta-hover-text">View on Instagram</span></div>
+          </a>
+          <a href="#" class="insta-cell" aria-label="Instagram投稿を見る">
+            <div class="insta-bg insta-bg-5"></div>
+            <div class="insta-hover"><span class="insta-hover-text">View on Instagram</span></div>
+          </a>
+          <a href="#" class="insta-cell" aria-label="Instagram投稿を見る">
+            <div class="insta-bg insta-bg-6"></div>
+            <div class="insta-hover"><span class="insta-hover-text">View on Instagram</span></div>
+          </a>
+        </div>
       </div>
       <div class="insta-follow-wrap reveal">
         <a href="#" class="insta-follow">@yukikohorie_sax をフォロー</a>
@@ -1072,8 +1327,11 @@
 
   <!-- ABOUT -->
   <section class="about section-pad" id="about">
-    <div class="about-inner">
-      <div class="about-text">
+    <div class="about-inner-new">
+      <div class="about-photo-wrap-new">
+        <img class="about-photo-new" src="images/portrait.jpg" alt="堀江由希子 ポートレート" loading="lazy">
+      </div>
+      <div class="about-text-new">
         <span class="section-label reveal">About</span>
         <h2 class="about-title reveal d1">堀江由希子</h2>
         <p class="about-body reveal d2">兵庫県淡路市出身。大阪音楽大学クラシック専攻を経て、FUNK・SOUL・R&Bへ転向。NHK紅白歌合戦サポート、日本武道館3回出場、ポルノグラフィティツアー参加など、ジャンルを越えた活動を展開。現在は東京・関西を拠点に、ライブ・レッスン・レコーディングなど多方面で活動中。</p>
@@ -1086,58 +1344,50 @@
         </div>
         <a href="#" class="about-link reveal d4">もっと知る →</a>
       </div>
-      <div class="about-photo-wrap reveal d2">
-        <img class="about-photo" src="images/portrait.jpg" alt="堀江由希子 ポートレート" loading="lazy">
-        <div class="about-photo-frame"></div>
-      </div>
     </div>
   </section>
 
-  <!-- DAILY LIVE — ポコチャ配信案内 -->
+  <!-- DAILY LIVE — フィルムストリップ・ステージ -->
   <section class="daily-live section-pad" id="daily-live">
     <div class="section-inner">
       <div class="reveal">
         <span class="section-label">Daily Live</span>
         <h2 class="daily-live-title">毎日、ライブ配信中。</h2>
       </div>
-      <div class="daily-live-card reveal d1">
-        <div class="daily-live-info">
-          <p class="daily-live-app-name">Pococha <span class="daily-live-app-sub">（ポコチャ）</span></p>
-          <p class="daily-live-app-desc">
-            DeNAが運営するライブ配信アプリ。<br>
-            堀江由希子が<strong>毎日</strong>サックス演奏をライブ配信しています。
-          </p>
-          <ul class="daily-live-points">
-            <li class="daily-live-point">
-              <span class="daily-live-point-icon">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              </span>
-              毎日 <strong>18:00〜21:00</strong>
-            </li>
-            <li class="daily-live-point">
-              <span class="daily-live-point-icon">
-                <svg viewBox="0 0 24 24"><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-              </span>
-              <span><strong class="daily-live-free">無料</strong>で視聴できます</span>
-            </li>
-            <li class="daily-live-point">
-              <span class="daily-live-point-icon">
-                <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-              </span>
-              アプリをダウンロードするだけですぐ視聴OK
-            </li>
-            <li class="daily-live-point">
-              <span class="daily-live-point-icon">
-                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              </span>
-              リアルタイムでコメント・応援できる
-            </li>
-          </ul>
+      <p class="daily-live-app-caption reveal">Pococha（ポコチャ）— DeNA運営のライブ配信アプリにて毎日配信中</p>
+      <div class="daily-live-frames">
+        <div class="daily-live-frame reveal d1">
+          <div class="daily-live-frame-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <p class="daily-live-frame-label">Time</p>
+          <p class="daily-live-frame-text">毎日<br><strong>18:00〜21:00</strong></p>
         </div>
-        <div class="daily-live-cta-wrap">
-          <a href="https://www.pococha.com/en-us/app/users/e61da3c5-23c3-414d-be14-2e2d5144a229" class="daily-live-cta" target="_blank" rel="noopener">今日の配信を見る →</a>
-          <p class="daily-live-cta-note">※ Pocochaアプリが開きます<br>（App Store / Google Playで無料DL）</p>
+        <div class="daily-live-frame reveal d2">
+          <div class="daily-live-frame-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          </div>
+          <p class="daily-live-frame-label">Fee</p>
+          <p class="daily-live-frame-text"><strong>無料</strong>で<br>視聴できます</p>
         </div>
+        <div class="daily-live-frame reveal d3">
+          <div class="daily-live-frame-icon">
+            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          </div>
+          <p class="daily-live-frame-label">How to</p>
+          <p class="daily-live-frame-text">アプリDLで<br>すぐ視聴OK</p>
+        </div>
+        <div class="daily-live-frame reveal d4">
+          <div class="daily-live-frame-icon">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <p class="daily-live-frame-label">Live</p>
+          <p class="daily-live-frame-text">コメント・応援が<br>リアルタイムで届く</p>
+        </div>
+      </div>
+      <div class="daily-live-cta-outer reveal">
+        <a href="https://www.pococha.com/en-us/app/users/e61da3c5-23c3-414d-be14-2e2d5144a229" class="daily-live-cta" target="_blank" rel="noopener">今日の配信を見る</a>
+        <p class="daily-live-cta-note">※ Pocochaアプリが開きます（App Store / Google Playで無料DL）</p>
       </div>
     </div>
   </section>
@@ -1153,26 +1403,44 @@
         <a href="#" class="view-all">すべてのニュース →</a>
       </div>
       <div class="news-list">
-        <div class="news-item reveal d1">
-          <div class="news-meta">
-            <span class="news-date">2026.02.18</span>
+        <div class="news-item-new reveal d1">
+          <div class="news-date-block">
+            <span class="news-year">2026</span>
+            <span class="news-day">02.18</span>
+          </div>
+          <div class="news-content-block">
             <span class="news-cat">Live</span>
+            <p class="news-text">3月15日 Blue Note Tokyo公演の詳細が決定しました</p>
           </div>
-          <p class="news-text">3月15日 Blue Note Tokyo公演の詳細が決定しました</p>
+          <span class="news-arrow">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
         </div>
-        <div class="news-item reveal d2">
-          <div class="news-meta">
-            <span class="news-date">2026.02.10</span>
+        <div class="news-item-new reveal d2">
+          <div class="news-date-block">
+            <span class="news-year">2026</span>
+            <span class="news-day">02.10</span>
+          </div>
+          <div class="news-content-block">
             <span class="news-cat">Media</span>
+            <p class="news-text">YouTube Vlog「In the Park」#75 公開</p>
           </div>
-          <p class="news-text">YouTube Vlog「In the Park」#75 公開</p>
+          <span class="news-arrow">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
         </div>
-        <div class="news-item reveal d3">
-          <div class="news-meta">
-            <span class="news-date">2026.01.28</span>
-            <span class="news-cat">Release</span>
+        <div class="news-item-new reveal d3">
+          <div class="news-date-block">
+            <span class="news-year">2026</span>
+            <span class="news-day">01.28</span>
           </div>
-          <p class="news-text">新曲「雨の向こう側」配信スタート</p>
+          <div class="news-content-block">
+            <span class="news-cat">Release</span>
+            <p class="news-text">新曲「雨の向こう側」配信スタート</p>
+          </div>
+          <span class="news-arrow">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
         </div>
       </div>
     </div>
@@ -1186,67 +1454,67 @@
         <h2 class="getknow-title">Vlog "In the Park" から</h2>
         <p class="getknow-sub">言葉でしか伝えられないものを、映像で。</p>
       </div>
-      <div class="vlog-grid">
-        <a href="https://www.youtube.com/@yukikohorie" target="_blank" rel="noopener" class="vlog-card reveal d1">
-          <div class="vlog-thumb">
-            <div class="vlog-thumb-bg vlog-tb-1"></div>
-            <div class="vlog-play-wrap">
-              <div class="vlog-play">
-                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
-              </div>
+      <div class="vlog-layout">
+        <a href="https://www.youtube.com/@yukikohorie" target="_blank" rel="noopener" class="vlog-card vlog-featured reveal d1">
+          <div class="vlog-thumb-bg vlog-tb-1"></div>
+          <div class="vlog-play-wrap">
+            <div class="vlog-play">
+              <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
             </div>
           </div>
-          <div class="vlog-meta">
+          <div class="vlog-featured-overlay">
             <p class="vlog-theme">原点</p>
             <h3 class="vlog-title">サックスとの出会い #69</h3>
             <p class="vlog-desc">クラシックからの転機。キャンディ・ダルファーに出会った日のこと。</p>
           </div>
         </a>
-        <a href="https://www.youtube.com/@yukikohorie" target="_blank" rel="noopener" class="vlog-card reveal d2">
-          <div class="vlog-thumb">
-            <div class="vlog-thumb-bg vlog-tb-2"></div>
-            <div class="vlog-play-wrap">
-              <div class="vlog-play">
-                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+        <div class="vlog-others">
+          <a href="https://www.youtube.com/@yukikohorie" target="_blank" rel="noopener" class="vlog-card reveal d2">
+            <div class="vlog-thumb">
+              <div class="vlog-thumb-bg vlog-tb-2"></div>
+              <div class="vlog-play-wrap">
+                <div class="vlog-play">
+                  <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="vlog-meta">
-            <p class="vlog-theme">音楽への想い</p>
-            <h3 class="vlog-title">なぜサックスを続けるか ep.05</h3>
-            <p class="vlog-desc">おばあちゃんのエピソード。なぜサックスを吹き続けるのか。</p>
-          </div>
-        </a>
-        <a href="https://www.youtube.com/@yukikohorie" target="_blank" rel="noopener" class="vlog-card reveal d3">
-          <div class="vlog-thumb">
-            <div class="vlog-thumb-bg vlog-tb-3"></div>
-            <div class="vlog-play-wrap">
-              <div class="vlog-play">
-                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+            <div class="vlog-meta">
+              <p class="vlog-theme">音楽への想い</p>
+              <h3 class="vlog-title">なぜサックスを続けるか ep.05</h3>
+              <p class="vlog-desc">おばあちゃんのエピソード。なぜサックスを吹き続けるのか。</p>
+            </div>
+          </a>
+          <a href="https://www.youtube.com/@yukikohorie" target="_blank" rel="noopener" class="vlog-card reveal d3">
+            <div class="vlog-thumb">
+              <div class="vlog-thumb-bg vlog-tb-3"></div>
+              <div class="vlog-play-wrap">
+                <div class="vlog-play">
+                  <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="vlog-meta">
-            <p class="vlog-theme">哲学・人柄</p>
-            <h3 class="vlog-title">7つのルール #22</h3>
-            <p class="vlog-desc">HSP気質の自己開示。堀江由希子が大切にしていること。</p>
-          </div>
-        </a>
-        <a href="https://www.youtube.com/@yukikohorie" target="_blank" rel="noopener" class="vlog-card reveal d4">
-          <div class="vlog-thumb">
-            <div class="vlog-thumb-bg vlog-tb-4"></div>
-            <div class="vlog-play-wrap">
-              <div class="vlog-play">
-                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+            <div class="vlog-meta">
+              <p class="vlog-theme">哲学・人柄</p>
+              <h3 class="vlog-title">7つのルール #22</h3>
+              <p class="vlog-desc">HSP気質の自己開示。堀江由希子が大切にしていること。</p>
+            </div>
+          </a>
+          <a href="https://www.youtube.com/@yukikohorie" target="_blank" rel="noopener" class="vlog-card reveal d4">
+            <div class="vlog-thumb">
+              <div class="vlog-thumb-bg vlog-tb-4"></div>
+              <div class="vlog-play-wrap">
+                <div class="vlog-play">
+                  <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="vlog-meta">
-            <p class="vlog-theme">成長の軌跡</p>
-            <h3 class="vlog-title">手作りCD250枚から現在 #43</h3>
-            <p class="vlog-desc">手作りCD250枚から始まった。「今が最高」と言い切れる理由。</p>
-          </div>
-        </a>
+            <div class="vlog-meta">
+              <p class="vlog-theme">成長の軌跡</p>
+              <h3 class="vlog-title">手作りCD250枚から現在 #43</h3>
+              <p class="vlog-desc">手作りCD250枚から始まった。「今が最高」と言い切れる理由。</p>
+            </div>
+          </a>
+        </div>
       </div>
     </div>
   </section>

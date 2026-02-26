@@ -499,10 +499,30 @@
     }
 
     .instagram-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 3px;
       margin-bottom: 28px;
+    }
+
+    .insta-layout {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 3px;
+    }
+
+    .insta-main {
+      aspect-ratio: 3 / 4;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .insta-side {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px;
+    }
+
+    .insta-side .insta-cell:last-child {
+      grid-column: span 2;
     }
 
     .insta-cell {
@@ -518,7 +538,8 @@
       transition: transform 0.4s ease;
     }
 
-    .insta-cell:hover .insta-cell-bg {
+    .insta-cell:hover .insta-cell-bg,
+    .insta-main:hover .insta-cell-bg {
       transform: scale(1.03);
     }
 
@@ -565,7 +586,8 @@
       transition: opacity 0.3s ease;
     }
 
-    .insta-cell:hover .insta-hover {
+    .insta-cell:hover .insta-hover,
+    .insta-main:hover .insta-hover {
       opacity: 1;
     }
 
@@ -917,9 +939,9 @@
 
     .about-grid {
       display: grid;
-      grid-template-columns: 55fr 45fr;
-      gap: 64px;
-      align-items: center;
+      grid-template-columns: 40fr 60fr;
+      gap: 0;
+      align-items: start;
     }
 
     .about-text {
@@ -952,6 +974,7 @@
       width: 100%;
       aspect-ratio: 4 / 5;
       overflow: hidden;
+      position: relative;
     }
 
     .about-photo img {
@@ -959,6 +982,30 @@
       height: 100%;
       object-fit: cover;
       object-position: top;
+    }
+
+    .about-pullquote {
+      position: absolute;
+      bottom: -24px;
+      left: -16px;
+      right: 16px;
+      background: #fff;
+      padding: 20px 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      z-index: 2;
+      font-family: var(--font-jp-heading, 'Shippori Mincho');
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.8;
+      color: var(--text-primary);
+      font-style: italic;
+    }
+
+    .about-text-col {
+      border-left: 3px solid var(--accent-color);
+      padding-left: 48px;
+      padding-top: 16px;
+      padding-bottom: 48px;
     }
 
     /* =====================================================
@@ -976,40 +1023,67 @@
 
     .news-list {
       list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
       margin-bottom: 32px;
     }
 
     .news-item {
-      border-top: 1px solid var(--border);
-      transition: border-left-color 0.2s ease;
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 24px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
     }
 
-    .news-item:last-child {
-      border-bottom: 1px solid var(--border);
+    .news-item:first-child {
+      border-top: 1px solid var(--border);
+    }
+
+    .news-item::before {
+      content: '';
+      position: absolute;
+      left: 152px;
+      top: 50%;
+      width: 16px;
+      height: 2px;
+      background: var(--accent-color);
+      transition: width 0.2s ease;
+    }
+
+    .news-item:hover::before {
+      width: 24px;
     }
 
     .news-item a {
-      display: flex;
-      align-items: baseline;
-      gap: 20px;
-      padding: 20px 0 20px 16px;
-      border-left: 3px solid transparent;
-      transition: border-left-color 0.2s ease, padding-left 0.2s ease;
-    }
-
-    .news-item a:hover {
-      border-left-color: var(--accent-color);
-      padding-left: 20px;
+      display: contents;
     }
 
     .news-date {
       font-family: var(--font-display);
-      font-size: 13px;
+      font-size: 15px;
       font-weight: 300;
       letter-spacing: 0.08em;
-      color: var(--text-secondary);
+      color: var(--accent-color);
       white-space: nowrap;
-      flex-shrink: 0;
+      text-align: right;
+      padding-right: 24px;
+      transition: color 0.2s ease;
+      align-self: center;
+    }
+
+    .news-item:hover .news-date {
+      color: #8a3e22;
+    }
+
+    .news-item-body {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      justify-content: center;
     }
 
     .news-cat {
@@ -1019,7 +1093,7 @@
       letter-spacing: 0.12em;
       color: var(--accent-color);
       white-space: nowrap;
-      flex-shrink: 0;
+      align-self: flex-start;
       border: 1px solid rgba(184, 90, 58, 0.3);
       padding: 2px 8px;
     }
@@ -1060,8 +1134,9 @@
 
     .vlog-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
+      grid-template-columns: 2fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 20px;
     }
 
     .vlog-card {
@@ -1072,6 +1147,14 @@
 
     .vlog-card:hover {
       border-color: var(--accent-color);
+    }
+
+    .vlog-card:nth-child(1) {
+      grid-row: span 2;
+    }
+
+    .vlog-card:nth-child(1) .vlog-thumb {
+      aspect-ratio: 4 / 5;
     }
 
     .vlog-thumb {
@@ -1104,7 +1187,8 @@
     }
 
     .vlog-body {
-      padding: 20px;
+      padding: 20px 16px;
+      border-top: 2px solid var(--accent-color);
     }
 
     .vlog-theme {
@@ -1294,7 +1378,7 @@
     }
 
     .daily-live-inner {
-      max-width: 800px;
+      max-width: 960px;
       margin: 0 auto;
     }
 
@@ -1308,15 +1392,33 @@
     }
 
     .daily-live-card {
-      border: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 35fr 65fr;
+      gap: 64px;
+      border: none;
       border-top: 3px solid var(--accent-color);
-      padding: 48px;
+      padding: 48px 0;
       margin-top: 40px;
+    }
+
+    .daily-live-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .daily-live-heading {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 6vw, 72px);
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      line-height: 1;
+      color: var(--text-primary);
     }
 
     .daily-live-app-name {
       font-family: var(--font-display);
-      font-size: 22px;
+      font-size: 18px;
       font-weight: 400;
       letter-spacing: 0.04em;
       color: var(--accent-color);
@@ -1336,15 +1438,19 @@
       font-weight: 300;
       color: var(--text-secondary);
       line-height: 2;
-      margin-top: 12px;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
+    }
+
+    .daily-live-content {
+      display: flex;
+      flex-direction: column;
     }
 
     .daily-live-points {
       list-style: none;
+      counter-reset: dl-counter;
       display: flex;
       flex-direction: column;
-      gap: 20px;
       margin-bottom: 40px;
     }
 
@@ -1357,24 +1463,23 @@
       font-weight: 300;
       color: var(--text-primary);
       letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
     }
 
-    .daily-live-point-icon {
-      width: 36px;
-      height: 36px;
-      border: 1px solid var(--border-strong);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .daily-live-point:first-child {
+      border-top: 1px solid var(--border);
+    }
+
+    .daily-live-point::before {
+      content: counter(dl-counter, decimal-leading-zero);
+      counter-increment: dl-counter;
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--accent-color);
+      width: 48px;
       flex-shrink: 0;
-    }
-
-    .daily-live-point-icon svg {
-      width: 16px;
-      height: 16px;
-      stroke: var(--accent-color);
-      fill: none;
-      stroke-width: 1.5;
     }
 
     .daily-live-free {
@@ -1464,11 +1569,21 @@
       }
 
       .daily-live-card {
-        padding: 32px 20px;
+        grid-template-columns: 1fr;
+        gap: 32px;
+        padding: 32px 0;
       }
 
-      .instagram-grid {
-        grid-template-columns: repeat(2, 1fr);
+      .daily-live-heading {
+        font-size: clamp(40px, 12vw, 56px);
+      }
+
+      .insta-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .insta-main {
+        aspect-ratio: 3 / 2;
       }
 
       .about-grid {
@@ -1480,6 +1595,20 @@
         order: -1;
       }
 
+      .about-pullquote {
+        position: static;
+        box-shadow: none;
+        border-top: 2px solid var(--accent-color);
+        margin-top: 0;
+      }
+
+      .about-text-col {
+        border-left: none;
+        border-top: 3px solid var(--accent-color);
+        padding-left: 0;
+        padding-top: 32px;
+      }
+
       .album-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 20px;
@@ -1487,7 +1616,29 @@
 
       .vlog-grid {
         grid-template-columns: 1fr;
-        max-width: 400px;
+      }
+
+      .vlog-card:nth-child(1) {
+        grid-row: span 1;
+      }
+
+      .vlog-card:nth-child(1) .vlog-thumb {
+        aspect-ratio: 16 / 9;
+      }
+
+      .news-item {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .news-item::before {
+        display: none;
+      }
+
+      .news-date {
+        text-align: left;
+        padding-right: 0;
+        font-size: 13px;
       }
 
       .contact-btns {
@@ -1518,11 +1669,6 @@
 
       .live-footer {
         padding-left: 48px;
-      }
-
-      .news-item a {
-        flex-wrap: wrap;
-        gap: 8px;
       }
     }
 
@@ -1635,72 +1781,34 @@
           <span class="instagram-handle">@yukikohorie_sax</span>
         </div>
         <div class="instagram-grid reveal">
-          <a href="https://www.instagram.com/yukikohorie_sax/" target="_blank" rel="noopener" class="insta-cell">
-            <div class="insta-cell-bg v1"></div>
-            <div class="insta-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <circle cx="12" cy="12" r="4" />
-                <circle cx="17.5" cy="6.5" r="1" fill="#888" stroke="none" />
-              </svg>
+          <div class="insta-layout">
+            <a href="https://www.instagram.com/yukikohorie_sax/" target="_blank" rel="noopener" class="insta-main">
+              <div class="insta-cell-bg v1"></div>
+              <div class="insta-hover"><span class="insta-hover-text">View</span></div>
+            </a>
+            <div class="insta-side">
+              <a href="https://www.instagram.com/yukikohorie_sax/" target="_blank" rel="noopener" class="insta-cell">
+                <div class="insta-cell-bg v2"></div>
+                <div class="insta-hover"><span class="insta-hover-text">View</span></div>
+              </a>
+              <a href="https://www.instagram.com/yukikohorie_sax/" target="_blank" rel="noopener" class="insta-cell">
+                <div class="insta-cell-bg v3"></div>
+                <div class="insta-hover"><span class="insta-hover-text">View</span></div>
+              </a>
+              <a href="https://www.instagram.com/yukikohorie_sax/" target="_blank" rel="noopener" class="insta-cell">
+                <div class="insta-cell-bg v4"></div>
+                <div class="insta-hover"><span class="insta-hover-text">View</span></div>
+              </a>
+              <a href="https://www.instagram.com/yukikohorie_sax/" target="_blank" rel="noopener" class="insta-cell">
+                <div class="insta-cell-bg v5"></div>
+                <div class="insta-hover"><span class="insta-hover-text">View</span></div>
+              </a>
+              <a href="https://www.instagram.com/yukikohorie_sax/" target="_blank" rel="noopener" class="insta-cell">
+                <div class="insta-cell-bg v6"></div>
+                <div class="insta-hover"><span class="insta-hover-text">View</span></div>
+              </a>
             </div>
-            <div class="insta-hover"><span class="insta-hover-text">View</span></div>
-          </a>
-          <a href="https://www.instagram.com/yukikohorie_sax/" target="_blank" rel="noopener" class="insta-cell">
-            <div class="insta-cell-bg v2"></div>
-            <div class="insta-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <circle cx="12" cy="12" r="4" />
-                <circle cx="17.5" cy="6.5" r="1" fill="#888" stroke="none" />
-              </svg>
-            </div>
-            <div class="insta-hover"><span class="insta-hover-text">View</span></div>
-          </a>
-          <a href="https://www.instagram.com/yukikohorie_sax/" target="_blank" rel="noopener" class="insta-cell">
-            <div class="insta-cell-bg v3"></div>
-            <div class="insta-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <circle cx="12" cy="12" r="4" />
-                <circle cx="17.5" cy="6.5" r="1" fill="#888" stroke="none" />
-              </svg>
-            </div>
-            <div class="insta-hover"><span class="insta-hover-text">View</span></div>
-          </a>
-          <a href="https://www.instagram.com/yukikohorie_sax/" target="_blank" rel="noopener" class="insta-cell">
-            <div class="insta-cell-bg v4"></div>
-            <div class="insta-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <circle cx="12" cy="12" r="4" />
-                <circle cx="17.5" cy="6.5" r="1" fill="#888" stroke="none" />
-              </svg>
-            </div>
-            <div class="insta-hover"><span class="insta-hover-text">View</span></div>
-          </a>
-          <a href="https://www.instagram.com/yukikohorie_sax/" target="_blank" rel="noopener" class="insta-cell">
-            <div class="insta-cell-bg v5"></div>
-            <div class="insta-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <circle cx="12" cy="12" r="4" />
-                <circle cx="17.5" cy="6.5" r="1" fill="#888" stroke="none" />
-              </svg>
-            </div>
-            <div class="insta-hover"><span class="insta-hover-text">View</span></div>
-          </a>
-          <a href="https://www.instagram.com/yukikohorie_sax/" target="_blank" rel="noopener" class="insta-cell">
-            <div class="insta-cell-bg v6"></div>
-            <div class="insta-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <circle cx="12" cy="12" r="4" />
-                <circle cx="17.5" cy="6.5" r="1" fill="#888" stroke="none" />
-              </svg>
-            </div>
-            <div class="insta-hover"><span class="insta-hover-text">View</span></div>
-          </a>
+          </div>
         </div>
         <div class="instagram-follow reveal">
           <a href="https://www.instagram.com/yukikohorie_sax/" target="_blank" rel="noopener" class="text-link">
@@ -1759,54 +1867,30 @@
           <p class="daily-live-title">ライブは月1回じゃない。<br>毎日やってます。</p>
         </div>
         <div class="daily-live-card reveal">
-          <div class="daily-live-info">
-            <p class="daily-live-app-name">Pococha <span class="daily-live-app-sub">（ポコチャ）</span></p>
+          <div class="daily-live-sidebar">
+            <div class="daily-live-heading" aria-label="DAILY LIVE">
+              DAILY<br>LIVE
+            </div>
+            <div>
+              <p class="daily-live-app-name">Pococha <span class="daily-live-app-sub">（ポコチャ）</span></p>
+            </div>
+            <div class="daily-live-cta-wrap">
+              <a href="https://www.pococha.com/en-us/app/users/e61da3c5-23c3-414d-be14-2e2d5144a229"
+                class="daily-live-cta" target="_blank" rel="noopener">今日の配信を見る →</a>
+              <p class="daily-live-cta-note">※ Pocochaアプリが開きます</p>
+            </div>
+          </div>
+          <div class="daily-live-content">
             <p class="daily-live-app-desc">
               DeNAが運営するライブ配信アプリ。<br>
               堀江由希子が<strong>毎日</strong>サックス演奏をライブ配信しています。
             </p>
-            <ul class="daily-live-points">
-              <li class="daily-live-point">
-                <span class="daily-live-point-icon">
-                  <svg viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
-                </span>
-                毎日 <strong>18:00〜21:00</strong>
-              </li>
-              <li class="daily-live-point">
-                <span class="daily-live-point-icon">
-                  <svg viewBox="0 0 24 24">
-                    <path
-                      d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
-                  </svg>
-                </span>
-                <span><strong class="daily-live-free">無料</strong>で視聴できます</span>
-              </li>
-              <li class="daily-live-point">
-                <span class="daily-live-point-icon">
-                  <svg viewBox="0 0 24 24">
-                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
-                    <line x1="12" y1="18" x2="12.01" y2="18" />
-                  </svg>
-                </span>
-                アプリをダウンロードするだけですぐ視聴OK
-              </li>
-              <li class="daily-live-point">
-                <span class="daily-live-point-icon">
-                  <svg viewBox="0 0 24 24">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                  </svg>
-                </span>
-                リアルタイムでコメント・応援できる
-              </li>
-            </ul>
-            <div class="daily-live-cta-wrap">
-              <a href="https://www.pococha.com/en-us/app/users/e61da3c5-23c3-414d-be14-2e2d5144a229"
-                class="daily-live-cta" target="_blank" rel="noopener">今日の配信を見る →</a>
-              <p class="daily-live-cta-note">※ Pocochaアプリが開きます（App Store / Google Playで無料ダウンロード）</p>
-            </div>
+            <ol class="daily-live-points">
+              <li class="daily-live-point">毎日 <strong>18:00〜21:00</strong></li>
+              <li class="daily-live-point"><span><strong class="daily-live-free">無料</strong>で視聴できます</span></li>
+              <li class="daily-live-point">アプリをダウンロードするだけですぐ視聴OK</li>
+              <li class="daily-live-point">リアルタイムでコメント・応援できる</li>
+            </ol>
           </div>
         </div>
       </div>
@@ -1902,10 +1986,17 @@
       <div class="about-inner">
         <div class="about-grid">
           <div class="reveal">
+            <div class="about-photo">
+              <img src="images/portrait.jpg"
+                alt="堀江由希子" loading="lazy">
+              <div class="about-pullquote">"ジャンルを越え、心を揺さぶるサックスを。"</div>
+            </div>
+          </div>
+          <div class="about-text-col reveal">
             <p class="section-label">About</p>
             <p class="section-title">堀江由希子</p>
             <p class="about-text">
-              兵庫県淡路市出身。大阪音楽大学クラシック専攻を経て、FUNK・SOUL・R&Bへ転向。NHK紅白歌合戦サポート、日本武道館3回出場、ポルノグラフィティツアー参加など、ジャンルを越えた活動を展開。現在は東京・関西を拠点に、ライブ・レッスン・レコーディングなど多方面で活動中。
+              兵庫県淡路市出身。大阪音楽大学クラシック専攻を経て、FUNK・SOUL・R&amp;Bへ転向。NHK紅白歌合戦サポート、日本武道館3回出場、ポルノグラフィティツアー参加など、ジャンルを越えた活動を展開。現在は東京・関西を拠点に、ライブ・レッスン・レコーディングなど多方面で活動中。
             </p>
             <div class="badge-list">
               <span class="badge">NHK紅白歌合戦</span>
@@ -1915,12 +2006,6 @@
               <span class="badge">USJ</span>
             </div>
             <a href="#" class="text-link">もっと知る →</a>
-          </div>
-          <div class="reveal">
-            <div class="about-photo">
-              <img src="images/portrait.jpg"
-                alt="堀江由希子" loading="lazy">
-            </div>
           </div>
         </div>
       </div>
@@ -1937,22 +2022,28 @@
           <li class="news-item">
             <a href="#">
               <span class="news-date">2026.02.18</span>
-              <span class="news-cat">LIVE</span>
-              <span class="news-title">3月15日 Blue Note Tokyo公演の詳細が決定しました</span>
+              <div class="news-item-body">
+                <span class="news-cat">LIVE</span>
+                <span class="news-title">3月15日 Blue Note Tokyo公演の詳細が決定しました</span>
+              </div>
             </a>
           </li>
           <li class="news-item">
             <a href="#">
               <span class="news-date">2026.02.10</span>
-              <span class="news-cat">MEDIA</span>
-              <span class="news-title">YouTube Vlog「In the Park」#75 公開</span>
+              <div class="news-item-body">
+                <span class="news-cat">MEDIA</span>
+                <span class="news-title">YouTube Vlog「In the Park」#75 公開</span>
+              </div>
             </a>
           </li>
           <li class="news-item">
             <a href="#">
               <span class="news-date">2026.01.28</span>
-              <span class="news-cat">RELEASE</span>
-              <span class="news-title">新曲「雨の向こう側」配信スタート</span>
+              <div class="news-item-body">
+                <span class="news-cat">RELEASE</span>
+                <span class="news-title">新曲「雨の向こう側」配信スタート</span>
+              </div>
             </a>
           </li>
         </ul>
